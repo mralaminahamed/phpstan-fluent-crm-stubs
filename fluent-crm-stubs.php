@@ -1445,7 +1445,19 @@ namespace FluentCrm\App\Hooks\Handlers {
         protected $funnelFired = false;
         private $registeredFunnelTriggers = [];
         private $registeredTriggerFallbacks = [];
+        private $funnelItemsRegistered = false;
         public function register()
+        {
+        }
+        /**
+         * Register core funnel actions, benchmarks, triggers, and free Pro placeholders once.
+         *
+         * This runs before registerEarlyActiveTriggers() so core trigger arg-count filters
+         * are present when active funnel listeners are attached before other init@10 callbacks.
+         *
+         * @return void
+         */
+        public function registerFunnelItems()
         {
         }
         public function registerEarlyActiveTriggers()
@@ -1674,6 +1686,31 @@ namespace FluentCrm\App\Hooks\Handlers {
         {
         }
         /**
+         * Reset rows stuck in 'processing' back to 'pending' so they get re-claimed.
+         *
+         * An unbounded mass UPDATE on (status='processing' AND updated_at < cutoff)
+         * locks a wide range and deadlocks against the row-level SELECT ... FOR
+         * UPDATE claims that the mailer Handler / MultiThreadHandler hold while
+         * sending. We instead drain in bounded chunks by primary key.
+         *
+         * We deliberately do NOT order the SELECT: ORDER BY id would push MySQL
+         * onto PRIMARY (full id-walk looking for sparse matches on a multi-million
+         * row table) instead of the (status, scheduled_at) index, which contains
+         * only the small currently-'processing' slice. Each chunk drains rows out
+         * of the predicate, so the next iteration naturally finds different rows
+         * without an explicit order.
+         *
+         * Any deadlock that still slips through is harmless — remaining rows will
+         * be picked up on the next caller's tick.
+         *
+         * @param int    $maxAgeSeconds Rows older than this (in 'processing') get reset.
+         * @param string $callerContext Used in the deferred-log message.
+         * @return void
+         */
+        public static function resetStaleProcessingEmails($maxAgeSeconds = 100, $callerContext = '')
+        {
+        }
+        /**
          * Process a specific campaign by ID.
          *
          * Can be called directly from the AJAX handler for continuous chaining
@@ -1853,8 +1890,8 @@ namespace FluentCrm\App\Http\Controllers {
     {
         private $credentialsOptionKey = '_fluent_ai_creds';
         private $writingSettingsOptionKey = '_ai_writing_settings';
-        private $providerModels = ['open_ai' => ['auto', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-4.1', 'gpt-4o', 'gpt-4o-mini', 'gpt-5-mini'], 'claude' => ['auto', 'claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-opus-4-6'], 'gemini' => ['auto', 'gemini-3.1-pro-preview', 'gemini-3-flash-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite']];
-        private $autoProviderModels = ['open_ai' => 'gpt-5-mini', 'claude' => 'claude-sonnet-4-6', 'gemini' => 'gemini-2.5-flash'];
+        private $providerModels = ['wordpress' => ['wordpress'], 'open_ai' => ['auto', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-4.1', 'gpt-4o', 'gpt-4o-mini'], 'claude' => ['auto', 'claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-opus-4-6'], 'gemini' => ['auto', 'gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3-flash-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite']];
+        private $autoProviderModels = ['open_ai' => 'gpt-5.4', 'claude' => 'claude-sonnet-4-6', 'gemini' => 'gemini-3.5-flash', 'wordpress' => 'wordpress'];
         public function getSettings(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -1885,6 +1922,47 @@ namespace FluentCrm\App\Http\Controllers {
         public function contactSummary(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Resolve the WordPress site locale used for AI contact summaries.
+         *
+         * The contact summary must follow Settings > General > Site Language, not the
+         * current admin user's profile language. The fallback keeps cache comparison
+         * deterministic if WordPress returns an empty locale for any reason.
+         *
+         * @return string Sanitized WordPress locale, for example en_US or bn_BD.
+         */
+        private function getContactSummaryLocale()
+        {
+        }
+        /**
+         * Check whether a cached AI contact summary can be reused for the site locale.
+         *
+         * New summaries store their generation locale and are reusable only when it
+         * matches the current site locale. Older cached summaries did not store a
+         * locale and were generated from English-only prompts, so they are treated as
+         * valid only while the current site locale is English.
+         *
+         * @param array  $summary Cached subscriber meta summary payload.
+         * @param string $locale  Current sanitized WordPress site locale.
+         *
+         * @return bool True when the cached summary can be shown without regenerating.
+         */
+        private function isCachedContactSummaryForLocale($summary, $locale)
+        {
+        }
+        /**
+         * Determine whether a WordPress locale belongs to the English language family.
+         *
+         * Used only for legacy AI summary cache compatibility, where existing cached
+         * records have no explicit locale but were produced by English prompts.
+         *
+         * @param string $locale WordPress locale to inspect.
+         *
+         * @return bool True for locales beginning with en, such as en_US or en_GB.
+         */
+        private function isEnglishLocale($locale)
+        {
+        }
         private function getSystemPrompt($tone = '', $settings = [])
         {
         }
@@ -1909,13 +1987,13 @@ namespace FluentCrm\App\Http\Controllers {
         private function parseGeneratedEmailBody($result)
         {
         }
-        private function getContactSummarySystemPrompt($settings = [])
+        private function getContactSummarySystemPrompt($settings = [], $locale = '')
         {
         }
-        private function buildContactSummaryPrompt($context)
+        private function buildContactSummaryPrompt($context, $locale = '')
         {
         }
-        private function buildContactSummaryContext($subscriber)
+        private function buildContactSummaryContext($subscriber, $locale = '')
         {
         }
         private function getEmailSummaryContext($subscriberId)
@@ -1934,6 +2012,9 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         private function callProviderApi($provider, $model, $apiKey, $userPrompt, $systemPrompt = '', $timeout = 30)
+        {
+        }
+        private function callWordPress($model, $userPrompt, $systemPrompt, $timeout)
         {
         }
         private function callOpenAi($model, $apiKey, $userPrompt, $systemPrompt, $timeout)
@@ -10111,6 +10192,17 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
+         * Escape button URLs without stripping smartcodes before the parser phase.
+         *
+         * Campaign smartcodes are parsed after Gutenberg blocks are rendered, so running
+         * esc_url() on a smartcode URL here removes the curly braces and makes the later
+         * parser miss it. Keep only smartcode-bearing safe-protocol URLs intact with
+         * esc_attr(); static URLs and unsafe protocols still go through esc_url().
+         */
+        private function escapeButtonUrl($url)
+        {
+        }
+        /**
          * Render legacy Woo single product block.
          */
         private function renderWooProductBlock($block, $attrs, $innerHTML)
@@ -12641,6 +12733,15 @@ namespace FluentCrm\App\Services {
     class Sanitize
     {
         public static function campaign($data)
+        {
+        }
+        private static function sanitizeCampaignSettings($settings)
+        {
+        }
+        private static function sanitizeFooterSettings($footerSettings)
+        {
+        }
+        public static function sanitizeFooterHtml($footerHtml)
         {
         }
         public static function contact($data)
