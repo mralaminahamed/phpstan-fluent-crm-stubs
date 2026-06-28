@@ -1079,6 +1079,29 @@ namespace FluentCrm\App\Hooks\Handlers {
         {
         }
         /**
+         * Register FluentCRM conditional visibility attributes in PHP.
+         *
+         * WordPress validates dynamic block attributes against the server-side
+         * block schema during render REST requests, so this also runs when the
+         * render request contains FluentCRM's conditional visibility attributes.
+         *
+         * @param array  $args Block registration arguments.
+         * @param string $name Block name.
+         * @return array
+         */
+        public function registerConditionalVisibilityAttributes($args, $name)
+        {
+        }
+        /**
+         * Check if the current request needs FluentCRM conditional visibility
+         * attributes in server-side block schemas.
+         *
+         * @return bool
+         */
+        private function shouldRegisterConditionalVisibilityAttributes()
+        {
+        }
+        /**
          * Handle autosave requests for the block editor iframe.
          * Creates or updates campaign / recurring campaign / template records.
          * If block_type is empty and id/bid is 0, nothing will be created.
@@ -1705,9 +1728,22 @@ namespace FluentCrm\App\Hooks\Handlers {
          *
          * @param int    $maxAgeSeconds Rows older than this (in 'processing') get reset.
          * @param string $callerContext Used in the deferred-log message.
-         * @return void
+         * @return int Number of rows reset back to pending.
          */
         public static function resetStaleProcessingEmails($maxAgeSeconds = 100, $callerContext = '')
+        {
+        }
+        /**
+         * Avoid stale-row recovery while a sender still appears active.
+         *
+         * Sender locks are refreshed by BaseHandler::refreshLock() between claimed
+         * batches. We check all sender lock keys because regular, multi-threaded,
+         * and CLI senders can all own rows in fc_campaign_emails.
+         *
+         * @param int $maxAgeSeconds
+         * @return bool
+         */
+        private static function hasFreshEmailSenderLock($maxAgeSeconds)
         {
         }
         /**
@@ -3676,7 +3712,102 @@ namespace FluentCrm\App\Http\Controllers {
         public function index(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Stream system logs as CSV without loading all rows into memory.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return void
+         */
+        public function export(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
         public function deleteAll(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * @param string      $search
+         * @param string|null $startDate
+         * @return mixed
+         */
+        private function getLogsQuery($search = '', $startDate = null)
+        {
+        }
+        /**
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return string
+         */
+        private function getSearchTerm(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return int|string
+         */
+        private function getExportRange(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * @param mixed $range
+         * @return int|string
+         */
+        private function normalizeExportRange($range)
+        {
+        }
+        /**
+         * @param int|string $range
+         * @param int|null   $currentTimestamp
+         * @return string|null
+         */
+        private function getExportStartDate($range, $currentTimestamp = null)
+        {
+        }
+        /**
+         * @return array
+         */
+        private function getCsvHeaders()
+        {
+        }
+        /**
+         * @param object $log
+         * @return array
+         */
+        private function formatCsvLogRow($log)
+        {
+        }
+        /**
+         * @param int|string $range
+         * @return string
+         */
+        private function getExportFilename($range)
+        {
+        }
+        /**
+         * Prevent spreadsheet formula execution while preserving visible values.
+         *
+         * @param mixed $value
+         * @return string
+         */
+        private function sanitizeCsvCell($value)
+        {
+        }
+        /**
+         * @param mixed $value
+         * @return string
+         */
+        private function plainText($value)
+        {
+        }
+        /**
+         * @return int
+         */
+        private function getExportChunkSize()
+        {
+        }
+        /**
+         * @param string $filename
+         * @return void
+         */
+        private function prepareCsvDownload($filename)
         {
         }
     }
@@ -3837,7 +3968,16 @@ namespace FluentCrm\App\Http\Controllers {
          * @param array $settings
          * @return array
          */
-        protected function normalizeTemplateSettings($settings)
+        protected function normalizeTemplateSettings($settings, $designTemplate = '')
+        {
+        }
+        /**
+         * Raw classic editor templates only support font family and footer flags.
+         *
+         * @param string $designTemplate
+         * @return bool
+         */
+        protected function templateSupportsContentPadding($designTemplate)
         {
         }
         /**
@@ -5068,6 +5208,15 @@ namespace FluentCrm\App\Models {
         {
         }
         public function attachLabels($labelIds)
+        {
+        }
+        /**
+         * Replace existing funnel labels with the provided label IDs.
+         *
+         * @param array|int $labelIds
+         * @return $this
+         */
+        public function syncLabels($labelIds)
         {
         }
         public function detachLabels($labelIds)
@@ -7751,6 +7900,31 @@ namespace FluentCrm\App\Services {
         public function getWooCheckoutFields()
         {
         }
+        /**
+         * Get the saved FluentCart checkout subscription settings merged with defaults.
+         *
+         * Unlike the WooCommerce equivalent, there is no 'auto_checkout_fill'
+         * option — only the opt-in checkbox feature is supported for FluentCart.
+         */
+        public function getFluentCartCheckoutSettings()
+        {
+        }
+        /**
+         * Normalize and whitelist FluentCart checkout subscription settings before
+         * persisting. Guards the stored option against malformed client payloads:
+         * yes/no flags are forced to valid values, list/tag IDs are coerced to
+         * integers and the label is plain text.
+         */
+        public function sanitizeFluentCartCheckoutSettings($settings)
+        {
+        }
+        /**
+         * Field definitions for the FluentCart checkout subscription settings panel,
+         * rendered by the shared form-builder component in _GeneralSettings.vue.
+         */
+        public function getFluentCartCheckoutFields()
+        {
+        }
     }
     class BlockParser
     {
@@ -8082,6 +8256,15 @@ namespace FluentCrm\App\Services {
         public function processEmails($perChunk = 0, $runTime = 30)
         {
         }
+        /**
+         * Get the next stable subscriber chunk for campaign email materialization.
+         */
+        private function getSubscribersChunk($campaign, $perChunk)
+        {
+        }
+        /**
+         * Materialize a subscriber chunk and advance the cursor after rows are created.
+         */
         private function subscribe($campaign, $subscribersModel)
         {
         }
@@ -8852,6 +9035,55 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart {
         {
         }
         private static function getSyncStatus()
+        {
+        }
+    }
+    /**
+     * Adds a newsletter opt-in checkbox to the FluentCart checkout form and
+     * subscribes the customer to FluentCRM when the order is paid.
+     *
+     * Controlled by the 'FluentCart Checkout Subscription Field' panel in
+     * FluentCRM -> Settings -> General Settings (option key:
+     * fluent_cart_checkout_form_subscribe_settings, defined in the base plugin's
+     * AutoSubscribe service).
+     */
+    class CheckoutSubscription
+    {
+        /**
+         * Form field name posted with the checkout request and the
+         * order meta key holding the captured opt-in state.
+         */
+        const OPTIN_FIELD = '_fc_cart_checkout_subscribe';
+        /**
+         * Order meta flag preventing the same order from being processed twice.
+         */
+        const PROCESSED_META = '_fc_cart_checkout_optin_processed';
+        public function init()
+        {
+        }
+        protected function getSettings()
+        {
+        }
+        /**
+         * Prints the opt-in checkbox above the payment methods section,
+         * using FluentCart's native checkbox markup classes.
+         */
+        public function renderOptinCheckbox($data)
+        {
+        }
+        /**
+         * Persists the posted opt-in state to order meta so the async
+         * order-paid handler can read it later. Missing value = unchecked.
+         */
+        public function captureOptinState($eventData)
+        {
+        }
+        /**
+         * Creates/updates the FluentCRM contact when a paid order has the
+         * opt-in flag. Runs async via fluent_cart/order_paid_done. Idempotent —
+         * payment retries or hook re-runs will not duplicate processing.
+         */
+        public function maybeSubscribeContact($eventData)
         {
         }
     }
@@ -10091,6 +10323,7 @@ namespace FluentCrm\App\Services {
     {
         private $inlineStyles = [];
         private $childCss = '';
+        private static $rssRenderCache = [];
         private $autoPaddedElements = ['core/heading', 'core/paragraph', 'core/list'];
         /**
          * Parse Gutenberg blocks and convert to email HTML
@@ -10171,6 +10404,34 @@ namespace FluentCrm\App\Services {
          * Render list item
          */
         private function renderListItem($content, $attrs)
+        {
+        }
+        /**
+         * Render the core RSS block with email-safe markup.
+         *
+         * @param array $attrs Block attributes.
+         * @return string
+         */
+        private function renderRss($attrs)
+        {
+        }
+        /**
+         * Validate RSS feed URLs before the server fetches remote content.
+         *
+         * @param string $url Feed URL.
+         * @return bool
+         */
+        private function isSafeRssFeedUrl($url)
+        {
+        }
+        /**
+         * Wrap cached RSS list items with the current block id and table attributes.
+         *
+         * @param string $listItems Rendered RSS item markup.
+         * @param array  $attrs Block attributes.
+         * @return string
+         */
+        private function wrapRssHtmlWithCurrentBlock($listItems, $attrs)
         {
         }
         /**
@@ -10664,6 +10925,16 @@ namespace FluentCrm\App\Services {
 namespace FluentCrm\App\Services\Html {
     class FormElementBuilder
     {
+        /**
+         * Per-request guards so each library / the initializer is enqueued at most
+         * once, even when renderFields() recurses into nested containers or multiple
+         * forms render on the same page. Assets are enqueued lazily from the field
+         * render methods that actually need them, so a basic form (text/email/etc.)
+         * loads no extra JS/CSS.
+         */
+        private static $initEnqueued = false;
+        private static $datePickerEnqueued = false;
+        private static $multiSelectEnqueued = false;
         public function renderFields($fields, $print = false)
         {
         }
@@ -10712,16 +10983,21 @@ namespace FluentCrm\App\Services\Html {
         public function renderDatePicker($field)
         {
         }
-        private function addExternalScriptsAndCss()
-        {
-        }
-        private function renderDatePickerScript()
-        {
-        }
-        private function renderDateTimePickerScript()
-        {
-        }
-        private function renderMultiSelectScript()
+        /**
+         * Enqueue the externalized field initializer + its i18n, once per request.
+         * Called lazily by the field render methods that need JS (date / datetime /
+         * multi-select / combodate / date_dropdowns). form-fields.js depends only on
+         * jQuery and feature-detects flatpickr/Choices at runtime (deferred to
+         * DOMContentLoaded), so it works whether or not those libs were enqueued —
+         * letting a date_dropdowns-only form skip flatpickr/Choices entirely.
+         *
+         * Enqueued directly rather than via the wp_enqueue_scripts hook: forms
+         * render inside the_content (shortcode) or a standalone page body, by which
+         * point wp_enqueue_scripts has already fired. Direct enqueue lets WordPress
+         * print these as late footer items (scripts via the footer queue, styles via
+         * print_late_styles()).
+         */
+        private function ensureFieldInitializer()
         {
         }
         private function enqueueDatePickerAssets()
@@ -11032,16 +11308,26 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         {
         }
         /**
-         * Fire a non-blocking POST request using cURL directly.
+         * Fire a non-blocking POST request to continue the sender chain.
          *
-         * Bypasses WordPress's WP_Http which adds SSL verification filters
-         * that break loopback requests on local/self-signed cert environments.
-         * Connection timeout is 1 second — we don't wait for the response.
+         * cURL stays the first transport because it bypasses WP_Http SSL filters
+         * that can break local/self-signed loopbacks. If cURL times out or fails,
+         * fall back silently to WordPress HTTP and log only in FluentCRM debug logs.
          *
          * @param string $url
-         * @param array $body POST body data
+         * @param array  $body POST body data
          */
         public static function fireNonBlockingRequest($url, $body = [])
+        {
+        }
+        /**
+         * Fire the sender-chain request via WordPress HTTP as a fallback transport.
+         *
+         * @param string $url
+         * @param array  $body
+         * @param int    $timeout
+         */
+        private static function fireNonBlockingWpRequest($url, $body, $timeout)
         {
         }
     }
