@@ -407,6 +407,9 @@ namespace FluentCrm\App\Hooks\CLI {
         /*
          * Send Pending Emails parallelly via CLI
          * use it with caution
+         * Requires the "Multi-threaded email sending" experimental feature to be
+         * enabled — it is a parallel sender and shares the cross-process rate budget
+         * that only exists in multi-thread mode. No-ops when the flag is off.
          * basic usage: wp fluent_crm cli_send
          * advanced usage: wp fluent_crm cli_send --force=yes --option_key=fluentcrm_is_sending_cli_emails --run_time=50 --offset=200 --min_pending=300 --silent=yes
          */
@@ -3052,7 +3055,7 @@ namespace FluentCrm\App\Http\Controllers {
         }
         /**
          * One-click adapter install. Free can only explain the missing dependency;
-         * Pro may opt in to the Fluent Toolkit background installer via hooks.
+         * Pro may opt in to the FluentHub background installer via hooks.
          */
         public function installAdapter()
         {
@@ -7963,7 +7966,7 @@ namespace FluentCrm\App\Services {
          * Normalize and whitelist FluentCart checkout subscription settings before
          * persisting. Guards the stored option against malformed client payloads:
          * yes/no flags are forced to valid values, list/tag IDs are coerced to
-         * integers and the label is plain text.
+         * strings (validated as integer IDs) and the label is plain text.
          */
         public function sanitizeFluentCartCheckoutSettings($settings)
         {
@@ -8101,9 +8104,6 @@ namespace FluentCrm\App\Services\BlockRender {
         {
         }
         private static function getContentTd($contentHtml, $template, $extraStyle = '')
-        {
-        }
-        private static function buildButtonStyle($atts)
         {
         }
         private static function normalizeTemplate($template)
@@ -10819,9 +10819,9 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
-         * Find the first nested Gutenberg button attrs inside product blocks.
+         * Find the first nested Gutenberg button block inside product blocks.
          */
-        private function getFirstButtonBlockAttrs($block)
+        private function getFirstButtonBlock($block)
         {
         }
         /**
@@ -10918,6 +10918,18 @@ namespace FluentCrm\App\Services {
          * Render row block.
          */
         private function renderRow($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Append inline CSS to an opening HTML tag without dropping existing styles.
+         */
+        private function appendInlineStyleToTag($tag, $style)
+        {
+        }
+        /**
+         * Apply email-safe stripe backgrounds to table body rows.
+         */
+        private function applyTableStripeStyles($tableContent, $stripeColor = '#f0f0f0')
         {
         }
         /**
@@ -11494,7 +11506,6 @@ namespace FluentCrm\App\Services\Libs {
 namespace FluentCrm\App\Services\Libs\Mailer {
     abstract class BaseHandler
     {
-        protected $startedAt = 0;
         protected $runnerTitle = '';
         protected $sentCount = 0;
         protected $maximumProcessingTime = 50;
@@ -11502,9 +11513,8 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         protected $startingTimeStamp = null;
         protected $optionKey = 'fluentcrm_is_sending_emails';
         protected $isMultiThread = false;
-        protected $dispatchedWithinOneSecond = 0;
-        protected $emailLimitPerSecond = 0;
         protected $sendingChunkNumber = 0;
+        protected $lastLockRefreshAt = 0;
         abstract protected function isTimeUp();
         protected function sendEmails($campaignEmails)
         {
@@ -11528,19 +11538,10 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         protected function memoryExceeded()
         {
         }
-        protected function reachedEmailLimitPerSecond()
-        {
-        }
-        protected function restartWhenOneSecondExceeds()
-        {
-        }
         protected function updateEmailsStatus($ids, $status)
         {
         }
         protected function handleFailedLog()
-        {
-        }
-        protected function getEmailLimitPerSecond()
         {
         }
         /**
@@ -11559,6 +11560,17 @@ namespace FluentCrm\App\Services\Libs\Mailer {
          * Refresh the lock timestamp (heartbeat) to prevent stuck-lock detection.
          */
         protected function refreshLock()
+        {
+        }
+        /**
+         * Heartbeat the lock only when it's getting close to its TTL, instead of on
+         * every email. The per-email send loop calls this so a long rate-limit wait
+         * can't let the lock expire mid-batch — but in normal sending (sub-second
+         * waits, batch done in seconds) it never actually writes: the guard is just
+         * an in-memory timestamp compare. It fires ~once per (TTL/3) only when a
+         * batch runs long under backpressure.
+         */
+        protected function maybeRefreshLock()
         {
         }
         /**
@@ -11626,6 +11638,211 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         {
         }
     }
+    /**
+     * Cross-process global send-rate limiter (evenly spaced).
+     *
+     * Bulk and automation email funnels through Mailer::send(), which calls
+     * throttle() here. That makes this the one authoritative cap on the install's
+     * outgoing send rate.
+     *
+     * Two pacing modes, selected by the `multi_threading_emails` experimental flag
+     * — the single oracle for whether parallel sending can happen:
+     *
+     *   - Flag OFF (default, ~90% of installs): the cron Handler is the only
+     *     SUSTAINED sender. MultiThreadHandler is gated off (Scheduler) and the CLI
+     *     sender no-ops (Commands::cli_send), and the funnel/contact-job sender
+     *     (Handler::processSubscriberEmail) shares the cron Handler's lock so it is
+     *     serialized, never concurrent. The TAT lives in a process static and pacing
+     *     is a plain in-memory compare + sleep — NO DB read or write. Common path,
+     *     cheapest it can be.
+     *
+     *   - Flag ON: the Handler, MultiThreadHandler and WP-CLI workers run at once in
+     *     separate processes that share no memory, so the TAT moves to the DB and is
+     *     advanced by atomic compare-and-swap. Same even drip, coordinated globally.
+     *
+     * Both modes implement the identical GCRA algorithm below; they differ only in
+     * where the TAT is stored. The flag is checked once per process (memoized).
+     *
+     * Two gaps in flag-off mode are DELIBERATELY accepted, not bugs:
+     *   (1) Sparse direct sends that don't hold the sender lock — double opt-in and
+     *       the public unsubscribe/manage-link emails (ExternalPages) — pace from
+     *       their own process static and are NOT coordinated with the bulk loop.
+     *       Their real-world volume (signups, manual link requests) sits well under
+     *       the `emails_per_second - 3` buffer, which is precisely the headroom that
+     *       absorbs them, so aggregate stays under the provider cap.
+     *   (2) If multi-threading is toggled OFF while a multi/CLI worker is mid-batch,
+     *       that worker keeps pacing via the DB for up to ~one batch (~50s) while a
+     *       new cron loop paces in memory — two uncoordinated bulk streams. This is
+     *       rare (requires a mid-send flag toggle) and self-heals when the worker
+     *       drains; accepted rather than guarded.
+     *
+     * Callers may opt a send OUT of the cap by passing $preThrottled=true to
+     * Mailer::send (e.g. double opt-in, a single transactional email on signup that
+     * should not be delayed). The bulk handlers also pass it — but only because they
+     * already reserved the slot themselves before marking the row sent.
+     *
+     * Algorithm (GCRA / leaky bucket): a shared "theoretical arrival time" (TAT)
+     * marks the earliest moment the next send may go out. Each send atomically does
+     *
+     *     slot = max(TAT, now);   TAT = slot + (1 / limit)
+     *
+     * then sleeps until `slot`. Because the read-modify-write is atomic across
+     * processes, consecutive sends — whichever process they come from — are handed
+     * timeslots exactly 1/limit apart: an even drip at the configured rate, no
+     * bursts, which is what burst-sensitive providers like Amazon SES require.
+     *
+     * Store (multi-thread mode only): ONE fixed wp_options row holding the TAT
+     * (microseconds), advanced by an optimistic compare-and-swap (CAS) — a plain
+     * SELECT then a conditional UPDATE
+     * that only advances the TAT if no other sender moved it first. The single-row
+     * conditional UPDATE is atomic on MySQL/MariaDB (InnoDB row lock) and SQLite
+     * (global write serialization) alike, with no session variables, GET_LOCK, or
+     * GREATEST — so it is portable AND immune to read/write-split routing (the slot
+     * is computed in PHP, never read back from a server-side variable that a replica
+     * might not have).
+     *
+     * A deliberately earlier design used a session variable (@fc_slot) and an
+     * object-cache mutex. Both were removed after review: @fc_slot silently fails
+     * open when a follow-up SELECT routes to a replica (HyperDB/ProxySQL/RDS Proxy),
+     * and a TTL-expiring cache mutex cannot do a safe non-idempotent RMW without
+     * fencing. The DB CAS path has neither problem.
+     *
+     * Fail-open by design: if the store is unavailable the limiter returns at once
+     * rather than blocking the queue — but every fail-open is LOGGED (sampled) so a
+     * silently-degraded limiter is detectable instead of giving false confidence.
+     *
+     * Backpressure: the wait is never clamped to "send early". Under N concurrent
+     * senders the TAT runs at most ~N×interval ahead of now (each process holds one
+     * in-flight reservation), so waits are bounded by real concurrency, and the
+     * caller sleeps the full wait. Only a corrupt/runaway TAT (more than
+     * GARBAGE_AHEAD_MICRO in the future) is treated as poison and reset to now.
+     *
+     * Caller responsibilities (see BaseHandler::sendEmails): reserve the slot BEFORE
+     * marking the row 'sent' (so a crash mid-wait leaves it recoverable), and
+     * refresh the processing lock around the wait (so a long backpressure sleep
+     * cannot expire the lock mid-batch and admit a second concurrent sender).
+     *
+     * Caveats (documented, not guarded): (a) if a caller invokes Mailer::send while
+     * holding an open DB transaction, the CAS UPDATE joins it and the row lock is
+     * held until that transaction commits — the bundled senders all commit before
+     * sending, so this only affects third-party callers. (b) Spacing is only as good
+     * as clock sync across app servers sharing one DB; the TAT itself is monotonic,
+     * but each process's local `now` is used for the sleep target.
+     *
+     * Scope: the wp_options table is per-blog, so multisite blogs keep independent
+     * caps automatically.
+     */
+    class GlobalRateLimiter
+    {
+        const DB_OPTION = '_fc_email_rate_tat';
+        // A TAT more than this far in the future is treated as corrupt (clock jump,
+        // poisoned value) and reset to now — never as legitimate backpressure.
+        // Kept small so the longest possible single wait, PLUS the wp_mail() that
+        // follows it, PLUS the sender's heartbeat gap, all stay under the sender's
+        // lock TTL (maximumProcessingTime + 30 = 80s): 20s gap + 15s wait + ~30s
+        // send = 65s < 80s. Legitimate backpressure (real concurrency × interval)
+        // is only ever a few seconds, far below this cap.
+        const GARBAGE_AHEAD_MICRO = 15000000;
+        // 15s
+        // Bounded CAS retry budget. Exceeding it means pathological contention; the
+        // limiter then fails open (logged) rather than spinning forever.
+        const MAX_CAS_ATTEMPTS = 50;
+        private static $dbRowReady = false;
+        private static $cachedLimit = null;
+        private static $failOpenCount = 0;
+        // Pacing mode, memoized per process. True once we know parallel sending can
+        // occur (multi-threading flag on); null until first checked.
+        private static $multiThread = null;
+        // In-memory TAT (microseconds) for the single-sender fast path. Process-local
+        // by design — only correct when this is the install's only sender.
+        private static $lastSlotMicro = 0;
+        /**
+         * Throttle one outgoing email against the global per-second cap.
+         *
+         * Self-contained: reads the configured limit and the enable switch itself,
+         * so any caller invokes it with zero wiring. The bulk handlers call this
+         * directly (before marking a row sent) and pass $preThrottled=true to
+         * Mailer::send so the email is not throttled twice.
+         *
+         * @param array $data The email payload, exposed to the enable filter for
+         *                     per-email exemptions (inspect $data['scope'] etc.).
+         */
+        public static function throttle($data = [])
+        {
+        }
+        /**
+         * Whether to use the DB (cross-process) path instead of in-memory pacing.
+         * Driven by the multi-threading experimental flag: when it is off, the only
+         * SUSTAINED senders are gated/serialized (MultiThreadHandler off, CLI no-op,
+         * funnel sends share the cron lock), so the in-memory path governs the rate.
+         * The flag does NOT cover the two accepted gaps documented on the class:
+         * sparse unlocked direct sends, and a mid-send flag toggle. Memoized per
+         * process — the experimental settings are read once and don't change
+         * mid-request.
+         *
+         * @return bool
+         */
+        private static function isMultiThreadMode()
+        {
+        }
+        /**
+         * In-memory even pacing for the single-sender case. The TAT is a process
+         * static; correct ONLY because no other process sends concurrently (see
+         * isMultiThreadMode). No DB read/write — this is what saves the two
+         * wp_options queries per send on single-threaded installs.
+         *
+         * @param int $intervalMicro Spacing between sends in microseconds (1e6/limit).
+         */
+        private static function reserveViaMemory($intervalMicro)
+        {
+        }
+        /**
+         * DB-backed pacing for the multi-sender case: reserve the next slot via the
+         * cross-process compare-and-swap, then sleep the full wait until it arrives.
+         *
+         * @param int $intervalMicro Spacing between sends in microseconds (1e6/limit).
+         */
+        private static function reserveViaDb($intervalMicro)
+        {
+        }
+        /**
+         * The global per-second send cap shared by every process, derived from the
+         * email settings with the buffer + floor the senders have always used.
+         * Memoized per process; a settings change is picked up by the next process.
+         *
+         * @return int
+         */
+        public static function getLimit()
+        {
+        }
+        /**
+         * Atomically advance the shared TAT and return this caller's slot
+         * (microseconds), using an optimistic compare-and-swap loop.
+         *
+         * @return int|null Slot timestamp in microseconds, or null to fail open.
+         */
+        private static function reserveTat($intervalMicro)
+        {
+        }
+        /**
+         * Ensure the single TAT row exists (idempotent, once per process).
+         * INSERT IGNORE is translated to INSERT OR IGNORE by the WP SQLite plugin.
+         */
+        private static function ensureDbRow()
+        {
+        }
+        /**
+         * Record a fail-open event so a silently-degraded limiter is detectable. A
+         * limiter that is secretly off is worse than none — it gives false
+         * confidence — so this logs (sampled, to avoid flooding) whenever the cap is
+         * NOT enforced for a send.
+         *
+         * @param string $reason
+         */
+        private static function logFailOpen($reason)
+        {
+        }
+    }
     class Handler extends \FluentCrm\App\Services\Libs\Mailer\BaseHandler
     {
         protected $runnerTitle = 'Handler::handle';
@@ -11682,7 +11899,7 @@ namespace FluentCrm\App\Services\Libs\Mailer {
     }
     class Mailer
     {
-        public static function send($data, $subscriber = null, $emailModel = null)
+        public static function send($data, $subscriber = null, $emailModel = null, $preThrottled = false)
         {
         }
         protected static function buildHeaders($data, $subscriber = null, $emailModel = null)
