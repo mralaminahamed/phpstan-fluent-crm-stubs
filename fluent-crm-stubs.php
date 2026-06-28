@@ -1,0 +1,13893 @@
+<?php
+/**
+ * Generated stub declarations for FluentCRM.
+ * @see https://fluentcrm.com
+ * @see https://github.com/mralaminahamed/phpstan-fluent-crm-stubs
+ */
+
+namespace FluentCrm\App\Api {
+    /**
+     * Internal PHP API Class
+     *
+     * Please do not use this class directly. use FluentCrmApi($module) instead.
+     *
+     * @package FluentCrm\App\Api\Classes
+     *
+     * @version 1.0.0
+     */
+    final class Api
+    {
+        public $app;
+        public function __construct($app)
+        {
+        }
+        private function register()
+        {
+        }
+        private function getClasses()
+        {
+        }
+        private function key($key)
+        {
+        }
+        public function __get($key)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Api\Classes {
+    /**
+     * Company Class - PHP APi Wrapper
+     *
+     * Company API Wrapper Class that can be used as <code>FluentCrmApi('companies')</code> to get the class instance
+     *
+     * @package FluentCrm\App\Api\Classes
+     * @namespace FluentCrm\App\Api\Classes
+     *
+     * @version 2.8.0
+     */
+    class Companies
+    {
+        private $instance = null;
+        private $allowedInstanceMethods = ['all', 'get', 'find', 'first', 'paginate'];
+        public function __construct(\FluentCrm\App\Models\Company $instance)
+        {
+        }
+        public function getCompany($idOrName, $with = [])
+        {
+        }
+        public function createOrUpdate($data)
+        {
+        }
+        public function attachContactsByIds($contactIds, $companyIds)
+        {
+        }
+        public function detachContactsByIds($contactIds, $companyIds)
+        {
+        }
+    }
+    /**
+     * Contacts Class - PHP APi Wrapper
+     *
+     * Contacts API Wrapper Class that can be used as <code>FluentCrmApi('contacts')</code> to get the class instance
+     *
+     * @package FluentCrm\App\Api\Classes
+     * @namespace FluentCrm\App\Api\Classes
+     *
+     * @version 1.0.0
+     */
+    class Contacts
+    {
+        private $instance = null;
+        private $allowedInstanceMethods = ['all', 'get', 'find', 'first', 'paginate'];
+        public function __construct(\FluentCrm\App\Models\Subscriber $instance)
+        {
+        }
+        /**
+         * Get Contact by contact id or email
+         *
+         * Use:
+         * <code>FluentCrmApi('contacts')->getContact($idOrEmail);</code>
+         *
+         * @param int|string $idOrEmail Contact ID or Email
+         * @return false|Subscriber Model of the subscriber
+         */
+        public function getContact($idOrEmail)
+        {
+        }
+        /**
+         * Get Contact by user id or Email
+         *
+         * Use:
+         * <code>FluentCrmApi('contacts')->getContactByUserRef($userIdOrEmail);</code>
+         *
+         * @param int|string $userIdOrEmail User ID or Email
+         * @return false|Subscriber Model of the subscriber
+         */
+        public function getContactByUserRef($userIdOrEmail)
+        {
+        }
+        /**
+         * Get Contact by contact id
+         *
+         * @param int $userId User ID
+         * @return false|Subscriber Model of the subscriber
+         */
+        public function getContactByUserId($userId)
+        {
+        }
+        /**
+         * Create or Update Contact
+         *
+         * Usage:
+         *
+         * <code>FluentCrmApi('contacts')->createOrUpdateContact($data, $forceUpdate, $deleteOtherValues, $sync)</code>;
+         *
+         * @param array $data contact data to add or update
+         * @param bool $forceUpdate if true, will update the contact status forcefully
+         * @param bool $deleteOtherValues if true, will delete all custom fields data and add the new one
+         * @param bool $sync no use case yet
+         * @return false|Subscriber
+         */
+        public function createOrUpdate($data, $forceUpdate = false, $deleteOtherValues = false, $sync = false)
+        {
+        }
+        /**
+         * Get The current logged in contact
+         *
+         * Use
+         * <pre>FluentCrmApi('contacts')->getCurrentContact()</pre>
+         *
+         * @return false|Subscriber
+         */
+        public function getCurrentContact($cached = true, $useSecureCookie = false)
+        {
+        }
+        public function getContactBySecureHash($hash)
+        {
+        }
+        public function getContactByManagedSecureHash($hash)
+        {
+        }
+        /**
+         * To Contact's Advanced Query Class
+         * Use
+         * <pre>FluentCrmApi('contacts')->query($args)</pre>
+         * @param $args array
+         * @return \FluentCrm\App\Services\ContactsQuery
+         */
+        public function query($args)
+        {
+        }
+        /**
+         * @return \FluentCrm\App\Models\Subscriber
+         */
+        public function getInstance()
+        {
+        }
+        public function getCustomFields($types = [], $byOptions = false)
+        {
+        }
+        public function __call($method, $params)
+        {
+        }
+    }
+    /**
+     * Extend API Wrapper for FluentCRM FluentCrmApi('extend')
+     *
+     * Contacts API Wrapper Class that can be used as <code>FluentCrmApi('extend')</code> to get the class instance
+     *
+     * @package FluentCrm\App\Api\Classes
+     * @namespace FluentCrm\App\Api\Classes
+     *
+     * @version 1.0.0
+     */
+    final class Extender
+    {
+        public function addProfileSection($key, $sectionTitle, $callback, $saveCallback = null)
+        {
+        }
+        public function addCompanyProfileSection($key, $sectionTitle, $callback, $saveCallback = null)
+        {
+        }
+        public function addSmartCode($key, $title, $shortcodes, $callback)
+        {
+        }
+        /**
+         * @param $groupKey string
+         * @param $shortcodes array
+         * @return array
+         */
+        private function formatShortcodes($groupKey, $shortcodes)
+        {
+        }
+        public function addContactWidget($callback, $priority = 20)
+        {
+        }
+        public function getCompaniesByContactEmail($email)
+        {
+        }
+    }
+    /**
+     * Contacts List Class - PHP APi Wrapper
+     *
+     * Contacts API Wrapper Class that can be used as <code>FluentCrmApi('lists')</code> to get the class instance.
+     * This will contain all the methods of \FluentCrm\App\Models\Lists model.
+     *
+     * @package FluentCrm\App\Api\Classes
+     *
+     * @version 1.0.0
+     */
+    class Lists
+    {
+        private $instance = null;
+        private $allowedInstanceMethods = ['all', 'get', 'find', 'first', 'paginate'];
+        public function __construct(\FluentCrm\App\Models\Lists $instance)
+        {
+        }
+        public function getInstance()
+        {
+        }
+        /**
+         * Add Lists as Bulk
+         *
+         * Use As: <code>FluentCrmApi('lists')->addBulk($lists)</code>
+         *
+         * @param array $lists Array of Lists with title, slug etc
+         * @return array of List Objects
+         */
+        public function importBulk($lists)
+        {
+        }
+        public function __call($method, $params)
+        {
+        }
+    }
+    class Tags
+    {
+        private $instance = null;
+        private $allowedInstanceMethods = ['all', 'get', 'find', 'first', 'paginate'];
+        public function importBulk($tags)
+        {
+        }
+        public function __construct(\FluentCrm\App\Models\Tag $instance)
+        {
+        }
+        public function getInstance()
+        {
+        }
+        public function __call($method, $params)
+        {
+        }
+    }
+    /**
+     * Extend API Wrapper for FluentCRM FluentCrmApi('tracker')
+     *
+     * Contacts API Wrapper Class that can be used as <code>FluentCrmApi('tracker')</code> to get the class instance
+     *
+     * @package FluentCrm\App\Api\Classes
+     * @namespace FluentCrm\App\Api\Classes
+     *
+     * @version 2.8.4
+     */
+    final class Tracker
+    {
+        /*
+         * Create event for a subscriber
+         * Example Data:
+         *   [
+         *      'subscriber_id' => 1, // optional
+         *      'email' => '', // optional
+         *      'user_id' => 1, // optional
+         *      'provider'        => 'woocommerce|custom|or_anything', // optional
+         *      'event_key'        => 'checkout',
+         *      'title'       => 'Purchase Done',
+         *      'value' => 'STRING|Number'
+         *  ];
+         * @param array $data | \WP_Error
+         *
+         * @return \WP_Error|\FluentCrm\App\Models\EventTracker
+         */
+        public function track($data, $repeatable = true)
+        {
+        }
+        private function getSubscriber($data)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Api {
+    final class FCApi
+    {
+        private $instance = null;
+        public function __construct($instance)
+        {
+        }
+        public function __call($method, $params)
+        {
+        }
+    }
+}
+namespace FluentCrm\App {
+    class App extends \FluentCrm\Framework\Foundation\App
+    {
+        // ...
+    }
+    class ComposerScript
+    {
+        public static function postInstall(\Composer\Script\Event $event)
+        {
+        }
+        public static function postUpdate(\Composer\Script\Event $event)
+        {
+        }
+        protected static function updateVendorComposerFiles($vendorDir, $namespace)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Hooks\CLI {
+    class Commands
+    {
+        public function stats($args, $assoc_args)
+        {
+        }
+        /**
+         * Sync EDD 3 customers into FluentCRM commerce tables from EDD order data.
+         */
+        public function sync_edd_customers($args, $assoc_args)
+        {
+        }
+        /**
+         * Remove synced EDD commerce data only when EDD 3 is available.
+         */
+        public function disable_edd_sync()
+        {
+        }
+        /*
+         * Usage: wp fluent_crm sync_woo_customers --tags=TAG_IDS --lists=LISTS_IDS
+         * tags and lists needs to be comma separated values
+         * If you just want to sync just run:
+         * wp fluent_crm sync_woo_customers
+         */
+        public function sync_woo_customers($args, $assoc_args)
+        {
+        }
+        public function disable_woo_sync()
+        {
+        }
+        /*
+         * Usage: wp fluent_crm sync_learndash_students --tags=TAG_IDS --lists=LISTS_IDS
+         * tags and lists needs to be comma separated values
+         * If you just want to sync just run:
+         * wp fluent_crm sync_learndash_students
+         */
+        public function sync_learndash_students($args, $assoc_args)
+        {
+        }
+        /**
+         * Display EDD 3 commerce statistics from synced FluentCRM commerce data.
+         */
+        public function edd_stats($args, $assoc_args)
+        {
+        }
+        private function showEddProductReport($productId, $period = '')
+        {
+        }
+        public function reset_db()
+        {
+        }
+        /**
+         * Apply a FluentCRM tag to users with active lifetime EDD 3 licenses.
+         */
+        public function edd_add_ltd_tag($args, $assoc_args)
+        {
+        }
+        /**
+         * Apply a FluentCRM tag to users with active EDD 3 licenses for a price option.
+         */
+        public function edd_add_price_tag($args, $assoc_args)
+        {
+        }
+        /**
+         * Stop EDD CLI flows before they touch legacy EDD 2 data or tables.
+         */
+        private function requireEdd3Cli()
+        {
+        }
+        /*
+         * wp fluent_crm activate_license --key=YOUR_LICENSE_KEY
+         */
+        public function activate_license($args, $assoc_args)
+        {
+        }
+        public function license_status()
+        {
+        }
+        /*
+         * Send Pending Emails parallelly via CLI
+         * use it with caution
+         * basic usage: wp fluent_crm cli_send
+         * advanced usage: wp fluent_crm cli_send --force=yes --option_key=fluentcrm_is_sending_cli_emails --run_time=50 --offset=200 --min_pending=300 --silent=yes
+         */
+        public function cli_send($args, $assoc_args)
+        {
+        }
+        public function reindex_wp_user_ids()
+        {
+        }
+        public function simulate_funnel($args, $assoc_args)
+        {
+        }
+    }
+    class SimulateFunnelCommand
+    {
+        /*
+         * Fast-forward a subscriber through an automation funnel, skipping wait times.
+         * Real actions will fire (tags applied, emails sent, etc.) — only delays are shortened.
+         *
+         * Usage:
+         *   wp fluent_crm simulate_funnel --funnel_id=123 --email=john@example.com
+         *   wp fluent_crm simulate_funnel --funnel_id=123 --subscriber_id=456
+         *   wp fluent_crm simulate_funnel --funnel_id=123 --email=john@example.com --sleep=1 --max_steps=50
+         *   wp fluent_crm simulate_funnel --funnel_id=123 --email=john@example.com --sleep=0
+         *
+         * --sleep=0 runs one step at a time (step mode). Run the command again to advance to the next step.
+         */
+        public function handle($args, $assoc_args)
+        {
+        }
+        private function resetFunnelEnrollment($funnelId, $subscriberId, $funnelSubId)
+        {
+        }
+        private function showExecutedMetrics($funnelId, $subscriberId, $label)
+        {
+        }
+        private function processOneStep($processor, $funnelSub)
+        {
+        }
+        private function showStepModeNextUp($funnelSub)
+        {
+        }
+        private function checkTerminalStatus($funnelSub)
+        {
+        }
+        private function snapshotHooks()
+        {
+        }
+        private function diffHooks($before)
+        {
+        }
+        private function askAndShowFiredHooks($firedHooks)
+        {
+        }
+        private function showFinalStatus($funnelId, $subscriberId, $funnelSubId)
+        {
+        }
+        private function printFunnelSteps($funnelId)
+        {
+        }
+        private function printSequenceList($sequences, $children, $indent)
+        {
+        }
+        private function formatSequenceLabel($seq)
+        {
+        }
+        private function formatWaitTime($settings)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Hooks\Handlers {
+    /**
+     * ActivationHandler Class
+     *
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class ActivationHandler
+    {
+        public function handle($network_wide = false)
+        {
+        }
+        public function registerWpCron()
+        {
+        }
+        public function addDefaultGlobalSettings()
+        {
+        }
+    }
+    class ActivityLogHandler
+    {
+        protected $objectTypeContact = 'FluentCrm\App\Models\Subscriber';
+        // Call this once (e.g., on plugins_loaded) to attach the hooks
+        public function register()
+        {
+        }
+        public function onContactCreated($contact, $source = 'wp-admin')
+        {
+        }
+        public function onSubscribersDeleted($subscriberIds, $source = 'wp-admin')
+        {
+        }
+        public function onTagsAdded($contact, $tagIds, $source = 'wp-admin')
+        {
+        }
+        public function onTagsRemoved($contact, $tagIds, $source = 'wp-admin')
+        {
+        }
+        public function onListsAdded($contact, $listIds, $source = 'wp-admin')
+        {
+        }
+        public function onListsRemoved($contact, $listIds, $source = 'wp-admin')
+        {
+        }
+        /*
+        |----------------------------------------------------------------------
+        | Helpers
+        |----------------------------------------------------------------------
+        */
+        protected function logTags($contact, $tagIds, $action, $source)
+        {
+        }
+        protected function logLists($contact, $listIds, $action, $source)
+        {
+        }
+        protected function log(array $data)
+        {
+        }
+        protected function contactId($contact)
+        {
+        }
+        protected function contactField($contact, $key)
+        {
+        }
+        protected function currentUserId(): int
+        {
+        }
+        protected function activityLogEnabled()
+        {
+        }
+    }
+    /**
+     * Admin Bar Class
+     *
+     * Used for Quick Access to CRM
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class AdminBar
+    {
+        public function init()
+        {
+        }
+        public function addAdminBarSearch($adminBar)
+        {
+        }
+        protected function getRestInfo()
+        {
+        }
+    }
+    /**
+     * Admin Menu Class
+     *
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class AdminMenu
+    {
+        public $version = FLUENTCRM_PLUGIN_VERSION;
+        protected static $mainScriptLoaded = false;
+        public function init()
+        {
+        }
+        public function addMenu()
+        {
+        }
+        public function render()
+        {
+        }
+        public function changeFooter()
+        {
+        }
+        public function getMenuItems($urlBase = null)
+        {
+        }
+        public function mayBeRedirect()
+        {
+        }
+        public function loadAssets()
+        {
+        }
+        public function loadCssJs()
+        {
+        }
+        public function getAdminVars()
+        {
+        }
+        public function loadCss()
+        {
+        }
+        protected function getRestInfo($app)
+        {
+        }
+        public function emailBuilderBlockInit()
+        {
+        }
+        private function getMenuIcon()
+        {
+        }
+        private function getVerifiedSenders()
+        {
+        }
+        private function hasSmartLink()
+        {
+        }
+        private function getDefaultDateTimeFormatForMoment()
+        {
+        }
+        private function unloadOtherScripts()
+        {
+        }
+        private function getFunnelCatSvgIcon($key)
+        {
+        }
+    }
+    /**
+     *  AutoSubscribeHandler Class
+     *
+     * Used to handle the auto-subscribe functionality for different WordPress Events.
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class AutoSubscribeHandler
+    {
+        public function register()
+        {
+        }
+        public function userRegistrationHandler($userId)
+        {
+        }
+        public function addSubscribeCheckbox($buttonHtml)
+        {
+        }
+        public function handleCommentPost($commentId, $isApproved, $commentData)
+        {
+        }
+        public function syncUserUpdate($userId, $oldData, $newData = [])
+        {
+        }
+        public function maybeDeleteContact($userId, $reassignId, $user)
+        {
+        }
+        public function syncWooAddressUpdate($userId, $addressType)
+        {
+        }
+        public function maybeAddCountryToProfile($userLogin, $wpUser)
+        {
+        }
+    }
+    /**
+     *  CampaignGuard Class
+     *
+     * Used to handle concurrent requests for the same campaign.
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class CampaignGuard
+    {
+        const FORBIDDEN_CODE = 403;
+        public function checkIsActive($campaign)
+        {
+        }
+        public function checkIsWorking($campaign)
+        {
+        }
+        protected function send($message)
+        {
+        }
+    }
+    /**
+     *  Cleanup Class
+     *
+     * Used to handle cleanup related assets for subscribers, campaigns and automations.
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class Cleanup
+    {
+        /**
+         * Cleanup related data of a subscriber.
+         *
+         * @param array $subscriberIds
+         */
+        public function deleteSubscribersAssets($subscriberIds)
+        {
+        }
+        /**
+         * Cleanup related data of a campaign.
+         *
+         * @param int $campaignId
+         */
+        public function deleteCampaignAssets($campaignId)
+        {
+        }
+        /**
+         * Cleanup related data of a list.
+         *
+         * @param int $listId
+         */
+        public function deleteListAssets($listId)
+        {
+        }
+        /**
+         * Cleanup related data of a tag.
+         *
+         * @param int $listId
+         */
+        public function deleteTagAssets($listId)
+        {
+        }
+        /**
+         * Cancel Future Emails.
+         *
+         * @param \FluentCrm\App\Models\Subscriber $subscriber
+         */
+        public function handleUnsubscribe($subscriber)
+        {
+        }
+        /**
+         * Change the future emails email_address of a provided contact.
+         *
+         * @param \FluentCrm\App\Models\Subscriber $subscriber
+         */
+        public function handleContactEmailChanged($subscriber)
+        {
+        }
+        /**
+         * @param $userId int
+         * @param $resign int|null
+         * @param $deletedUser \WP_User
+         * @return bool
+         */
+        public function handleUserDelete($userId, $resign, $deletedUser)
+        {
+        }
+        public function attachCrmExporter($exporters)
+        {
+        }
+        public function exportPersonalDataWP($user_email, $page = 1)
+        {
+        }
+        public function handleCompanyDelete($id)
+        {
+        }
+        public function handleUserPasswordChanged($user)
+        {
+        }
+        public function archiveCampaignAssets($campaign)
+        {
+        }
+        public static function maybeRemoveOldScheuledActionLogs()
+        {
+        }
+        public function SyncSubscriberDeleteSettings($fromKey, $value)
+        {
+        }
+    }
+    /**
+     *  ContactActivityLogger Class
+     *
+     * Logs Contact's activity based on different WordPress Events.
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class ContactActivityLogger
+    {
+        public function register()
+        {
+        }
+        public function trackLogin($username, $user)
+        {
+        }
+        public function trackActivityByUser($user, $type = '')
+        {
+        }
+        public function trackActivityBySubscriber($subscriber)
+        {
+        }
+        public function trackEmailOpenAnonymously($campaignEmaillModel)
+        {
+        }
+        public function trackEmailClickAnonymously($url, $campaign)
+        {
+        }
+    }
+    /**
+     *  CountryNames Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class CountryNames
+    {
+        private $names;
+        /**
+         * Construct country names from an array.
+         */
+        public function setNames()
+        {
+        }
+        /**
+         * Get an array of all the country names.
+         *
+         * @return array
+         */
+        public function get()
+        {
+        }
+    }
+    /**
+     *  DeactivationHandler Class
+     *
+     * FluentCRM Deactivation Handler Class.
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class DeactivationHandler
+    {
+        public function handle()
+        {
+        }
+    }
+    /**
+     *  EmailDesignTemplates Class
+     *
+     * For handling email design templates
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class EmailDesignTemplates
+    {
+        public function register()
+        {
+        }
+        public function addBlockEditorTemplate($emailBody, $templateData, $campaign)
+        {
+        }
+        /**
+         * @param string $emailBody
+         * @param array $templateData
+         * @param \FluentCrm\App\Models\Campaign $campaign
+         * @return string
+         */
+        public function addPlainTemplate($emailBody, $templateData, $campaign)
+        {
+        }
+        /**
+         * @param string $emailBody
+         * @param array $templateData
+         * @param \FluentCrm\App\Models\Campaign $campaign
+         * @return string
+         */
+        public function addSimpleTemplate($emailBody, $templateData, $campaign)
+        {
+        }
+        /**
+         * @param string $emailBody
+         * @param array $templateData
+         * @param \FluentCrm\App\Models\Campaign $campaign
+         * @return string
+         */
+        public function addClassicTemplate($emailBody, $templateData, $campaign)
+        {
+        }
+        /**
+         * @param string $emailBody
+         * @param array $templateData
+         * @param \FluentCrm\App\Models\Campaign $campaign
+         * @return string
+         */
+        public function addRawClassicTemplate($emailBody, $templateData, $campaign)
+        {
+        }
+        public function addWebPreviewTemplate($emailBody, $templateData, $campaign)
+        {
+        }
+        private function filterTemplateData($templateData)
+        {
+        }
+    }
+    class EventTrackingHandler
+    {
+        public function register()
+        {
+        }
+        public function getEventTrackingKeyOptions($options = [])
+        {
+        }
+        public function applyEventTrackingFilter($query, $filters)
+        {
+        }
+        public function trackEventActivity($data, $repeatable = true)
+        {
+        }
+        public function addSubscriberInfoWidgets($widgets, $subscriber)
+        {
+        }
+        public function addEventTrackingFilterOptions($groups)
+        {
+        }
+        public function addEventTrackingConditionOptions($items)
+        {
+        }
+        private function getConditionItems()
+        {
+        }
+    }
+    /**
+     *  ExternalPages Class
+     *
+     * For handling all publicly accessible pages for FluentCRM
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class ExternalPages
+    {
+        protected $request = null;
+        protected $validRoutes = [
+            'unsubscribe' => 'unsubscribePage',
+            'manage_subscription' => 'manageSubscription',
+            'confirmation' => 'confirmationPage',
+            // ?fluentcrm=1&route=confirmation&s_id={subscriber.id}&hash={subscriber.hash}
+            'open' => 'trackEmailOpen',
+            // ?fluentcrm=1&route=open&_e_hash=kandkaskdja
+            'bounce_handler' => 'bounceHandler',
+            // ?fluentcrm=1&route=bounce_handler&provider=ses&retry=1
+            'contact' => 'handleContactWebhook',
+            // POST ?fluentcrm=1&route=contact&hash=khkhjkhjkhjkhkhkh
+            'bnu' => 'handleBenchmarkUrl',
+            // GET ?fluentcrm=1&route=bnu&aid=${sequence_id}
+            'smart_url' => 'SmartUrlHandler',
+            'webhook' => 'handleGeneralWebhook',
+            // ?fluentcrm=1&route=webhook&handler=handler_name
+            'email_preview' => 'handlePreviewEmail',
+            'general' => 'handleGeneralRequest',
+        ];
+        protected function getRoute()
+        {
+        }
+        public function route()
+        {
+        }
+        public function bounceHandler()
+        {
+        }
+        public function bounceHandlerSES()
+        {
+        }
+        public function recordUnsubscribe($data)
+        {
+        }
+        public function recordSoftBounce($data)
+        {
+        }
+        public function unsubscribePage()
+        {
+        }
+        public function unsubscribeRequestForm()
+        {
+        }
+        public function manageSubscriptionRequestForm()
+        {
+        }
+        public function handleUnsubscribeRequestAjax()
+        {
+        }
+        public function handleManageSubRequestAjax()
+        {
+        }
+        public function unsubscribeReasons()
+        {
+        }
+        public function handleUnsubscribe()
+        {
+        }
+        private function trackEmailOpen()
+        {
+        }
+        public function confirmationPage()
+        {
+        }
+        public function handleContactWebhook()
+        {
+        }
+        public function handleBenchmarkUrl()
+        {
+        }
+        public function manageSubscription()
+        {
+        }
+        public function getManageSubscriptionHtml($subscriber, $secureHash = '')
+        {
+        }
+        public function handleManageSubPref()
+        {
+        }
+        public function SmartUrlHandler()
+        {
+        }
+        private function hideEmail($email)
+        {
+        }
+        private function loadAssets()
+        {
+        }
+        private function extractEmail($from_email)
+        {
+        }
+        public function handleBackgroundProcessCallback()
+        {
+        }
+        public function handleGeneralWebhook()
+        {
+        }
+        public function handlePreviewEmail()
+        {
+        }
+        public function showNewesLetterView($nsHash)
+        {
+        }
+        public function handleGeneralRequest()
+        {
+        }
+    }
+    class FluentBlockEditorHandler
+    {
+        /**
+         * Data passed to the iframe editor via window.fcrmEditorBoot
+         * @var array
+         */
+        protected $editorBootData = [];
+        /*
+        |--------------------------------------------------------------------------
+        | Public: register(), handleEditorAutosave(), handleCartProductsListing()
+        |--------------------------------------------------------------------------
+        */
+        public function register()
+        {
+        }
+        /**
+         * Handle autosave requests for the block editor iframe.
+         * Creates or updates campaign / recurring campaign / template records.
+         * If block_type is empty and id/bid is 0, nothing will be created.
+         *
+         * @param \WP_REST_Request $request
+         * @return \WP_REST_Response|\WP_Error
+         */
+        public function handleEditorAutosave(\WP_REST_Request $request)
+        {
+        }
+        public function handleCartProductsListing(\WP_REST_Request $request)
+        {
+        }
+        /*
+        |--------------------------------------------------------------------------
+        | Editor init: initializeEditor(), resolveEntityContent(),
+        |              getOrCreateDummyPost(), prepareEditorBootData(), setupEditorHooks()
+        |--------------------------------------------------------------------------
+        */
+        public function initializeEditor($data = [])
+        {
+        }
+        /**
+         * Resolve entity content from the database based on block_type and bid.
+         *
+         * @param string $context The block_type (campaign, recurring_campaign, template).
+         * @param array $data The request data.
+         * @return array With keys: content, title, id, updatedAt, availableTags.
+         */
+        private function resolveEntityContent($context, $data)
+        {
+        }
+        /**
+         * Retrieve or create the fcrm-dummy post used as a simulated post for the editor.
+         *
+         * @param string $title
+         * @param string $content
+         * @return \WP_Post
+         */
+        private function getOrCreateDummyPost($title, $content)
+        {
+        }
+        /*
+         * -----------------------------------------------------------------------
+         * Native REST handlers for editor patterns (wp_block-compatible format).
+         * These bypass WPFluent's response pipeline so core-data gets raw responses.
+         * -----------------------------------------------------------------------
+         */
+        public function handleEditorPatternsList()
+        {
+        }
+        public function handleEditorPatternGet(\WP_REST_Request $request)
+        {
+        }
+        public function handleEditorPatternCreate(\WP_REST_Request $request)
+        {
+        }
+        public function handleEditorPatternUpdate(\WP_REST_Request $request)
+        {
+        }
+        public function handleEditorPatternDelete(\WP_REST_Request $request)
+        {
+        }
+        public function handleEditorPatternCategories()
+        {
+        }
+        public function handleEditorPatternCategoryCreate(\WP_REST_Request $request)
+        {
+        }
+        private function formatMetaAsWpBlock($meta, $categoryMap = [])
+        {
+        }
+        private function getPatternCategoryMap()
+        {
+        }
+        private function resolvePatternCategoryName($categoryIds)
+        {
+        }
+        /**
+         * Build the editorBootData array that is injected into the iframe as window.fcrmEditorBoot.
+         *
+         * @param string $context
+         * @param array $data
+         * @param array $entity Return value from resolveEntityContent().
+         */
+        private function prepareEditorBootData($context, $data, $entity)
+        {
+        }
+        /**
+         * Get editor feature flags based on content type.
+         * This is the single source of truth for which UI elements show per context.
+         *
+         * @param string $context  block_type: campaign, template, email_pattern, recurring_campaign, sequence_mail, email_body_in_funnel
+         * @return array
+         */
+        private function getEditorFeatures($context)
+        {
+        }
+        private function getAiWritingConfig()
+        {
+        }
+        /**
+         * Register wp_enqueue_scripts callbacks, post-locking filters, and other editor hooks.
+         *
+         * @param \WP_Post $post
+         */
+        private function setupEditorHooks($post)
+        {
+        }
+        /*
+        |--------------------------------------------------------------------------
+        | Assets: enqueueEditorAssets(), enqueueEditorScripts(),
+        |         enqueueEditorStyles(), enqueueCustomEditorAssets()
+        |--------------------------------------------------------------------------
+        */
+        private function enqueueEditorAssets($hook, $post)
+        {
+        }
+        /**
+         * Enqueue media, tinymce, and postbox init scripts.
+         *
+         * @param \WP_Post $post
+         */
+        private function enqueueEditorScripts($post)
+        {
+        }
+        /**
+         * Enqueue wp-edit-post, block library styles, and editor format library assets.
+         */
+        private function enqueueEditorStyles()
+        {
+        }
+        /**
+         * Enqueue fcrm_editor_custom JS, inline block editor config, smartcodes, and boot data.
+         */
+        private function enqueueCustomEditorAssets()
+        {
+        }
+        /*
+        |--------------------------------------------------------------------------
+        | Settings: getEditorSettings(), getAllowedBlocks(), getEditorStyleSheets(),
+        |           getResolvedAssets(), getDefaultEditorStyles()
+        |--------------------------------------------------------------------------
+        */
+        private function getEditorSettings($post)
+        {
+        }
+        /**
+         * Return the allowed blocks array for the editor.
+         *
+         * @return array
+         */
+        private function getAllowedBlocks()
+        {
+        }
+        /**
+         * Return the `styles` array for the editor settings (the massive CSS).
+         *
+         * @return array
+         */
+        private function getEditorStyleSheets()
+        {
+        }
+        /**
+         * Return the `__unstableResolvedAssets` for the editor settings.
+         *
+         * @return array
+         */
+        private function getResolvedAssets()
+        {
+        }
+        /**
+         * Return the `defaultEditorStyles` for the editor settings.
+         *
+         * @return array
+         */
+        private function getDefaultEditorStyles()
+        {
+        }
+        /*
+        |--------------------------------------------------------------------------
+        | Render: renderPage()
+        |--------------------------------------------------------------------------
+        */
+        protected function renderPage()
+        {
+        }
+        /*
+        |--------------------------------------------------------------------------
+        | Isolation: unloadOtherScripts(), buildApprovedSlugsPattern(),
+        |            unregisterDefaultBlockPatterns()
+        |--------------------------------------------------------------------------
+        */
+        private function unloadOtherScripts()
+        {
+        }
+        /**
+         * Build the regex pattern string from approved asset slugs.
+         *
+         * @return string
+         */
+        private function buildApprovedSlugsPattern()
+        {
+        }
+        /**
+         * Check if an asset src is a third-party plugin/theme asset that should be blocked.
+         *
+         * @param string $src
+         * @param string $pattern
+         * @param string $pluginUrl
+         * @param string $themesUrl
+         * @return bool
+         */
+        private function isThirdPartyAsset($src, $pattern, $pluginUrl, $themesUrl)
+        {
+        }
+        protected function unregisterDefaultBlockPatterns($context = '', $data = [])
+        {
+        }
+        /*
+        |--------------------------------------------------------------------------
+        | Helpers: getRequiredCapability(), parseBoolParam(), getAvailableImageSizes()
+        |--------------------------------------------------------------------------
+        */
+        /**
+         * Map a block type to the required FluentCRM capability.
+         *
+         * @param string $blockType
+         * @return string
+         */
+        private static function getRequiredCapability($blockType)
+        {
+        }
+        /**
+         * Parse a loosely-typed boolean parameter from a request value.
+         *
+         * @param mixed $value
+         * @return bool
+         */
+        private static function parseBoolParam($value)
+        {
+        }
+        /**
+         * Get available image sizes for the editor.
+         *
+         * @return array
+         */
+        private function getAvailableImageSizes()
+        {
+        }
+    }
+    class FluentBlockPatternHandler
+    {
+        public function shouldUnregisterAllPatterns($shouldUnregister, $context = '', $data = [])
+        {
+        }
+        public function addCustomPatternCategories($categories)
+        {
+        }
+        public function addCustomPatterns($patterns)
+        {
+        }
+    }
+    class FluentConditionalContentBlockHandler
+    {
+        const BLOCK_NAME = 'fluent-crm/conditional-content';
+        const DEFAULT_CONDITION = 'show_if_tag_exist';
+        /**
+         * Legacy condition keys kept for backward compatibility.
+         */
+        private $legacyMap = ['show_if_logged_in' => 'show_if_user_logged_in', 'show_if_public_users' => 'show_if_user_not_logged_in', 'show_if_tag_exists' => 'show_if_tag_exist', 'show_if_tag_not_exists' => 'show_if_tag_not_exist'];
+        public function register()
+        {
+        }
+        /**
+         * Register the block with a render callback.
+         * The JS save() still writes HTML into post_content for storage,
+         * but the render_callback fully controls frontend output.
+         */
+        public function registerBlock()
+        {
+        }
+        public function enqueueEditorAssets()
+        {
+        }
+        /**
+         * Render callback. Receives block attributes, the rendered inner blocks
+         * as $content, and the WP_Block instance.
+         *
+         * @param array $attributes
+         * @param string $content Inner blocks already rendered.
+         * @param \WP_Block $block
+         * @return string
+         */
+        public function renderBlock($attributes, $content, $block)
+        {
+        }
+        /**
+         * Decide whether the current visitor passes the condition.
+         */
+        private function passesCondition($attrs)
+        {
+        }
+        /**
+         * Check if the current contact has any of the given tag IDs.
+         */
+        private function contactHasAnyTag(array $tagIds)
+        {
+        }
+        /**
+         * Resolve the current contact once per request.
+         */
+        private function getCurrentContact()
+        {
+        }
+        /**
+         * Map legacy keys to current condition keys, mirroring the JS side.
+         */
+        private function normalizeConditionType($value)
+        {
+        }
+    }
+    /**
+     *  FormSubmissions Class
+     *
+     * Fluent Forms Integration Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class FormSubmissions
+    {
+        public function register()
+        {
+        }
+        public function pushDefaultFormProviders($providers)
+        {
+        }
+        public function getFluentFormSubmissions($data, $subscriber)
+        {
+        }
+        public function getFluentFormSubmissionDetails($dataView, $params)
+        {
+        }
+        public function parseEditorCodes($code, $form, $keys)
+        {
+        }
+    }
+    /**
+     *  FunnelHandler Class - Automation Funnel Handler
+     *
+     * Automation Funnel Handler Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class FunnelHandler
+    {
+        private $settingsKey = 'fluentcrm_funnel_settings';
+        private $lockKey = '_fc_funnel_processor_lock';
+        private $lockTimeout = 90;
+        protected $funnelFired = false;
+        private $registeredFunnelTriggers = [];
+        private $registeredTriggerFallbacks = [];
+        public function register()
+        {
+        }
+        public function registerEarlyActiveTriggers()
+        {
+        }
+        public function registerActiveTriggers($onlyRegisteredArgFilters = false)
+        {
+        }
+        /**
+         * Skip stored EDD automation hooks when the active EDD install is unsupported.
+         *
+         * Existing EDD funnel data should remain stored, but EDD runtime dispatch must
+         * not be registered unless the site is running EDD 3 or newer.
+         *
+         * @param string $triggerName
+         * @return bool
+         */
+        private function shouldSkipEddTriggerRegistration($triggerName)
+        {
+        }
+        public function handle()
+        {
+        }
+        private function mapTriggers($triggerName, $originalArgs, $argNumber)
+        {
+        }
+        private function acquireFunnelProcessorLock()
+        {
+        }
+        private function releaseFunnelProcessorLock()
+        {
+        }
+        public function resetFunnelIndexes()
+        {
+        }
+        private function initTriggers()
+        {
+        }
+        private function initBlockActions()
+        {
+        }
+        private function initBenchMarkBlocks()
+        {
+        }
+        public function resumeSubscriberFunnels($subscriber, $oldStatus)
+        {
+        }
+        public function saveSequences()
+        {
+        }
+        public function exportFunnel()
+        {
+        }
+        public function saveEmailAction()
+        {
+        }
+        public function saveCampaignEmail()
+        {
+        }
+    }
+    /**
+     *  Integrations Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class Integrations
+    {
+        public function register()
+        {
+        }
+    }
+    /**
+     *  Integrations Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 2.5.94
+     */
+    class PrefFormHandler
+    {
+        public function handleShortCode($atts, $noContactContent = '')
+        {
+        }
+        public function handleDynamicContentShortCode($atts, $text = '')
+        {
+        }
+        public function handleAjax()
+        {
+        }
+        private function getFormFields($settings, $subscriber, $labels, $inputOnly = false)
+        {
+        }
+        private function parseInputs($fields)
+        {
+        }
+        private function getCustomFieldConfig($field, $subscriber)
+        {
+        }
+        /**
+         * Check if a string is a valid calendar date in Y-m-d format.
+         *
+         * @param string $ymd Date string (e.g. 2024-02-31).
+         * @return bool
+         */
+        private function isValidDate($ymd)
+        {
+        }
+    }
+    /**
+     *  PurchaseHistory Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class PurchaseHistory
+    {
+        /**
+         * Build the commerce summary widget for supported commerce providers.
+         */
+        public function getCommerceStatWidget($subscriber)
+        {
+        }
+        public function wooOrders($data, $subscriber)
+        {
+        }
+        public function getWooCustomerSummary($subscriber)
+        {
+        }
+        /**
+         * Return EDD 3 order history for the subscriber purchase-history panel.
+         */
+        public function eddOrders($data, $subscriber)
+        {
+        }
+        public function payformSubmissions($data, $subscriber)
+        {
+        }
+        public function formatSummaryData($data, $bodyOnly = false)
+        {
+        }
+        private function getPercentChangeHtml($value, $refValue)
+        {
+        }
+        private function getWooOrders($subscriber, $sort_by, $sort_type)
+        {
+        }
+        /**
+         * Sorts an array of WooCommerce orders by their total amount.
+         *
+         * This method sorts an array of WooCommerce order objects based on the total order amount.
+         * The sorting can be done in either ascending ('ASC') or descending ('DESC') order,
+         * as specified by the $sort_type parameter.
+         *
+         * @param array $orders Array of WooCommerce order objects to be sorted.
+         * @param string $sort_type Specifies the sorting order.
+         *                          Accepts 'ASC' for ascending or 'DESC' for descending.
+         *
+         * @return void The $orders array is sorted in place.
+         */
+        public function wooSortOrdersByTotalAmount(&$orders, $sort_type)
+        {
+        }
+        public function pmproOrders($data, $subscriber)
+        {
+        }
+    }
+    /**
+     *  RedirectionHandler Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class RedirectionHandler
+    {
+        public function redirect($data)
+        {
+        }
+        public function trackUrlClick($mailId, $urlData, $isAnonymousClick = false)
+        {
+        }
+    }
+    /**
+     *  Scheduler Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class Scheduler
+    {
+        public static function register()
+        {
+        }
+        public static function process()
+        {
+        }
+        public static function processForSubscriber($subscriber)
+        {
+        }
+        public static function processHourly()
+        {
+        }
+        public static function markArchiveCampaigns()
+        {
+        }
+        /**
+         * @return void
+         */
+        public static function processWeekly()
+        {
+        }
+        /**
+         * Discover and process pending campaigns.
+         *
+         * Called by cron/Action Scheduler. Handles housekeeping (stale email reset),
+         * finds campaigns ready to process, and kicks off processing. For continuous
+         * processing, use processCampaignById() via the AJAX handler.
+         *
+         * @return bool
+         */
+        public static function processFiveMinutes()
+        {
+        }
+        /**
+         * Process a specific campaign by ID.
+         *
+         * Can be called directly from the AJAX handler for continuous chaining
+         * without re-discovering campaigns or running housekeeping.
+         *
+         * @param int $campaignId
+         * @return bool True if more processing is needed, false if done.
+         */
+        public static function processCampaignById($campaignId)
+        {
+        }
+        /**
+         * Fire a background AJAX request to continue processing a specific campaign.
+         *
+         * @param int $campaignId
+         */
+        private static function fireCampaignProcessingChain($campaignId)
+        {
+        }
+        public static function maybeCleanupCsvFiles()
+        {
+        }
+        public static function processMultiThreadEmails()
+        {
+        }
+        /**
+         * Atomically claim a scheduler-level lock so two runners can't enter the
+         * same critical section concurrently (e.g. Action Scheduler + WP-Cron
+         * minute ticks landing in the same second).
+         *
+         * Uses wp_cache_add() when an external object cache is available, otherwise
+         * a conditional UPDATE on wp_options keyed off a timestamp. The UPDATE
+         * succeeds only if the row is unclaimed or its stored timestamp is older
+         * than $ttl, so a crashed runner's lock self-recovers after the TTL.
+         *
+         * Mirrors BaseHandler::acquireLock() / FunnelHandler::acquireFunnelProcessorLock().
+         * Kept local instead of extracted to a shared helper to limit blast radius.
+         *
+         * @param string $name Lock identifier appended to the option key.
+         * @param int    $ttl  Seconds before a held lock is considered abandoned.
+         * @return bool True if the lock was acquired by this process.
+         */
+        private static function acquireLock($name, $ttl)
+        {
+        }
+        /**
+         * Release a scheduler-level lock previously acquired by acquireLock().
+         * Safe to call even if the lock was not held by this process — the worst
+         * case is freeing the slot a tick early.
+         */
+        private static function releaseLock($name)
+        {
+        }
+    }
+    /**
+     *  SetupWizard Class
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class SetupWizard
+    {
+        /**
+         * Hook in tabs.
+         */
+        public function __construct()
+        {
+        }
+        /**
+         * Show the setup wizard
+         */
+        public function setup_wizard()
+        {
+        }
+        /**
+         * Setup Wizard HTML
+         */
+        public function outputHtml()
+        {
+        }
+        protected function getRestInfo($app)
+        {
+        }
+    }
+    class UpgradationHandler
+    {
+        public static function maybeUpdateDbTables()
+        {
+        }
+        public static function updateTables()
+        {
+        }
+    }
+    /**
+     *  UrlMetrics Class - For Internal Debugging usage only
+     *
+     * @package FluentCrm\App\Hooks
+     *
+     * @version 1.0.0
+     */
+    class WpQueryLogger
+    {
+        static $logInFile = true;
+        public static function getQueryLog($withStack = true)
+        {
+        }
+        public function logQueries()
+        {
+        }
+        public static function enableQueryLog($inFile = false)
+        {
+        }
+        public static function init()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Http\Controllers {
+    /**
+     *  abstract REST API Controller Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    abstract class Controller
+    {
+        /**
+         * @var \FluentCrm\App\App
+         */
+        protected $app = null;
+        /**
+         * @var \FluentCrm\Framework\Http\Request\Request
+         */
+        protected $request = null;
+        /**
+         * @var \FluentCrm\Framework\Http\Response\Response
+         */
+        protected $response = null;
+        public function __construct()
+        {
+        }
+        public function validate($data, $rules, $messages = [])
+        {
+        }
+        public function send($data = null, $code = 200)
+        {
+        }
+        public function sendSuccess($data = null, $code = 200)
+        {
+        }
+        public function sendError($data = null, $code = 422)
+        {
+        }
+        public function validationErrors($data = null, $code = 422)
+        {
+        }
+    }
+    class ActivityLogController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * Get all the System Logs
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return array || \WP_REST_Response
+         */
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteAll(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    class AiController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        private $credentialsOptionKey = '_fluent_ai_creds';
+        private $writingSettingsOptionKey = '_ai_writing_settings';
+        private $providerModels = ['open_ai' => ['auto', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-4.1', 'gpt-4o', 'gpt-4o-mini', 'gpt-5-mini'], 'claude' => ['auto', 'claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-opus-4-6'], 'gemini' => ['auto', 'gemini-3.1-pro-preview', 'gemini-3-flash-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite']];
+        private $autoProviderModels = ['open_ai' => 'gpt-5-mini', 'claude' => 'claude-sonnet-4-6', 'gemini' => 'gemini-2.5-flash'];
+        public function getSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getModels(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function testConnection(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function generate(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Generate a complete email body from a user prompt for campaign editors.
+         */
+        public function generateEmailBody(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function sanitizeGeneratedEmailBody($emailBody, $outputFormat)
+        {
+        }
+        /**
+         * Generate or return a cached markdown summary for a contact profile.
+         */
+        public function contactSummary(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function getSystemPrompt($tone = '', $settings = [])
+        {
+        }
+        private function buildUserPrompt($action, $content, $customPrompt = '')
+        {
+        }
+        private function validateAiGenerationConfig($settings)
+        {
+        }
+        private function getEmailBodySystemPrompt($settings = [])
+        {
+        }
+        private function buildEmailBodyUserPrompt($promptData)
+        {
+        }
+        private function getEmailBodyOutputRules($outputFormat)
+        {
+        }
+        private function sanitizePromptContext($context)
+        {
+        }
+        private function parseGeneratedEmailBody($result)
+        {
+        }
+        private function getContactSummarySystemPrompt($settings = [])
+        {
+        }
+        private function buildContactSummaryPrompt($context)
+        {
+        }
+        private function buildContactSummaryContext($subscriber)
+        {
+        }
+        private function getEmailSummaryContext($subscriberId)
+        {
+        }
+        private function getPurchaseSummaryContext($subscriber)
+        {
+        }
+        private function getSupportTicketSummaryContext($subscriber)
+        {
+        }
+        private function normalizeSummaryRows($rows, $limit = 10)
+        {
+        }
+        private function pluckTitles($items)
+        {
+        }
+        private function callProviderApi($provider, $model, $apiKey, $userPrompt, $systemPrompt = '', $timeout = 30)
+        {
+        }
+        private function callOpenAi($model, $apiKey, $userPrompt, $systemPrompt, $timeout)
+        {
+        }
+        private function callClaude($model, $apiKey, $userPrompt, $systemPrompt, $timeout)
+        {
+        }
+        private function callGemini($model, $apiKey, $userPrompt, $systemPrompt, $timeout)
+        {
+        }
+        private function getSavedSettings()
+        {
+        }
+        private function getSavedCredentials()
+        {
+        }
+        private function getSavedPreferences()
+        {
+        }
+        private function normalizeProvider($provider)
+        {
+        }
+        private function resolveModel($provider, $model)
+        {
+        }
+        private function formatModelOptions($provider)
+        {
+        }
+    }
+    /**
+     *  CampaignAnalyticsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class CampaignAnalyticsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getLinksReport(\FluentCrm\App\Models\CampaignUrlMetric $campaignUrlMetric, $campaignId)
+        {
+        }
+        public function getRevenueReport(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function getRevenueReSyncReport(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        /**
+         * Active commerce sources that participate in campaign revenue attribution.
+         * Order matters: it determines display precedence within the merged report.
+         */
+        protected function getActiveRevenueSources()
+        {
+        }
+        /**
+         * Lightweight index query — returns just order IDs attributed to this campaign,
+         * newest-first per source. Used both for paginated report rendering and re-sync.
+         */
+        protected function getAttributedOrderIds($source, $campaignId)
+        {
+        }
+        /**
+         * Sum NET revenue per currency for one source — i.e. only orders in a successful
+         * (paid/completed) status, with refunded amounts subtracted. Returns
+         * `['orderIds' => [int...], 'totals' => ['usd' => cents, ...]]`.
+         * Orders that net to zero or below (fully refunded, cancelled, pending) are skipped
+         * so they don't pollute the order list with non-revenue rows.
+         */
+        protected function reSyncSourceRevenue($source, $campaignId)
+        {
+        }
+        /**
+         * Render a single order row for the merged revenue table. The `source` key
+         * is added when more than one commerce platform is contributing data.
+         */
+        protected function formatRevenueRow($source, $orderId, $multiSource)
+        {
+        }
+        protected function getSourceLabel($source)
+        {
+        }
+        protected function getRevenueLabels($multiSource)
+        {
+        }
+        protected function formatWooOrderRow($orderId)
+        {
+        }
+        protected function formatEddOrderRow($orderId)
+        {
+        }
+        protected function formatFluentCartOrderRow($orderId)
+        {
+        }
+        public function getUnsubscribers(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function getSegmentedContacts(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+    }
+    /**
+     *  CampaignController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class CampaignController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function campaigns(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Return a unique title for default "Untitled" (e.g. Untitled, Untitled 2, ...).
+         */
+        protected function ensureUniqueDefaultTitle($baseTitle)
+        {
+        }
+        public function campaign(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function campaignEmails(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function updateSingleCampaignSimulate(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function update(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function updateStep(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function validateRecipientsSelection(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function draftRecipients(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function recipientsCount(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        /*
+         * TODO: This method is currently not in use. We will keep it for reference for now. We will remove in the immediate next version 
+         * Found since v3.0.0
+         */
+        // public function subscribe(Request $request, $campaignId)
+        // {
+        //     $startTime = microtime(true);
+        //     $campaign = Campaign::findOrFail($campaignId);
+        //     do_action('fluentcrm_campaign_status_active', $campaign);
+        //     $page = (int)$this->request->get('page', 1);
+        //     /**
+        //      * Determine the number of subscribers to process per request in FluentCRM Email Campaign.
+        //      *
+        //      * This filter allows you to modify the number of subscribers that are processed
+        //      * in a single request when handling email campaigns.
+        //      *
+        //      * @param int The number of subscribers to process per request. Default is 90.
+        //      * @since 2.7.0
+        //      *
+        //      */
+        //     $limit = (int)apply_filters('fluent_crm/process_subscribers_per_request', 90);
+        //     $subscribersSettings = [
+        //         'subscribers'         => $request->get('subscribers'),
+        //         'excludedSubscribers' => $request->get('excludedSubscribers'),
+        //         'sending_filter'      => $request->get('sending_filter', 'list_tag'),
+        //         'dynamic_segment'     => $request->get('dynamic_segment'),
+        //         'advanced_filters'    => Helper::parseArrayOrJson($request->get('advanced_filters'))
+        //     ];
+        //     $offset = 0;
+        //     $runTime = 40;
+        //     if ($page == 1) {
+        //         $runTime = 15;
+        //         $campaign->campaign_emails()->delete();
+        //         $campaign->settings = wp_parse_args($subscribersSettings, $campaign->settings);
+        //         $campaign->save();
+        //         fluentcrm_update_campaign_meta($campaign->id, '_recipient_processed', 0);
+        //     } else {
+        //         $offset = (int)fluentcrm_get_campaign_meta($campaign->id, '_recipient_processed', true);
+        //     }
+        //     $subscribeStatus = $campaign->subscribeBySegment($subscribersSettings, $limit, $offset);
+        //     fluentcrm_update_campaign_meta($campaign->id, '_recipient_processed', $campaign->recipients_count);
+        //     $willRun = true;
+        //     while ($willRun && ((microtime(true) - $startTime) < $runTime) && !fluentCrmIsMemoryExceeded()) {
+        //         $campaign = Campaign::findOrFail($campaignId);
+        //         $willRun = !!$subscribeStatus['result'];
+        //         if ($willRun) {
+        //             $subscribeStatus = $campaign->subscribeBySegment($subscribersSettings, $limit, $campaign->recipients_count);
+        //             fluentcrm_update_campaign_meta($campaign->id, '_recipient_processed', $campaign->recipients_count);
+        //         }
+        //     }
+        //     $hasMore = !!$subscribeStatus['result'];
+        //     if (!$hasMore) {
+        //         $campaign = Campaign::findOrFail($campaignId);
+        //         fluentcrm_update_campaign_meta($campaign->id, '_recipient_processed', 0);
+        //         if (!$campaign->recipients_count) {
+        //             return $this->sendError([
+        //                 'message' => __('Sorry, No subscribers found based on your filters', 'fluent-crm')
+        //             ]);
+        //         }
+        //         $campaign->maybeDeleteDuplicates();
+        //     }
+        //     if ($subscribeStatus['total_items']) {
+        //         return $this->sendSuccess([
+        //             'has_more'       => $hasMore,
+        //             'count'          => $campaign->recipients_count,
+        //             'total_items'    => $subscribeStatus['total_items'],
+        //             'page_total'     => ceil($subscribeStatus['total_items'] / $limit),
+        //             'next_page'      => $page + 1,
+        //             'execution_time' => microtime(true) - $startTime,
+        //             'memory'         => fluentCrmIsMemoryExceeded(),
+        //             'memory_limit'   => fluentCrmGetMemoryLimit(),
+        //             'memory_usage'   => memory_get_usage(true)
+        //         ]);
+        //     }
+        //     if ($campaign->recipients_count) {
+        //         return [
+        //             'has_more' => false,
+        //             'count'    => $campaign->recipients_count
+        //         ];
+        //     }
+        //     return $this->sendError([
+        //         'message' => __('Sorry, No subscribers found based on your filters', 'fluent-crm')
+        //     ]);
+        // }
+        public function getContactEstimation(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteCampaignEmails(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function schedule(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function processingStat(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function sendTestEmail()
+        {
+        }
+        /**
+         * Render the editor/draft email preview iframe.
+         *
+         * Route: POST /campaigns/email-preview-html
+         * Used by resources/admin/Pieces/EmailElements/EmailPreview.vue.
+         * For sent email-history previews, see previewEmail().
+         *
+         * @return array
+         */
+        public function getEmailPreviewBody()
+        {
+        }
+        public function unsubscribe()
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function createTemplate()
+        {
+        }
+        /**
+         * Render a sent/scheduled email-history preview with metadata and click stats.
+         *
+         * Route: GET /campaigns/emails/{email_id}/preview
+         * Used by contact profile email history, campaign email rows, and all-emails preview.
+         * The body renderer is CampaignEmail::previewData(); keep its template handling aligned
+         * with getEmailPreviewBody() so raw/classic and Gutenberg previews stay consistent.
+         *
+         * @param Request $request
+         * @param int     $emailId
+         * @return array
+         */
+        public function previewEmail(\FluentCrm\Framework\Http\Request\Request $request, $emailId)
+        {
+        }
+        public function getCampaignStatus(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
+        {
+        }
+        public function getOverviewStats(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Models\CampaignUrlMetric $campaignUrlMetric, $campaignId)
+        {
+        }
+        public function pauseCampaign(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function resumeCampaign(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function updateCampaignTitle(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function duplicateCampaign(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function unSchedule(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function getShareUrl($id)
+        {
+        }
+        public function updateLabels(\FluentCrm\Framework\Http\Request\Request $request, $funnel_id)
+        {
+        }
+        private function getCampaignSentData($campaignId)
+        {
+        }
+    }
+    class CompanyController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function searchCompanies(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function searchUnattachedContacts(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function attachSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function detachSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Find a company.
+         */
+        public function find(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        /**
+         * Store a company.
+         * @param Request $request
+         * @return \WP_REST_Response | array
+         */
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function update(\FluentCrm\Framework\Http\Request\Request $request, $id = 0)
+        {
+        }
+        public function updateProperty()
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function handleBulkActions(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function getSanitizedData($allData)
+        {
+        }
+        private function makeHttpUrl($url)
+        {
+        }
+        /**
+         * Returns true only if the URL resolves to a public, routable IP address.
+         * Blocks private/reserved ranges to prevent SSRF attacks.
+         */
+        private function isSSRFSafeUrl($url)
+        {
+        }
+        private function getLogoWebsiteUrl($url)
+        {
+        }
+        public function getNotes()
+        {
+        }
+        public function addNote(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function updateNote(\FluentCrm\Framework\Http\Request\Request $request, $id, $noteId)
+        {
+        }
+        public function deleteNote($id, $noteId)
+        {
+        }
+        public function bulkDeleteNotes(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function getCustomGlobalFields(\FluentCrm\App\Models\CustomCompanyField $model)
+        {
+        }
+        public function saveCustomGlobalFields(\FluentCrm\App\Models\CustomCompanyField $model)
+        {
+        }
+        public function updateCustomFieldGroupName(\FluentCrm\App\Models\CustomCompanyField $model)
+        {
+        }
+        public function getCompanyExternalView(\FluentCrm\Framework\Http\Request\Request $request, $companyId)
+        {
+        }
+        public function saveExternalViewData(\FluentCrm\Framework\Http\Request\Request $request, $companyId)
+        {
+        }
+    }
+    /**
+     *  CsvController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class CsvController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response
+         * @throws \FluentCrm\Framework\Validator\ValidationException
+         */
+        public function upload(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function import()
+        {
+        }
+        public function importCompanies()
+        {
+        }
+        protected function customFieldKeys()
+        {
+        }
+        private function getCsvReader($file)
+        {
+        }
+    }
+    /**
+     *  CustomContactFieldsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class CustomContactFieldsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getGlobalFields(\FluentCrm\App\Models\CustomContactField $model)
+        {
+        }
+        public function saveGlobalFields(\FluentCrm\App\Models\CustomContactField $model)
+        {
+        }
+        public function updateGroupName(\FluentCrm\App\Models\CustomContactField $model)
+        {
+        }
+    }
+    /**
+     *  DashboardController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class DashboardController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getStats(\FluentCrm\App\Services\Stats $stats)
+        {
+        }
+        private function recommendation()
+        {
+        }
+        private function getTriggers()
+        {
+        }
+    }
+    /**
+     *  DocsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class DocsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        private $restApi = 'https://fluentcrm.com/wp-json/wp/v2/';
+        public function index()
+        {
+        }
+        public function getDoc($docId)
+        {
+        }
+        public function getAddons(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function isPluginInstalled($plugin)
+        {
+        }
+        private function getDocsPerChunk($url, $chunkKey)
+        {
+        }
+    }
+    class EmailPatternController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        private $objectType = 'email_pattern';
+        private $categoryObjectType = 'email_pattern_category';
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function show(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        /**
+         * Return patterns in wp_block REST format for the editor middleware.
+         */
+        public function indexWpFormat(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function store(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Store a pattern from wp_block format (called by editor middleware).
+         */
+        public function storeWpFormat(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function update(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * CRUD for pattern categories (stored as fc_meta with separate object_type).
+         */
+        public function getCategories()
+        {
+        }
+        public function storeCategory(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteCategory(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        /**
+         * Format a pattern Meta record as a wp_block REST response.
+         */
+        private function formatAsWpBlock($meta, $categoryMap = [])
+        {
+        }
+        private function formatCategoryAsWpTerm($meta)
+        {
+        }
+        private function formatPattern($meta)
+        {
+        }
+        /**
+         * Build slug → id map for all pattern categories.
+         */
+        private function getCategoryMap()
+        {
+        }
+        /**
+         * Resolve category IDs back to a single category name.
+         */
+        private function resolveCategoryName($categoryIds)
+        {
+        }
+        /**
+         * Get patterns formatted for the block editor boot data.
+         */
+        public static function getEditorPatterns()
+        {
+        }
+    }
+    /**
+     *  FormsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class FormsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * Get all of the lists
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response|array
+         * @throws \WpFluent\Exception
+         */
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getTemplates()
+        {
+        }
+        private function getFormCss($name)
+        {
+        }
+        private function getSelectedTemplate($templateId)
+        {
+        }
+        public function getEntries(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function getEntry(\FluentCrm\Framework\Http\Request\Request $request, $formId, $id)
+        {
+        }
+    }
+    /**
+     *  FunnelController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class FunnelController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function funnels(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Count contacts currently inside each automation.
+         *
+         * @param array $funnelIds Funnel IDs to count.
+         * @return array
+         */
+        private function getInProgressSubscriberCounts($funnelIds)
+        {
+        }
+        /**
+         * Sanitize array request values that contain model IDs.
+         *
+         * @param mixed $ids Request value.
+         * @return array
+         */
+        private function sanitizeFilterIds($ids)
+        {
+        }
+        /**
+         * Get automation IDs that reference selected tags/lists in one trigger/sequence scan.
+         *
+         * @param array $segmentFilters Selected tag/list IDs keyed by settings name.
+         * @return array
+         */
+        private function getFunnelIdsMatchingSegments($segmentFilters)
+        {
+        }
+        /**
+         * Check if serialized funnel settings contain any selected tag/list IDs.
+         *
+         * @param array  $settings Funnel or sequence settings.
+         * @param string $settingsKey Settings key to read.
+         * @param array  $selectedIds Selected tag/list IDs.
+         * @return bool
+         */
+        private function hasMatchingSegmentSettings($settings, $settingsKey, $selectedIds)
+        {
+        }
+        public function getFunnel(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function getTriggersRest()
+        {
+        }
+        public function changeTrigger(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        private function getTriggers()
+        {
+        }
+        private function getBlocks($funnel)
+        {
+        }
+        private function getBlockFields($funnel)
+        {
+        }
+        public function getFunnelSequences($funnel, $isFiltered = false)
+        {
+        }
+        public function saveSequencesFallback(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveSequences(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function getSubscribers(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function getSubscriberReporting(\FluentCrm\Framework\Http\Request\Request $request, $funnelId, $contactId)
+        {
+        }
+        public function getAllActivities(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function removeBulkSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function report(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting, $funnelId)
+        {
+        }
+        public function updateFunnelProperty(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function cloneFunnel(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function importFunnel(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteSubscribers(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function subscriberAutomations(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
+        {
+        }
+        public function updateSubscriptionStatus(\FluentCrm\Framework\Http\Request\Request $request, $funnelId, $subscriberId)
+        {
+        }
+        public function forceAdvanceSubscriber(\FluentCrm\Framework\Http\Request\Request $request, $funnelId, $subscriberId)
+        {
+        }
+        private function maybeMigrateDB()
+        {
+        }
+        public function getEmailReports(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function saveEmailActionFallback(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveEmailAction(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function getSyncableContactCounts(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function syncNewSteps(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function getTemplates()
+        {
+        }
+        public function filterTemplates($templates)
+        {
+        }
+        public function allowedCategories()
+        {
+        }
+        public function createFromTemplate(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function createFunnelFromData($funnelArray, $sequences)
+        {
+        }
+        public function temporaryStaticTemplates()
+        {
+        }
+        public function getDynamicTemplates()
+        {
+        }
+        public function getFunnelData($jsonUrl)
+        {
+        }
+        public function sendTestWebhook(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function prepareHeaders($headerType, $headerData, $subscriber)
+        {
+        }
+        private function prepareBody($bodyDataType, $bodyDataValues, $subscriber)
+        {
+        }
+        public function updateFunnelTitle(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        public function updateLabels(\FluentCrm\Framework\Http\Request\Request $request, $funnel_id)
+        {
+        }
+    }
+    /**
+     *  FunnelLabelController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 2.9.25
+     */
+    class GlobalLabelController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getLabels()
+        {
+        }
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function update(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function deleteLabel(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        protected function deleteLabelFromFunnel($funnelId, $slug)
+        {
+        }
+        protected function deleteLabelFromFunnelLabel($slug)
+        {
+        }
+    }
+    /**
+     *  ImporterController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class ImporterController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getDrivers()
+        {
+        }
+        public function getDriver(\FluentCrm\Framework\Http\Request\Request $request, $driver)
+        {
+        }
+        public function importData(\FluentCrm\Framework\Http\Request\Request $request, $driver)
+        {
+        }
+        private function processUserDriver($request)
+        {
+        }
+        private function processUsers($users, $inputs)
+        {
+        }
+        private function processUserImport($config, $page)
+        {
+        }
+        private function getProDrivers()
+        {
+        }
+    }
+    /**
+     *  ListsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class ListsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * Get all of the lists
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response
+         */
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Find a list.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @param int $id
+         * @return \WP_REST_Response
+         */
+        public function find(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        /**
+         * Store a list.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response
+         */
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Store a list.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @param $id int
+         * @return \WP_REST_Response
+         */
+        public function update(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        /**
+         * Bulk store lists.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response
+         */
+        public function storeBulk(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Delete a list
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @param int $id
+         * @return \WP_REST_Response
+         */
+        public function remove(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     * Settings → MCP admin endpoints (MCP_PLAN.md § 13).
+     *
+     * Surfaces:
+     *  - status: adapter detected? CRM count?  enabled toggle?
+     *  - install-adapter: one-click install of the WP MCP Adapter plugin
+     *  - toggle: enable/disable the entire MCP module without uninstalling
+     *  - config-snippet: pre-filled JSON for Claude Desktop / Claude Code /
+     *    Cursor / generic clients
+     */
+    class MCPSettingsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        const ADAPTER_PLUGIN_FILE = 'mcp-adapter/mcp-adapter.php';
+        const TOOLKIT_PLUGIN_FILE = 'fluent-toolkit/fluent-toolkit.php';
+        /**
+         * Status block — what the Settings page lights up with on load.
+         */
+        public function status()
+        {
+        }
+        /**
+         * Toggle the kill-switch. Stored as a FluentCRM option so the lazy-register
+         * guard in app/Hooks/actions.php picks it up on the next request.
+         */
+        public function toggle(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * One-click adapter install. Free can only explain the missing dependency;
+         * Pro may opt in to the Fluent Toolkit background installer via hooks.
+         */
+        public function installAdapter()
+        {
+        }
+        /**
+         * Generate a copy-paste config snippet for the requested client.
+         *
+         * Every client uses WordPress Application Passwords — built into WP 5.6+,
+         * no extra plugin needed. Direct HTTP clients (Claude Code, Cursor,
+         * generic) carry credentials via Basic Auth header; the
+         * @automattic/mcp-wordpress-remote stdio bridge that Claude Desktop uses
+         * accepts the username/password directly via WP_API_USERNAME and
+         * WP_API_PASSWORD env vars and handles encoding itself.
+         *
+         * Placeholders used here are stable strings the Vue page substitutes via
+         * regex when the user fills the credentials inputs.
+         */
+        public function getConfigSnippet(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Heuristic check for "we're running on a local development install."
+         *
+         * Tested in order:
+         *   1. Hostname ends in a dev TLD (.test, .lab, .local, .localhost)
+         *   2. Hostname is literally `localhost`
+         *   3. Host resolves to a private/loopback IP range
+         *
+         * Filterable via `fluent_crm/mcp_is_local_dev` so operators can override
+         * detection on edge cases (a public-facing site on `.local`, an internal
+         * tool that needs the dev-mode behavior anyway, etc.).
+         *
+         * @return bool
+         */
+        private static function detectLocalDevEnvironment()
+        {
+        }
+        // ---------------------------------------------------------------------
+        // helpers
+        // ---------------------------------------------------------------------
+        private function isAdapterPresent()
+        {
+        }
+        private function isToolkitPresent()
+        {
+        }
+        private function detectAdapterVersion()
+        {
+        }
+        private function detectToolkitVersion()
+        {
+        }
+        private function isToolkitLoaded()
+        {
+        }
+        private function isPluginPresent($pluginFile)
+        {
+        }
+        private function detectPluginVersion($pluginFile)
+        {
+        }
+        private function isToolkitAdapterAvailable()
+        {
+        }
+        private function isAdapterRuntimeAvailable()
+        {
+        }
+        private function countAbilities()
+        {
+        }
+    }
+    /**
+     *  MigratorController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class MigratorController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getDrivers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function verifyCredential(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getListTagMappings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getImportSummary(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleImport(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function getDriverClass($driver)
+        {
+        }
+        private function getMigrators()
+        {
+        }
+    }
+    /**
+     *  OptionsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class OptionsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * Get options based on the requested fields.
+         *
+         * @return array options.
+         * @throws \Exception
+         */
+        public function index()
+        {
+        }
+        /**
+         * Include the countries options.
+         *
+         * @return array
+         */
+        public function countries()
+        {
+        }
+        /**
+         * Include all the lists.
+         *
+         * @return array
+         */
+        public function lists()
+        {
+        }
+        private function getSubscribedCountByListIds($listIds = [])
+        {
+        }
+        /**
+         * Include all the tags.
+         *
+         * @return array
+         */
+        public function tags()
+        {
+        }
+        /**
+         * Include all the Campaigns.
+         *
+         * @return array
+         */
+        public function campaigns()
+        {
+        }
+        /**
+         * Include all the EmailSequences.
+         *
+         * @return array
+         */
+        public function email_sequences()
+        {
+        }
+        /**
+         * Include all the Automation Funnels.
+         *
+         * @return array
+         */
+        public function automation_funnels()
+        {
+        }
+        /**
+         * Include all the Companies.
+         *
+         * @return array
+         */
+        public function companies()
+        {
+        }
+        /**
+         * Include subscriber statuses.
+         *
+         * @return array
+         */
+        public function statuses()
+        {
+        }
+        /**
+         * Include subscribers' sms statuses.
+         *
+         * @return array
+         */
+        public function sms_statuses()
+        {
+        }
+        /**
+         * Include subscriber editable statuses.
+         *
+         * @return array
+         */
+        public function editable_statuses()
+        {
+        }
+        /**
+         * Include subscriber Contact Types.
+         *
+         * @return array
+         */
+        public function contact_types()
+        {
+        }
+        /**
+         * Include the sample csv url.
+         *
+         * @return array
+         */
+        public function sampleCsv()
+        {
+        }
+        public function segments()
+        {
+        }
+        public function roles()
+        {
+        }
+        public function user_roles_options()
+        {
+        }
+        public function profile_sections()
+        {
+        }
+        public function custom_fields()
+        {
+        }
+        public function getAjaxOptions(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getTaxonomyTerms(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getCascadeSelections(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Search contacts, email campaigns (by title), automations (by title), and companies (by name).
+         * Scope limits which types are queried for faster results.
+         *
+         * GET global-search?search=...&scope=all|subscribers|campaigns|funnels|companies
+         */
+        public function search()
+        {
+        }
+    }
+    /**
+     *  PurchaseHistoryController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class PurchaseHistoryController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function historyProviders()
+        {
+        }
+        public function getOrders()
+        {
+        }
+    }
+    /**
+     *  ReportingController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class ReportingController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getContactGrowth(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting)
+        {
+        }
+        /**
+         * Calculate comparison date range based on type.
+         *
+         * @param string $type
+         * @param array $compareRange
+         * @param string $from
+         * @param string $to
+         * @return array|false
+         */
+        private function resolveCompareRange($type, $compareRange, $from, $to)
+        {
+        }
+        public function getEmailSentStats(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting)
+        {
+        }
+        public function getEmailOpenStats(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting)
+        {
+        }
+        public function getEmailClickStats(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting)
+        {
+        }
+        public function getEmailUnsubStats(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting)
+        {
+        }
+        public function getEmailPerformance(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting)
+        {
+        }
+        public function getEmails(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Apply the search filter to email activity queries.
+         *
+         * Search is scoped to fields the table actually exposes so users can find
+         * rows by subject, source campaign title, recipient email, or related
+         * contact email without triggering extra broad scans on large datasets.
+         *
+         * @param \FluentCrm\Framework\Database\Orm\Builder $query
+         * @param string $search
+         * @return \FluentCrm\Framework\Database\Orm\Builder
+         */
+        private function applyEmailSearchFilter($query, $search)
+        {
+        }
+        public function deleteEmails(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getContactsByStatus()
+        {
+        }
+        public function getContactsByTags(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getContactsByLists(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getContactsByCountry()
+        {
+        }
+        public function getCampaignsList(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getAutomationReports(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getAutomationStepReport(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Services\Reporting $reporting, $id)
+        {
+        }
+        public function getCampaignOptions(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getAdvancedReportProviders()
+        {
+        }
+        public function getRecentTags(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function ping()
+        {
+        }
+    }
+    /**
+     *  SettingsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class SettingsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function get(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function save(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getDoubleOptinSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveDoubleOptinSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function TestRequestResolver(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function resetDB(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getBounceConfigs()
+        {
+        }
+        public function getAutoSubscribeSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveAutoSubscribeSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getCronStatus()
+        {
+        }
+        public function runCron(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getOldLogDetails(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function removeOldLogs(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteRestKey(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getRestKeys(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function createRestKey(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getIntegrations(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveIntegration(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getComplianceSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function updateComplianceSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getExperimentalSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function updateExperimentalSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getCampaigns(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  SetupController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class SetupController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function CompleteWizard(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentFormInstall()
+        {
+        }
+        public function handleFluentBoardsInstall()
+        {
+        }
+        public function handleFluentCommunityInstall()
+        {
+        }
+        public function handleFluentBookingInstall()
+        {
+        }
+        public function handleFluentCartInstall()
+        {
+        }
+        public function handleFluentSmtpInstall()
+        {
+        }
+        public function handleFluentSupportInstall()
+        {
+        }
+        private function shareEmail($optinEmail)
+        {
+        }
+        private function installFluentForm()
+        {
+        }
+        private function installFluentBoards()
+        {
+        }
+        private function installFluentCommunity()
+        {
+        }
+        private function installFluentBooking()
+        {
+        }
+        private function installFluentCart()
+        {
+        }
+        private function installFluentSMTP()
+        {
+        }
+        private function backgroundInstaller($plugin_to_install, $plugin_id)
+        {
+        }
+        private function associate_plugin_file($plugins, $key)
+        {
+        }
+    }
+    /**
+     *  SubscriberController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class SubscriberController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function index()
+        {
+        }
+        /**
+         * Find a subscriber by id
+         *
+         * @return \WP_REST_Response $object
+         */
+        public function show()
+        {
+        }
+        public function updateProperty()
+        {
+        }
+        public function deleteSubscriber(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function deleteSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Tag a subscriber with Tags or Lists.
+         */
+        public function tagger()
+        {
+        }
+        /**
+         * Store a subscriber.
+         *
+         * @return array
+         */
+        public function store(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function bulkAddUpdate(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function updateSubscriber(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        /**
+         * Resolve the appropriate model e.g. Tag or, Lists
+         *
+         * @return string
+         */
+        private function resolveModel()
+        {
+        }
+        /**
+         * Get the attachment options e.g. attach or, detach
+         *
+         * @param \FluentCrm\App\Models\Model $model
+         * @param string $type
+         * @return array
+         */
+        private function attachments($model, $type = 'attach')
+        {
+        }
+        /**
+         * Handles if subscriber already exists.
+         *
+         * @return bool
+         */
+        private function isNew()
+        {
+        }
+        public function emails(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
+        {
+        }
+        protected function formatResult($result)
+        {
+        }
+        public function deleteEmails(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
+        {
+        }
+        public function getNotes()
+        {
+        }
+        public function addNote(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function updateNote(\FluentCrm\Framework\Http\Request\Request $request, $id, $noteId)
+        {
+        }
+        public function deleteNote($id, $noteId)
+        {
+        }
+        public function bulkDeleteNotes(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function getFormSubmissions()
+        {
+        }
+        public function getSupportTickets()
+        {
+        }
+        public function sendDoubleOptinEmail(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function getTemplateMock(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function sendCustomEmail(\FluentCrm\Framework\Http\Request\Request $request, $contactId)
+        {
+        }
+        public function getExternalView(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
+        {
+        }
+        public function saveExternalViewData(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
+        {
+        }
+        public function handleBulkActions(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getPrevNextIds(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function searchContacts(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getInfoWidgets(\FluentCrm\Framework\Http\Request\Request $request, $subscriber)
+        {
+        }
+        public function getTrackingEvents(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
+        {
+        }
+        public function trackEvent(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getUrlMetrics(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function formatUrlActivityData($data)
+        {
+        }
+        public function getDynamicItemView(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
+        {
+        }
+    }
+    /**
+     *  SystemLog Controller - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 2.8.40
+     */
+    class SystemLogController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * Get all the System Logs
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return array || \WP_REST_Response
+         */
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteAll(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  TagsController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class TagsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * Get all of the tags
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response | array
+         */
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Find a tag.
+         */
+        public function find($id)
+        {
+        }
+        /**
+         * Store a tag.
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response
+         */
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Store a tag.
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @param $id int Tag ID
+         * @return \WP_REST_Response
+         */
+        public function store(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        /**
+         * Store a tag.
+         */
+        public function storeBulk()
+        {
+        }
+        /**
+         * Delete a tag by id
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @param $tagId
+         * @return \WP_REST_Response $object
+         */
+        public function remove(\FluentCrm\Framework\Http\Request\Request $request, $tagId)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  TemplateController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class TemplateController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function templates(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function template(\FluentCrm\Framework\Http\Request\Request $request, $templateId = 0)
+        {
+        }
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function duplicate($templateId)
+        {
+        }
+        /**
+         * Helper method to copy meta fields from one post to another
+         */
+        protected function copyMetaFields($oldPostId, $newPostId, $metaKeys)
+        {
+        }
+        public function update(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
+        public function render()
+        {
+        }
+        public function allTemplates()
+        {
+        }
+        public function getSmartCodes()
+        {
+        }
+        protected function smartCodes()
+        {
+        }
+        public function setGlobalStyle(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Fetches built-in templates from cached locally
+         * cached for 24 hours, then refreshed
+         * @return 
+         */
+        public function getBuiltInTemplates()
+        {
+        }
+        /**
+         * Downloads a single built-in template file and returns it without saving
+         * it as a local email template.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \FluentCrm\Framework\Http\Response\Response
+         */
+        public function getBuiltInTemplate(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Restricts direct template downloads to trusted FluentCRM template hosts.
+         *
+         * @param string $url
+         * @return bool
+         */
+        protected function isAllowedRemoteTemplateUrl($url)
+        {
+        }
+        /**
+         * Normalizes remote JSON to the local template shape without creating a WP post.
+         *
+         * @param array $templateData
+         * @return array
+         */
+        protected function formatRemoteTemplateData($templateData)
+        {
+        }
+        /**
+         * Normalize template settings with legacy footer disable compatibility.
+         *
+         * @param array $settings
+         * @return array
+         */
+        protected function normalizeTemplateSettings($settings)
+        {
+        }
+        /**
+         * Fetches and formats email templates from a remote FluentCRM API endpoint.
+         * This method makes an HTTP request to retrieve email templates from FluentCRM's public API.
+         * It processes the response and formats the templates into a standardized structure.
+         * @throws \WP_Error Logs error message if the API request fails
+         * @return array
+         * @access public
+         */
+        public function loadRemoteTemplates()
+        {
+        }
+        /**
+         * Retrieves the full source URL of a media item.
+         *
+         * @param int    $mediaID Media item ID.
+         * @param string $restAPI The base URL of the REST API.
+         *
+         * @return string Full source URL of the media item.
+         */
+        public function getMediaURL($mediaID, $restAPI)
+        {
+        }
+    }
+    /**
+     *  UsersController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class UsersController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        /**
+         * Get all the users.
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return \WP_REST_Response
+         */
+        public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function import(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        private function processUsers($users, $inputs)
+        {
+        }
+        public function roles()
+        {
+        }
+    }
+    /**
+     *  WebhookBounceController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class WebhookBounceController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        private $validServices = ['mailgun', 'pepipost', 'postmark', 'sendgrid', 'sparkpost', 'elasticemail', 'postalserver', 'smtp2go', 'brevo', 'tosend'];
+        public function handleBounce(\FluentCrm\Framework\Http\Request\Request $request, $serviceName, $securityCode)
+        {
+        }
+        private function getSecurityCode()
+        {
+        }
+        private function getError()
+        {
+        }
+    }
+    /**
+     *  WebhookController - REST API Handler Class
+     *
+     *  REST API Handler
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class WebhookController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function index(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Models\Webhook $webhook)
+        {
+        }
+        public function create(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Models\Webhook $webhook)
+        {
+        }
+        public function update(\FluentCrm\Framework\Http\Request\Request $request, \FluentCrm\App\Models\Webhook $webhook, $id)
+        {
+        }
+        public function delete(\FluentCrm\App\Models\Webhook $webhook, $id)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Http\Policies {
+    /**
+     *  BasePolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class BasePolicy extends \FluentCrm\Framework\Foundation\Policy
+    {
+        /**
+         * Check user permission for any method
+         * @param Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function currentUserCan($permission)
+        {
+        }
+    }
+    class AiPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        public function getSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function testConnection(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function generate(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function generateEmailBody(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function contactSummary(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  CampaignPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class CampaignPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteCampaignEmails(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    class CompanyPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        private function isEnabled()
+        {
+        }
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Check user permission for bulk company actions.
+         *
+         * The delete bulk action permanently removes companies, so it must require
+         * the stronger delete permission while other bulk updates keep the manage
+         * permission used by the company module.
+         *
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function handleBulkActions(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function detachSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function bulkDeleteNotes(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteSubscribes(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  CustomFieldsPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class CustomFieldsPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        //TODO: masiur vai
+        public function getLabels(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    class EmailPatternPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  FormsPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class FormsPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  FunnelPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class FunnelPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function removeBulkSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  ImportUserPolicy - Import Contact Policy
+     *
+     * @package FluentCrm\App\Http
+     */
+    class ImportUserPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         *
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  ListPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class ListPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Check user permission for delete lists
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function remove(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  PublicPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class PublicPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  ReportPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class ReportPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getEmails(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteEmails(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    class SettingsPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  SubscriberPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class SubscriberPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteSubscriber(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteNote(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function bulkDeleteNotes(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteEmails(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleBulkActions(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  TagPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class TagPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Check user permission for delete tags
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function remove(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  TemplatePolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class TemplatePolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getBuiltInTemplate(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  UsersPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class UsersPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+    /**
+     *  WebhookPolicy - REST API Permission Policy
+     *
+     * @package FluentCrm\App\Http
+     *
+     * @version 1.0.0
+     */
+    class WebhookPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
+    {
+        /**
+         * Check user permission for any method
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Models {
+    class Model extends \FluentCrm\Framework\Database\Orm\Model
+    {
+        public function __construct($attributes = [])
+        {
+        }
+        public function scopeLatest($query, $field = 'created_at')
+        {
+        }
+        public function scopeNewest($query, $field = 'created_at')
+        {
+        }
+        public function getPerPage()
+        {
+        }
+        /**
+         * Get a fresh timestamp for the model.
+         *
+         * @return \DateTime
+         */
+        public function freshTimestamp()
+        {
+        }
+        protected function serializeDate(\DateTimeInterface $date)
+        {
+        }
+        public function getTimezone()
+        {
+        }
+        protected function asDateTime($value)
+        {
+        }
+        protected function originalIsNumericallyEquivalent($key)
+        {
+        }
+    }
+    /**
+     *  Activity Log Model - DB Model for Activity Logs
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class ActivityLog extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_activity_logs';
+        protected $guarded = ['id'];
+        protected $fillable = ['object_type', 'object_id', 'action', 'source', 'description', 'activity_by', 'created_at', 'updated_at'];
+        // Ensure the key is added to every serialized row
+        protected $appends = ['activity_by_email'];
+        // Cast the description column to an array (or object)
+        protected $casts = ['description' => 'array'];
+        public static function boot()
+        {
+        }
+        public function getActivityByEmailAttribute()
+        {
+        }
+    }
+    /**
+     *  Campaign Model - DB Model for Campaigns
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Campaign extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_campaigns';
+        protected $guarded = ['id'];
+        protected static $type = 'campaign';
+        public static function boot()
+        {
+        }
+        public function setSlugAttribute($slug)
+        {
+        }
+        public function setSettingsAttribute($settings)
+        {
+        }
+        public function getSettingsAttribute($settings)
+        {
+        }
+        public function getRecipientsCountAttribute($recipientsCount)
+        {
+        }
+        public function getRenderedBodyAttribute()
+        {
+        }
+        // Now using a single subject, get the first one
+        public function getSubjectAttribute()
+        {
+        }
+        public function syncSubjects($subjects)
+        {
+        }
+        public function duplicateSubjects(\FluentCrm\App\Models\Campaign $campaign)
+        {
+        }
+        public function scopeOfType($query, $status)
+        {
+        }
+        public function scopeArchived($query)
+        {
+        }
+        /**
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsTo
+         */
+        public function template()
+        {
+        }
+        /**
+         * One2Many: Campaign has many emails
+         *
+         * @return \FluentCrm\Framework\Database\Orm\Relations\hasMany
+         */
+        public function emails()
+        {
+        }
+        /**
+         * TODO: emails should be filtered by status (draft, queue e.t.c.)
+         * One2Many: Campaign has many emails
+         * @return \FluentCrm\Framework\Database\Orm\Relations\hasMany
+         */
+        public function campaign_emails()
+        {
+        }
+        /**
+         * One2Many: Campaign has many subjects
+         * @return \FluentCrm\Framework\Database\Orm\Relations\hasMany
+         */
+        public function subjects()
+        {
+        }
+        /**
+         * Add one or more subscribers to the campaign by list with filtering
+         * @param $settings
+         * @param bool $limit
+         * @param int $offset
+         * @return array
+         */
+        public function subscribeBySegment($settings, $limit = false, $offset = 0)
+        {
+        }
+        public function getSubscribersModel($settings = false)
+        {
+        }
+        public function getSubscriberIdsBySegmentSettings($settings, $limit = false, $offset = 0)
+        {
+        }
+        public function getSubscriberIdsCountBySegmentSettings($settings, $status = 'subscribed')
+        {
+        }
+        /**
+         * @param $query
+         * @param $ids
+         * @param $table
+         * @param $objectType
+         * @return mixed
+         */
+        private function getSubQueryForLisTorTagFilter($query, $ids, $table, $objectType)
+        {
+        }
+        /**
+         * Get subscribers ids to by list with tag filtering
+         * @param array $items
+         * @param string $status contact status
+         * @param int|boolean $limit limit
+         * @param int $offset contact offset
+         * @return array
+         */
+        public function getSubscribeIdsByList($items, $status = 'subscribed', $limit = false, $offset = 0)
+        {
+        }
+        /**
+         * Get subscribers count to by list with tag filtering
+         * @param array $items
+         * @param string $status contact status
+         * @param int|boolean $limit limit
+         * @param int $offset contact offset
+         * @return int
+         */
+        public function getSubscribeIdsByListCount($items, $status = 'subscribed', $limit = false, $offset = 0)
+        {
+        }
+        public function getSubscribeIdsByListModel($items, $status = 'subscribed', $limit = false, $offset = 0)
+        {
+        }
+        /**
+         * Add one or more subscribers to the campaign
+         * @param array $subscriberIds
+         * @param array $emailArgs extra campaign_email args
+         * @param bool $isModel if the $subscriberIds is collection or not
+         * @return array
+         */
+        public function subscribe($subscriberIds, $emailArgs = [], $isModel = false)
+        {
+        }
+        /**
+         * Remove one or more subscribers from the campaign
+         * @param array $subscriberIds
+         * @return bool
+         */
+        public function unsubscribe($subscriberIds)
+        {
+        }
+        /**
+         * Guess the subject by probability formula
+         * @return Model Object or null
+         */
+        public function guessEmailSubject()
+        {
+        }
+        public function getParsedText($text, $subscriber)
+        {
+        }
+        public function filterDuplicateSubscribers($subscriberIds, $subscribers)
+        {
+        }
+        public function archive()
+        {
+        }
+        public function getUtmParams()
+        {
+        }
+        public function stats()
+        {
+        }
+        public function getEmailCount()
+        {
+        }
+        public function maybeDeleteDuplicates()
+        {
+        }
+        public function getHash()
+        {
+        }
+        public function deleteCampaignData()
+        {
+        }
+        public function rangedScheduleDates()
+        {
+        }
+        public function getEmailScheduleAt()
+        {
+        }
+        public function getShareableUrl()
+        {
+        }
+        public function labelsTerm()
+        {
+        }
+        public function labels()
+        {
+        }
+        public function getFormattedLabels()
+        {
+        }
+        public function attachLabels($labelIds)
+        {
+        }
+        public function detachLabels($labelIds)
+        {
+        }
+        public function getOpenTrackingStatus($globalFallback = true)
+        {
+        }
+        public function getClickTrackingStatus($globalFallback = true)
+        {
+        }
+    }
+    /**
+     *  CampaignEmail Model - DB Model for Campaign Emails
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class CampaignEmail extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_campaign_emails';
+        protected $guarded = ['id'];
+        protected $appends = ['email_type_label'];
+        /**
+         * Define the canonical email types and any legacy or module-specific aliases.
+         *
+         * @return array<string, array<int, string>>
+         */
+        public static function getEmailTypeAliases()
+        {
+        }
+        /**
+         * Map canonical email types to the user-facing labels used in reporting.
+         *
+         * @return array<string, string>
+         */
+        public static function getEmailTypeLabels()
+        {
+        }
+        /**
+         * Resolve the canonical email type key for filtering and reporting.
+         *
+         * @param string|null $emailType
+         * @return string
+         */
+        public static function normalizeEmailType($emailType)
+        {
+        }
+        /**
+         * Expand selected canonical types into the raw slugs stored in email rows.
+         *
+         * @param array<int, string> $selectedTypes
+         * @return array<int, string>
+         */
+        public static function expandEmailTypes(array $selectedTypes)
+        {
+        }
+        /**
+         * Resolve the human-readable email type label for reports and tables.
+         *
+         * @return string
+         */
+        public function getEmailTypeLabelAttribute()
+        {
+        }
+        /**
+         * Convert a stored email type slug into a stable UI label.
+         *
+         * @param string|null $emailType
+         * @return string
+         */
+        public static function resolveEmailTypeLabel($emailType)
+        {
+        }
+        /**
+         * One2One: CampaignEmail belongs to one Campaign
+         * @return Model
+         */
+        public function campaign()
+        {
+        }
+        /**
+         * One2One: CampaignEmail belongs to one Subscriber
+         * @return Model
+         */
+        public function subscriber()
+        {
+        }
+        /**
+         * One2One: CampaignEmail belongs to one Subject
+         *
+         * Note: The email_subject_id will be inserted by calculating the prioroty
+         * from subjects table where the subjects are related to a parent Campaign.
+         * So, when creating a campaign email, there will be an option to select a
+         * subject from a list and that list will contain subjects related to the
+         * parent campaign because a campaign can have many subjects and the campaign
+         * email will get only one from that list by calculating the priority from subjects.
+         *
+         * @return Model
+         */
+        public function subject()
+        {
+        }
+        public function markAs($status)
+        {
+        }
+        public function markAsSent($status = 'sent')
+        {
+        }
+        public function markAsFailed($status = 'failed')
+        {
+        }
+        /**
+         * Data for the email to be sent
+         * @return array
+         */
+        public function data()
+        {
+        }
+        /**
+         * Build preview data for one queued/sent email row.
+         *
+         * Route: GET /campaigns/emails/{email_id}/preview via CampaignController::previewEmail().
+         * This is the contact/campaign/all-emails history preview, not the draft editor preview
+         * route (POST /campaigns/email-preview-html). Keep the body rendering rules aligned with
+         * CampaignController::getEmailPreviewBody(): raw/classic-builder templates must bypass
+         * BlockParser, while block-editor templates should continue through BlockParser.
+         *
+         * @return array
+         */
+        public function previewData()
+        {
+        }
+        public function getEmailSubject()
+        {
+        }
+        public function getEmailBody()
+        {
+        }
+        private function getParsedEmailBody()
+        {
+        }
+        public function getCampaignUrls($emailBody, $cached = false)
+        {
+        }
+        public function getClicks()
+        {
+        }
+        public function getSubjectCount($campaignId)
+        {
+        }
+        public function getOpenCount($subjectId)
+        {
+        }
+        public function setEmailHeadersAttribute($headers)
+        {
+        }
+        public function getEmailHeadersAttribute($settings)
+        {
+        }
+    }
+    /**
+     *  CampaignUrlMetric Model - DB Model for Email URL Metrics
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class CampaignUrlMetric extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_campaign_url_metrics';
+        protected $guarded = ['id'];
+        public function campaign()
+        {
+        }
+        public function subscriber()
+        {
+        }
+        public function url_stores()
+        {
+        }
+        public static function maybeInsert($data)
+        {
+        }
+        public function getLinksReport($campaign)
+        {
+        }
+        public function getCampaignAnalytics($campaign)
+        {
+        }
+        public function getSubjectStats($campaign)
+        {
+        }
+        private function getSubjectMetric($subjectId, $campaignId)
+        {
+        }
+        public function getClickMetrics($campaignId, $subjectId)
+        {
+        }
+        private function maybeTransformSmartLinks($links)
+        {
+        }
+    }
+    class Company extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_companies';
+        protected $guarded = ['id'];
+        protected $fillable = ['hash', 'name', 'owner_id', 'industry', 'type', 'email', 'phone', 'address_line_1', 'address_line_2', 'postal_code', 'city', 'state', 'country', 'timezone', 'employees_number', 'description', 'logo', 'linkedin_url', 'facebook_url', 'twitter_url', 'meta', 'website', 'date_of_start', 'created_at', 'updated_at'];
+        /**
+         * Get subscriber mappable fields.
+         *
+         * @return array
+         */
+        public static function mappables()
+        {
+        }
+        protected $searchable = ['name', 'phone', 'description', 'email'];
+        public static function boot()
+        {
+        }
+        /**
+         * Local scope to filter companies by search/query string
+         */
+        public function scopeSearchBy($query, $search)
+        {
+        }
+        public function scopeOfType($query, $status)
+        {
+        }
+        public function scopeOfIndustry($query, $status)
+        {
+        }
+        /**
+         * Get all of the subscribers that belongs to the company.
+         *
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsToMany
+         */
+        public function subscribers()
+        {
+        }
+        public function owner()
+        {
+        }
+        public function getContactsCount()
+        {
+        }
+        /**
+         * A Company has many notes and activities.
+         *
+         * @return \FluentCrm\Framework\Database\Orm\Relations\HasMany
+         */
+        public function notes()
+        {
+        }
+        public function setMetaAttribute($meta)
+        {
+        }
+        public function getMetaAttribute($meta)
+        {
+        }
+        public function getCustomValues()
+        {
+        }
+    }
+    /**
+     *  SubscriberNote Model - DB Model for Contact's notes
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class CompanyNote extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_subscriber_notes';
+        protected $guarded = ['id'];
+        protected $fillable = ['subscriber_id', 'parent_id', 'created_by', 'type', 'title', 'description', 'created_at'];
+        public static function boot()
+        {
+        }
+        /**
+         * One2One: CompanyNote belongs to one Company
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsTo
+         */
+        public function company()
+        {
+        }
+        public function markAs($status)
+        {
+        }
+        public function createdBy()
+        {
+        }
+    }
+    /**
+     *  CustomContactField Model - DB Model for Custom Contact Fields
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class CustomContactField
+    {
+        protected $globalMetaName = 'contact_custom_fields';
+        public function getGlobalFields($with = [])
+        {
+        }
+        public function getFieldTypes()
+        {
+        }
+        public function saveGlobalFields($fields)
+        {
+        }
+        protected function generateSlug($field, $slugs)
+        {
+        }
+        public function formatCustomFieldValues($values, $fields = [])
+        {
+        }
+        public function getFieldGroups()
+        {
+        }
+        public function updateGroupName($oldName, $newName)
+        {
+        }
+    }
+    /**
+     *  CustomCompanyField Model - DB Model for Company Contact Fields
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 2.8.50
+     */
+    class CustomCompanyField extends \FluentCrm\App\Models\CustomContactField
+    {
+        protected $globalMetaName = 'company_custom_fields';
+        public function getFieldGroups()
+        {
+        }
+    }
+    /**
+     *  CustomEmailCampaign Model - DB Model for Custom Emails
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class CustomEmailCampaign extends \FluentCrm\App\Models\Campaign
+    {
+        protected static $type = 'custom_email_campaign';
+        public static function getMock()
+        {
+        }
+    }
+    /**
+     *  SubscriberNote Model - DB Model for Contact's notes
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class EventTracker extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_event_tracking';
+        protected $guarded = ['id'];
+        protected $fillable = ['subscriber_id', 'counter', 'created_by', 'provider', 'event_key', 'title', 'value'];
+        public static function boot()
+        {
+        }
+        /**
+         * One2One: SubscriberNote belongs to one Subscriber
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsTo
+         */
+        public function subscriber()
+        {
+        }
+    }
+    /**
+     *  Funnel Model - DB Model for Automation Funnels
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Funnel extends \FluentCrm\App\Models\Model
+    {
+        private static $type = 'funnels';
+        protected $table = 'fc_funnels';
+        protected $fillable = ['type', 'title', 'trigger_name', 'status', 'conditions', 'settings', 'created_by', 'updated_at'];
+        public static function boot()
+        {
+        }
+        public function scopePublished($query)
+        {
+        }
+        public function actions()
+        {
+        }
+        public function subscribers()
+        {
+        }
+        public function setSettingsAttribute($settings)
+        {
+        }
+        public function getSettingsAttribute($settings)
+        {
+        }
+        public function setConditionsAttribute($conditions)
+        {
+        }
+        public function getConditionsAttribute($conditions)
+        {
+        }
+        public function getSubscribersCount()
+        {
+        }
+        public function updateMeta($key, $value)
+        {
+        }
+        public function getMeta($key, $default = '')
+        {
+        }
+        public function deleteMeta($key)
+        {
+        }
+        public function labelsTerm()
+        {
+        }
+        public function labels()
+        {
+        }
+        public function getFormattedLabels()
+        {
+        }
+        public function attachLabels($labelIds)
+        {
+        }
+        public function detachLabels($labelIds)
+        {
+        }
+    }
+    /**
+     *  FunnelCampaign Model - DB Model for Automation Campaigns
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class FunnelCampaign extends \FluentCrm\App\Models\Campaign
+    {
+        protected static $type = 'funnel_email_campaign';
+        protected $guarded = ['id'];
+        public static function getMock()
+        {
+        }
+        public function sendToCustomAddresses($addresses = [], $args = [], $refSubscriber = false)
+        {
+        }
+        /**
+         * Add one or more subscribers to the campaign
+         * @param array $subscriberIds
+         * @param array $emailArgs extra campaign_email args
+         * @param bool $isModel if the $subscriberIds is collection or not
+         * @return array
+         */
+        public function subscribe($subscriberIds, $emailArgs = [], $isModel = false)
+        {
+        }
+        public function processAndSubscribe($subscriber, $refData = [], $args = [])
+        {
+        }
+        public function getOpenTrackingStatus($globalFallback = true)
+        {
+        }
+        public function getClickTrackingStatus($globalFallback = true)
+        {
+        }
+    }
+    /**
+     *  FunnelMetric Model - DB Model for Automation Analytics
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class FunnelMetric extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_funnel_metrics';
+        protected $fillable = ['funnel_id', 'sequence_id', 'subscriber_id', 'benchmark_value', 'benchmark_currency', 'status', 'notes'];
+        public function scopeStatus($query, $status = 'completed')
+        {
+        }
+        public function funnel()
+        {
+        }
+        public function sequence()
+        {
+        }
+        public function subscriber()
+        {
+        }
+    }
+    /**
+     *  FunnelSequence Model - DB Model for Automation Sequences
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class FunnelSequence extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_funnel_sequences';
+        protected $fillable = ['funnel_id', 'action_name', 'parent_id', 'condition_type', 'title', 'description', 'status', 'conditions', 'settings', 'delay', 'c_delay', 'sequence', 'created_by', 'type', 'note'];
+        public static function boot()
+        {
+        }
+        public function funnel()
+        {
+        }
+        public function parent()
+        {
+        }
+        public function children()
+        {
+        }
+        public function setSettingsAttribute($settings)
+        {
+        }
+        public function getSettingsAttribute($settings)
+        {
+        }
+        public function setConditionsAttribute($conditions)
+        {
+        }
+        public function getConditionsAttribute($conditions)
+        {
+        }
+    }
+    /**
+     *  FunnelSubscriber Model - DB Model for Automation Subscribers
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class FunnelSubscriber extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_funnel_subscribers';
+        protected $fillable = ['funnel_id', 'subscriber_id', 'status', 'type', 'next_sequence', 'next_sequence_id', 'last_sequence_id', 'last_sequence_status', 'last_executed_time', 'next_execution_time', 'starting_sequence_id', 'source_trigger_name', 'source_ref_id', 'notes'];
+        public function scopeActive($query)
+        {
+        }
+        public function funnel()
+        {
+        }
+        public function next_sequence_item()
+        {
+        }
+        public function last_sequence()
+        {
+        }
+        public function metrics()
+        {
+        }
+        public function subscriber()
+        {
+        }
+    }
+    class Label extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_terms';
+        protected $guarded = ['id'];
+        /*
+         * taxonomy_name: global_label
+         * taxonomy_name global_label is the default taxonomy name/type for the Label
+         * so it is not required to pass the taxonomy_name while creating a label
+         */
+        protected $fillable = ['parent_id', 'slug', 'title', 'description', 'position', 'settings', 'created_at', 'updated_at'];
+        protected $hidden = ['taxonomy_name'];
+        public static function boot()
+        {
+        }
+        public function getSettingsAttribute($value)
+        {
+        }
+        public function setSettingsAttribute($value)
+        {
+        }
+    }
+    /**
+     *  Lists Model - DB Model for Contact Lists
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Lists extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_lists';
+        protected $guarded = ['id'];
+        /**
+         * $searchable Columns in table to search
+         * @var array
+         */
+        protected $searchable = ['title', 'slug', 'description'];
+        /**
+         * Local scope to filter subscribers by search/query string
+         * @param ModelQueryBuilder $query
+         * @param string $search
+         * @return ModelQueryBuilder
+         */
+        public function scopeSearchBy($query, $search)
+        {
+        }
+        /**
+         * Many2Many: List belongs to many Subscriber
+         *
+         * @return \FluentCrm\App\Models\Base\Collection
+         */
+        public function subscribers()
+        {
+        }
+        public function totalCount()
+        {
+        }
+        public function countByStatus($status = 'subscribed')
+        {
+        }
+    }
+    /**
+     *  Meta Model - DB Model for Meta table
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Meta extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_meta';
+        protected $primaryKey = 'id';
+        protected $guarded = ['id'];
+        protected $fillable = ['object_type', 'object_id', 'key', 'value', 'created_at', 'updated_at'];
+        public function setValueAttribute($value)
+        {
+        }
+        public function getValueAttribute($value)
+        {
+        }
+    }
+    /**
+     *  Subject Model - DB Model for Email Subjects
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Subject extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_meta';
+        protected $guarded = ['id'];
+        public static function boot()
+        {
+        }
+        public function campaign()
+        {
+        }
+        public function emails()
+        {
+        }
+    }
+    /**
+     *  Subscriber Model - DB Model for Contacts
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Subscriber extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_subscribers';
+        protected $guarded = ['id'];
+        protected $appends = ['full_name', 'photo'];
+        /**
+         * The attributes that are mass assignable.
+         *
+         * @var array
+         */
+        protected $fillable = [
+            'hash',
+            'prefix',
+            'first_name',
+            'last_name',
+            'user_id',
+            'company_id',
+            'email',
+            'status',
+            // pending / subscribed / bounced / unsubscribed; Default: subscriber
+            'contact_type',
+            // lead / customer
+            'sms_status',
+            // sms_pending / sms_subscribed / sms_unsubscribed / sms_bounced; Default: sms_subscribed
+            'address_line_1',
+            'address_line_2',
+            'postal_code',
+            'city',
+            'state',
+            'country',
+            'phone',
+            'timezone',
+            'date_of_birth',
+            'source',
+            'life_time_value',
+            'last_activity',
+            'total_points',
+            'latitude',
+            'longitude',
+            'ip',
+            'created_at',
+            'updated_at',
+            'avatar',
+        ];
+        public static function boot()
+        {
+        }
+        /**
+         * $searchable Columns in table to search
+         * @var array
+         */
+        protected $searchable = ['email', 'first_name', 'last_name', 'address_line_1', 'address_line_2', 'postal_code', 'city', 'state', 'country', 'phone', 'status'];
+        /**
+         * Local scope to filter subscribers by search/query string
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param string $search
+         * @param boolean $custom_fields
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeSearchBy($query, $search, $custom_fields = false)
+        {
+        }
+        /**
+         * Local scope to filter subscribers by search/query string
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $statuses
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeFilterByStatues($query, $statuses)
+        {
+        }
+        /**
+         * Local scope to filter subscribers by contact type
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $statuses
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeFilterByContactType($query, $type)
+        {
+        }
+        /**
+         * Local scope to filter subscribers by tags
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $keys
+         * @param string $filterBy id/slug
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeFilterByTags($query, $keys, $filterBy = 'id')
+        {
+        }
+        /**
+         * Local scope to filter subscribers by not in tags
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $keys
+         * @param string $filterBy id/slug
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeFilterByNotInTags($query, $keys, $filterBy = 'id')
+        {
+        }
+        /**
+         * Local scope to filter subscribers by lists
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $keys
+         * @param string $filterBy id/slug
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeFilterByLists($query, $keys, $filterBy = 'id')
+        {
+        }
+        /**
+         * Local scope to filter subscribers by not in lists
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $keys
+         * @param string $filterBy id/slug
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeFilterByNotInLists($query, $keys, $filterBy = 'id')
+        {
+        }
+        /**
+         * Many2Many: Subscriber belongs to many tags
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsToMany
+         */
+        public function tags()
+        {
+        }
+        public function company()
+        {
+        }
+        public function companies()
+        {
+        }
+        /**
+         * Local scope to filter subscribers by companies
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $keys
+         * @param string $filterBy id/slug
+         * @return \FluentCrm\Framework\Database\Query\Builder $query
+         */
+        public function scopeFilterByCompanies($query, $keys, $filterBy = 'id')
+        {
+        }
+        /**
+         * Many2Many: Subscriber has many email sequences
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsToMany
+         */
+        public function sequences()
+        {
+        }
+        /**
+         * Many2Many: Subscriber has many sequence trackers
+         * @return \FluentCrm\Framework\Database\Orm\Relations\HasMany
+         */
+        public function sequence_trackers()
+        {
+        }
+        /**
+         * Many2Many: Subscriber has many funnels
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsToMany
+         */
+        public function funnels()
+        {
+        }
+        /**
+         * Many2Many: Subscriber has many funnel subscribers
+         * @return \FluentCrm\Framework\Database\Orm\Relations\hasMany
+         */
+        public function funnel_subscribers()
+        {
+        }
+        /**
+         * hasMany: Subscriber has many commerce items
+         * @return \FluentCrm\Framework\Database\Orm\Relations\HasMany
+         */
+        public function contact_commerce()
+        {
+        }
+        /**
+         * hasOne: Subscriber has a commerce for a specific provider
+         * @return \FluentCrm\Framework\Database\Orm\Relations\hasOne
+         */
+        public function commerce_by_provider()
+        {
+        }
+        /**
+         * hasOne: Subscriber has many commerce items
+         * @return \FluentCrm\Framework\Database\Orm\Relations\HasMany
+         */
+        public function contact_commerce_items()
+        {
+        }
+        public function scopeCommerceItemsItemIds($query, $provider, $method, $column, $values)
+        {
+        }
+        public function affiliate_wp()
+        {
+        }
+        /**
+         * Many2Many: Subscriber belongs to many lists
+         * @return Model Collection
+         */
+        public function lists()
+        {
+        }
+        /**
+         * One2Many: Subscriber has to many SubscriberMeta
+         * @return Model Collection
+         */
+        public function meta()
+        {
+        }
+        /**
+         * One2Many: Subscriber has to many SubscriberMeta
+         * @return Model Collection
+         */
+        public function custom_field_meta()
+        {
+        }
+        /**
+         * One2Many: Subscriber has to many Click Metrics
+         * @return Model Collection
+         */
+        public function urlMetrics()
+        {
+        }
+        /**
+         * A subscriber has many campaign emails.
+         *
+         * @return \FluentCrm\Framework\Database\Orm\Relations\HasMany
+         */
+        public function campaignEmails()
+        {
+        }
+        /**
+         * A subscriber has many notes and activities.
+         *
+         * @return \FluentCrm\Framework\Database\Orm\Relations\HasMany
+         */
+        public function notes()
+        {
+        }
+        /**
+         * A subscriber has many tracking events.
+         *
+         * @return \FluentCrm\Framework\Database\Orm\Relations\HasMany
+         */
+        public function trackingEvents()
+        {
+        }
+        /**
+         * One2Many: Subscriber has to many custom fields value
+         * @return array
+         */
+        public function custom_fields()
+        {
+        }
+        /**
+         * Update Custom Field Values
+         * @param $values array of custom values
+         * @param bool $deleteOtherValues
+         * @return array of updated values
+         */
+        public function syncCustomFieldValues($values, $deleteOtherValues = true)
+        {
+        }
+        public function stats()
+        {
+        }
+        /**
+         * Save the subscriber.
+         *
+         * @param array $data
+         */
+        public static function store($data = [])
+        {
+        }
+        /**
+         * Get subscriber mappable fields.
+         *
+         * @return array
+         */
+        public static function mappables()
+        {
+        }
+        /**
+         * Accessor to get dynamic photo attribute
+         * @return string
+         */
+        public function getPhotoAttribute()
+        {
+        }
+        /**
+         * Accessor to get dynamic full_name attribute
+         * @return string
+         */
+        public function getFullNameAttribute()
+        {
+        }
+        /**
+         * Import csv/wpusers into subscribers
+         * @param array $data
+         * @param array $tags
+         * @param array $lists
+         * @param mixed $update string true/false or boolean true/false
+         * @param string $newStatus status for the new subscribers
+         * @param boolean $doubleOptin Send Double Optin Emails for new pending contacts
+         * @param string $source Fallback Source for New Contacts
+         * @return array affected records/collection
+         */
+        public static function import($data, $tags, $lists, $update, $newStatus = '', $doubleOptin = false, $forceStatusChange = false, $source = '')
+        {
+        }
+        public function updateOrCreate($data, $forceUpdate = false, $deleteOtherValues = false, $sync = false)
+        {
+        }
+        public function sendDoubleOptinEmail()
+        {
+        }
+        public static function explodeFullName($record)
+        {
+        }
+        public function attachLists($listIds)
+        {
+        }
+        public function attachTags($tagIds)
+        {
+        }
+        public function attachCompanies($companyIds)
+        {
+        }
+        public function detachLists($listIds)
+        {
+        }
+        public function detachTags($tagsIds)
+        {
+        }
+        public function detachCompanies($companyIds)
+        {
+        }
+        public function unsubscribeReason($metaKey = 'unsubscribe_reason')
+        {
+        }
+        public function unsubscribeReasonDate($metaKey = 'unsubscribe_reason')
+        {
+        }
+        public function hasAnyTagId($tagIds)
+        {
+        }
+        public function hasAnyListId($listIds)
+        {
+        }
+        public function updateMeta($metaKey, $metaValue, $objectType)
+        {
+        }
+        public function getMeta($metaKey, $objectType)
+        {
+        }
+        /**
+         * Parse filter to set proper operator and value for the filter query for date operators
+         *
+         * @param array $filter
+         * @return array
+         */
+        public static function filterParser($filter)
+        {
+        }
+        public static function applyGeneralFilterQuery($query, $filter, $referenceColumn = 'value')
+        {
+        }
+        /**
+         * Dynamically build relation filter query for the Subscriber
+         * model. It handles purchase, lists, tags relations.
+         *
+         * @param string $relation
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $query
+         * @param string $method
+         * @param string $subMethod
+         * @param string $subField
+         * @param array $filter
+         * @param string $provider
+         * @return \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder
+         */
+        public static function buildRelationFilterQuery($relation, $query, $method, $subMethod, $subField, $filter, $provider = false)
+        {
+        }
+        /**
+         * Dynamically build relation filter query for the Subscriber model.
+         * It handles taxonomy query for subscribers purchase history mainly
+         *
+         * @param string $primaryRelation
+         * @param string $childRelation
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $mainQuery
+         * @param string $method
+         * @param string $subField
+         * @param array $itemIds
+         * @param $checkAll bool
+         * @param string $provider
+         * @return \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder
+         */
+        public static function buildChildRelationFilterQuery($primaryRelation, $childRelation, $mainQuery, $method, $subField, $itemIds, $checkAll = false, $provider = false)
+        {
+        }
+        /**
+         * Builds purchase provider related filter query. It handles woo, edd filter now.
+         *
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $filters
+         * @param string $provider
+         * @return \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder
+         */
+        public static function providerQueryBuilder($query, $filters, $provider = 'woo')
+        {
+        }
+        public function buildSearchableQuery($query, $search, $operator = 'LIKE')
+        {
+        }
+        /**
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $filters
+         * @return \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder
+         */
+        public function buildGeneralPropertiesFilterQuery($query, $filters)
+        {
+        }
+        /**
+         * @param array $filter
+         * @return string[]
+         */
+        public static function parseRelationalFilterQueryMethods($filter)
+        {
+        }
+        /**
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $filters
+         * @return \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder
+         */
+        public function buildSegmentFilterQuery($query, $filters)
+        {
+        }
+        /**
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $filters
+         * @return \FluentCrm\Framework\Database\Query\Builder
+         */
+        public function buildCustomFieldsFilterQuery($query, $filters)
+        {
+        }
+        public static function parseCustomFieldsFilterOperator($filter)
+        {
+        }
+        /**
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $query
+         * @param array $filters
+         * @return \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder
+         */
+        public function buildActivitiesFilterQuery($query, $filters)
+        {
+        }
+        public function lastActivityDate($activityName)
+        {
+        }
+        public function user()
+        {
+        }
+        public function getWpUser()
+        {
+        }
+        public function getWpUserId()
+        {
+        }
+        /**
+         * Get the attributes that have been changed since last sync.
+         *
+         * @return array
+         */
+        public function getDirty()
+        {
+        }
+        public function getSecureHash()
+        {
+        }
+        public function trackEvent($eventData, $isUnique = false)
+        {
+        }
+        public function updateStatus($status)
+        {
+        }
+    }
+    /**
+     *  SubscriberMeta Model - DB Model for Contact meta data
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class SubscriberMeta extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_subscriber_meta';
+        protected $guarded = ['id'];
+        /**
+         * One2One: SubscriberNote belongs to one Subscriber
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsTo
+         */
+        public function subscriber()
+        {
+        }
+        public function scopeFilterByKey($query, $key)
+        {
+        }
+        public function setValueAttribute($value)
+        {
+        }
+        public function getValueAttribute($value)
+        {
+        }
+    }
+    /**
+     *  SubscriberNote Model - DB Model for Contact's notes
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class SubscriberNote extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_subscriber_notes';
+        protected $guarded = ['id'];
+        protected $fillable = ['subscriber_id', 'parent_id', 'created_by', 'type', 'title', 'description', 'created_at'];
+        public static function boot()
+        {
+        }
+        /**
+         * One2One: SubscriberNote belongs to one Subscriber
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsTo
+         */
+        public function subscriber()
+        {
+        }
+        public function markAs($status)
+        {
+        }
+        public function createdBy()
+        {
+        }
+    }
+    /**
+     *  SubscriberPivot Model - DB Model for Contact's relationships
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class SubscriberPivot extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_subscriber_pivot';
+        protected $guarded = ['id'];
+        public function scopeFilter($query, $constraints)
+        {
+        }
+        /**
+         * Save an entry to the subscriber pivot table.
+         *
+         * @param  array $attributes
+         * @return int
+         */
+        public static function store($attributes)
+        {
+        }
+        /**
+         * Attach tags/lists to the subscriber.
+         *
+         * @param array  $items
+         * @param int    $subscriber
+         * @param string $type
+         */
+        public static function attach($items, $subscriber, $type)
+        {
+        }
+        /**
+         * Detach tags/lists from the subscriber.
+         *
+         * @param array  $items
+         * @param int    $subscriber
+         * @param string $type
+         */
+        public static function detach($items, $subscriber, $type)
+        {
+        }
+        private static function getFunctionName($type, $prefix)
+        {
+        }
+    }
+    /**
+     *  System Log Model - DB Model for System Logs & Activities
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class SystemLog extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_subscriber_notes';
+        protected $guarded = ['id'];
+        protected $fillable = ['subscriber_id', 'parent_id', 'created_by', 'type', 'title', 'description', 'created_at'];
+        public static function boot()
+        {
+        }
+    }
+    /**
+     *  Tag Model - DB Model for Contact's Tags
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Tag extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_tags';
+        protected $guarded = ['id'];
+        /**
+         * $searchable Columns in table to search
+         * @var array
+         */
+        protected $searchable = ['title', 'slug', 'description'];
+        /**
+         * Local scope to filter subscribers by search/query string
+         * @param \FluentCrm\Framework\Database\Query\Builder $query
+         * @param string $search
+         * @return \FluentCrm\Framework\Database\Query\Builder
+         */
+        public function scopeSearchBy($query, $search)
+        {
+        }
+        /**
+         * Get all of the subscribers that belongs to the tag.
+         *
+         * @return \FluentCrm\Framework\Database\Orm\Relations\BelongsToMany
+         */
+        public function subscribers()
+        {
+        }
+        public function totalCount()
+        {
+        }
+        public function countByStatus($status = 'subscribed')
+        {
+        }
+    }
+    /**
+     *  Template Model - DB Model for Email templates
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Template extends \FluentCrm\App\Models\Model
+    {
+        const CREATED_AT = 'post_date';
+        const UPDATED_AT = 'post_modified';
+        protected $table = 'posts';
+        protected $primaryKey = 'ID';
+        public function scopeEmailTemplates($query, $types = ['publish'])
+        {
+        }
+        public function scopeCampaignTemplate($query)
+        {
+        }
+        public function campaign()
+        {
+        }
+        public function render($content = null)
+        {
+        }
+    }
+    class TermRelation extends \FluentCrm\Framework\Database\Orm\Model
+    {
+        protected $table = 'fc_term_relations';
+        protected $fillable = ['term_id', 'object_type', 'object_id', 'settings'];
+        public $timestamps = false;
+        protected $casts = ['settings' => 'array'];
+    }
+    /**
+     *  UrlStores Model - DB Model for Short Urls
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class UrlStores extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_url_stores';
+        protected $guarded = ['id'];
+        public static function getUrlSlug($longUrl)
+        {
+        }
+        public static function generateRandomSlug($length = 6)
+        {
+        }
+        public static function getRowByShort($short)
+        {
+        }
+    }
+    /**
+     *  User Model - DB Model for WordPress Users Table
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class User extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'users';
+        protected $primaryKey = 'ID';
+        protected $hidden = ['user_pass', 'user_activation_key'];
+        protected $appends = ['photo'];
+        /**
+         * Accessor to get dynamic photo attribute
+         * @return string
+         */
+        public function getPhotoAttribute()
+        {
+        }
+    }
+    /**
+     *  Webhook Model - DB Model for Webhooks
+     *
+     *  Database Model
+     *
+     * @package FluentCrm\App\Models
+     *
+     * @version 1.0.0
+     */
+    class Webhook extends \FluentCrm\App\Models\Meta
+    {
+        protected $fillable = ['id', 'key', 'value', 'object_type'];
+        public static function boot()
+        {
+        }
+        public function getFields()
+        {
+        }
+        public function getSchema()
+        {
+        }
+        public function store($data)
+        {
+        }
+        public function saveChanges($data)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Modules\AbandonCart {
+    class AbCartHelper
+    {
+        public static function getSettings($useCache = true)
+        {
+        }
+        public static function getSetting($key, $default = '')
+        {
+        }
+        public static function isActive()
+        {
+        }
+        public static function willCartTrack()
+        {
+        }
+        public static function getGDPRMessage()
+        {
+        }
+        public static function getCountAndSumByStatus($status, $dateRange = [], $dateColumn = 'created_at')
+        {
+        }
+        public static function getSortedAutomations($provider = 'woo')
+        {
+        }
+        public static function getAbCartByDataProps($props = [], $statuses = ['processing', 'draft'])
+        {
+        }
+        /**
+         * Check if the given order status is considered a "win" (i.e., completed) status for the specified driver.
+         * @param string $driver The driver slug (e.g., 'woo')
+         * @param string $orderStatus The order status to check (e.g., 'completed')
+         * @return bool True if it's a win status, false otherwise
+         */
+        public static function isWinOrderStatus($driver, $orderStatus)
+        {
+        }
+        /**
+         * @deprecated Use DriverManager::getDriver('woo')->isWithinCoolOffPeriod() instead
+         */
+        public static function isWooWithinCoolOffPeriod($abCartModel)
+        {
+        }
+    }
+    class AbandonCart
+    {
+        public function register()
+        {
+        }
+        protected function init()
+        {
+        }
+        public function maybeRunAbRunner()
+        {
+        }
+        public function markOldCartsAsLost()
+        {
+        }
+    }
+    class AbandonCartController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getCarts(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function mutateCartData($carts)
+        {
+        }
+        public function handleBulkDeleteCart(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getReportSummary(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function getDateRange($dateRangeInput)
+        {
+        }
+    }
+    class AbandonCartMigrator
+    {
+        /**
+         * On-Demand Action Links Migrator.
+         *
+         * @param bool $isForced
+         * @return void
+         */
+        public static function migrate($isForced = false)
+        {
+        }
+    }
+    class AbandonCartModel extends \FluentCrm\App\Models\Model
+    {
+        protected $table = 'fc_abandoned_carts';
+        protected $fillable = ['checkout_key', 'cart_hash', 'contact_id', 'is_optout', 'full_name', 'email', 'provider', 'user_id', 'order_id', 'automation_id', 'checkout_page_id', 'status', 'subtotal', 'shipping', 'discounts', 'fees', 'tax', 'total', 'currency', 'cart', 'note', 'recovered_at', 'abandoned_at', 'click_counts'];
+        protected $searchable = ['full_name', 'email'];
+        public static function boot()
+        {
+        }
+        public function scopeProvider($query, $provider)
+        {
+        }
+        public function scopeStatusBy($query, $status)
+        {
+        }
+        public function scopeSearchBy($query, $search)
+        {
+        }
+        public function setCartAttribute($data)
+        {
+        }
+        public function getCartAttribute($data)
+        {
+        }
+        public function subscriber()
+        {
+        }
+        public function automation()
+        {
+        }
+        public function getAddress($type = 'billing')
+        {
+        }
+        private function getAddressLineByKey($type, $key)
+        {
+        }
+        public function getInputProp($key, $default = '')
+        {
+        }
+        public function getAddressProp($key, $addressType = 'billingAddress', $default = '')
+        {
+        }
+        /*
+         * Get the cart items as html
+         * This function is called by shortcodes/mergecodes/smartcode
+         * e.g. {{ab_cart_woo.cart_items_table}}
+         */
+        public function getCartItemsHtml()
+        {
+        }
+        public function getRecoveryUrl()
+        {
+        }
+        public function deleteCart()
+        {
+        }
+        public function optOut()
+        {
+        }
+    }
+    class AbandonCartRunner
+    {
+        public function runAbandonCart(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $abandonCart)
+        {
+        }
+        public function getEligibleAutomation(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $abandonCart)
+        {
+        }
+        protected function createContactFromCart(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $abandonCart)
+        {
+        }
+        protected function hasContactConditions($conditions)
+        {
+        }
+        protected function assessConditionGroups($conditionGroups, $subscriber, $cartData = [])
+        {
+        }
+        protected function assessConditions($conditions, $subscriber, $cartData = [])
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Modules\AbandonCart\Drivers {
+    abstract class AbstractCartDriver
+    {
+        public $logo = '';
+        /**
+         * Unique provider slug. Must match the `provider` column value in fc_abandoned_carts.
+         * Examples: 'woo', 'fluent_cart', 'edd'
+         *
+         * @return string
+         */
+        abstract public function getProviderSlug();
+        /**
+         * Human-readable provider label for UI display.
+         *
+         * @return string
+         */
+        abstract public function getProviderLabel();
+        /**
+         * Whether this driver's platform is currently available (plugin active).
+         *
+         * @return bool
+         */
+        abstract public function isAvailable();
+        /**
+         * Register all hooks, filters, frontend scripts, ajax handlers,
+         * order lifecycle listeners, and cart recovery URL handlers.
+         *
+         * @return void
+         */
+        abstract public function register();
+        /**
+         * Register the automation trigger class for this provider.
+         *
+         * @return void
+         */
+        abstract public function registerAutomationTrigger();
+        /**
+         * Check if the given cart is within a cool-off period for this provider.
+         *
+         * @param AbandonCartModel $cart
+         * @return bool
+         */
+        abstract public function isWithinCoolOffPeriod(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart);
+        /**
+         * Render cart items as HTML for email templates.
+         *
+         * @param AbandonCartModel $cart
+         * @return string
+         */
+        abstract public function getCartItemsHtml(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart);
+        /**
+         * Format a monetary amount for display using this provider's currency formatting.
+         *
+         * @param float|string $amount
+         * @param string $currency
+         * @return string
+         */
+        abstract public function formatPrice($amount, $currency = '');
+        /**
+         * Return the recovery URL for this cart.
+         *
+         * @param AbandonCartModel $cart
+         * @return string
+         */
+        abstract public function getRecoveryUrl(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart);
+        /**
+         * Extract product IDs and category IDs from the cart for condition matching.
+         *
+         * @param AbandonCartModel $cart
+         * @return array ['product_ids' => [...], 'category_ids' => [...]]
+         */
+        abstract public function extractCartConditionData(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart);
+        /**
+         * Enrich cart data for the admin listing API response.
+         * Adds product images, order URL, etc.
+         *
+         * @param AbandonCartModel $cart
+         * @return AbandonCartModel
+         */
+        abstract public function enrichCartForListing(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart);
+        /**
+         * Return provider-specific data for the settings API response.
+         * e.g. WooCommerce returns order statuses.
+         *
+         * @return array
+         */
+        public function getProviderSettingsResponse()
+        {
+        }
+        /**
+         * Return provider-specific settings fields for the settings page.
+         *
+         * @return array
+         */
+        public function getSettingsFields()
+        {
+        }
+        /**
+         * Return provider-specific default settings to merge into global defaults.
+         *
+         * @return array
+         */
+        public function getProviderSettingsDefaults()
+        {
+        }
+        /**
+         * Apply provider-specific processing to settings after loading.
+         *
+         * @param array $settings
+         * @return array
+         */
+        public function processSettings($settings)
+        {
+        }
+        /**
+         * Get the trigger name for this provider's automation.
+         *
+         * @return string
+         */
+        public function getTriggerName()
+        {
+        }
+        /**
+         * Get the handler name for cart recovery URL routing.
+         *
+         * @return string
+         */
+        public function getHandlerName()
+        {
+        }
+        /**
+         * Get the smart code group key for this provider.
+         *
+         * @return string
+         */
+        public function getSmartCodeGroupKey()
+        {
+        }
+        /**
+         * Get the base path for view templates.
+         * Drivers should override this to point to their own plugin's Views directory.
+         *
+         * @return string
+         */
+        protected function getViewsBasePath()
+        {
+        }
+        /**
+         * Load a view template from the driver's Views directory.
+         *
+         * @param string $templateName
+         * @param array $data
+         * @return string
+         */
+        protected function loadView($templateName, $data)
+        {
+        }
+        public function getLogo()
+        {
+        }
+    }
+    class DriverManager
+    {
+        /** @var AbstractCartDriver[] keyed by provider slug */
+        private static $drivers = [];
+        public static function register(\FluentCrm\App\Modules\AbandonCart\Drivers\AbstractCartDriver $driver)
+        {
+        }
+        /**
+         * @param string $providerSlug
+         * @return AbstractCartDriver|null
+         */
+        public static function getDriver($providerSlug)
+        {
+        }
+        /**
+         * @return AbstractCartDriver[]
+         */
+        public static function getAll()
+        {
+        }
+        /**
+         * @return AbstractCartDriver[] Only drivers whose platform is currently active
+         */
+        public static function getAvailable()
+        {
+        }
+        /**
+         * @return string[]
+         */
+        public static function getAvailableSlugs()
+        {
+        }
+        /**
+         * @return bool
+         */
+        public static function hasAvailableDrivers()
+        {
+        }
+        /**
+         * Get drivers that are both available (plugin installed) and enabled in settings.
+         *
+         * @return AbstractCartDriver[]
+         */
+        public static function getEnabled()
+        {
+        }
+        /**
+         * @return string[]
+         */
+        public static function getEnabledSlugs()
+        {
+        }
+        /**
+         * Check if a specific driver is enabled
+         *
+         * @param string $providerSlug
+         * @return bool
+         */
+        public static function isDriverEnabled($providerSlug)
+        {
+        }
+        /**
+         * Get trigger names from all enabled drivers
+         *
+         * @return string[]
+         */
+        public static function getEnabledTriggerNames()
+        {
+        }
+        /**
+         * Get smart code group keys from all registered drivers
+         *
+         * @return string[]
+         */
+        public static function getAllSmartCodeGroupKeys()
+        {
+        }
+        /**
+         * Find a driver by its smart code group key (e.g. 'ab_cart_woo')
+         *
+         * @param string $groupKey
+         * @return AbstractCartDriver|null
+         */
+        public static function getDriverByGroupKey($groupKey)
+        {
+        }
+        /**
+         * Format a price using the appropriate driver, with a generic fallback
+         *
+         * @param float|string $amount
+         * @param string $currency
+         * @param string|null $providerSlug
+         * @return string
+         */
+        public static function formatPrice($amount, $currency = '', $providerSlug = null)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Funnel {
+    abstract class BaseTrigger
+    {
+        protected $triggerName;
+        protected $actionArgNum = 1;
+        protected $priority = 10;
+        public function __construct()
+        {
+        }
+        public function register()
+        {
+        }
+        public function addTrigger($triggers)
+        {
+        }
+        public function prepareEditorDetails($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        abstract public function getTrigger();
+        abstract public function getFunnelSettingsDefaults();
+        abstract public function getSettingsFields($funnel);
+        abstract public function handle($funnel, $originalArgs);
+    }
+}
+namespace FluentCrm\App\Modules\AbandonCart\Drivers\FluentCart {
+    class FluentCartAutomationTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        public function getConditionGroups($funnel)
+        {
+        }
+    }
+    class FluentCartDriver extends \FluentCrm\App\Modules\AbandonCart\Drivers\AbstractCartDriver
+    {
+        public function getProviderSlug()
+        {
+        }
+        public function getProviderLabel()
+        {
+        }
+        public function isAvailable()
+        {
+        }
+        public function getLogo()
+        {
+        }
+        public function register()
+        {
+        }
+        public function registerAutomationTrigger()
+        {
+        }
+        protected function getViewsBasePath()
+        {
+        }
+        public function isWithinCoolOffPeriod(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart)
+        {
+        }
+        public function getCartItemsHtml(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart)
+        {
+        }
+        public function formatPrice($amount, $currency = '')
+        {
+        }
+        public function getRecoveryUrl(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart)
+        {
+        }
+        public function extractCartConditionData(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart)
+        {
+        }
+        public function enrichCartForListing(\FluentCrm\App\Modules\AbandonCart\AbandonCartModel $cart)
+        {
+        }
+        public function getProviderSettingsResponse()
+        {
+        }
+        public function getProviderSettingsDefaults()
+        {
+        }
+        public function getSettingsFields()
+        {
+        }
+        /**
+         * Check if a FluentCart order status counts as a successful recovery.
+         *
+         * @param string $orderStatus
+         * @return bool
+         */
+        public function isWinOrderStatus($orderStatus)
+        {
+        }
+        private function getWinOrderStatuses()
+        {
+        }
+    }
+    class FluentCartTrackingInit
+    {
+        public function register()
+        {
+        }
+        public function addAbandonScript()
+        {
+        }
+        public function handleAjaxOptOut()
+        {
+        }
+        public function maybeSyncCart($fctCart)
+        {
+        }
+        private function buildCustomerData($checkoutData)
+        {
+        }
+        private function getCurrentRecord($billingEmail = null, $cartHash = null)
+        {
+        }
+        public function handleOrderCreated($eventData)
+        {
+        }
+        public function handleOrderPaid($eventData)
+        {
+        }
+        public function handleOrderStatusChanged($eventData)
+        {
+        }
+        private function markCartAsRecovered($abCart, $order)
+        {
+        }
+        private function handleCartLost($abCart, $order)
+        {
+        }
+        private function handleCartRecoveredAutomations($abCart)
+        {
+        }
+        private function cancelAutomations($subscriber)
+        {
+        }
+        private function cancelAutomationsByCustomer($customer)
+        {
+        }
+        private function deleteOtherCarts($abCart, $order)
+        {
+        }
+        public function maybeRestoreCart($data)
+        {
+        }
+        public function pushContextCodes($codes, $context)
+        {
+        }
+        public function parseSmartCodes($code, $valueKey, $defaultValue, $subscriber)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Modules\AbandonCart {
+    class SettingsController extends \FluentCrm\App\Http\Controllers\Controller
+    {
+        public function getSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function saveSettings(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Modules\MCP {
+    /**
+     * Single source of truth for every FluentCRM MCP ability.
+     *
+     * Per MCP_PLAN.md § 12 (token discipline) — descriptions are tight (≤30 tokens),
+     * input schemas omit redundant property descriptions, and the universal filter
+     * shape is referenced by pointer rather than inlined into each tool.
+     *
+     * Adding a tool: append an entry to `getDefinitions()`. Adding a Pro tool:
+     * push it from `fluentcampaign-pro` via the `fluent_crm/mcp_loaded` action.
+     */
+    class AbilitiesRegistrar
+    {
+        public static function getDefinitions()
+        {
+        }
+        public static function register()
+        {
+        }
+        /**
+         * Wraps every tool's execute callback in a try/catch that converts
+         * unhandled exceptions (SQL errors, type errors, anything that escapes
+         * a tool's own validation) into a structured WP_Error with the actual
+         * exception message instead of the adapter's generic "Tool execution
+         * failed" surface. Without this, the agent has no signal about what
+         * went wrong, which leads to retries against tools that silently
+         * succeeded — see fluentcrm-mcp-review.md bug #1.
+         */
+        private static function wrapExecuteCallback($toolName, $callback)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Modules\MCP\Helpers {
+    /**
+     * Shared utilities for FluentCRM MCP tools.
+     *
+     * Every tool delegates to existing FluentCRM services for business logic. This
+     * helper covers concerns *common* to all tools: identifier resolution
+     * (id-or-email, id-or-slug), output formatting, universal-filter translation,
+     * pagination, content-type sniffing, and structured WP_Error construction.
+     *
+     * Naming follows MCP_PLAN.md § 7.
+     */
+    class MCPHelper
+    {
+        // ---------------------------------------------------------------------
+        // Identifier resolution
+        // ---------------------------------------------------------------------
+        /**
+         * Resolve a contact from an input array that may carry contact_id or email.
+         *
+         * @param array $input
+         * @return Subscriber|\WP_Error
+         */
+        public static function resolveContact($input)
+        {
+        }
+        /**
+         * Resolve an array of tag identifiers (ids or titles/slugs) to integer IDs.
+         * Optionally creates missing tags when $autoCreate is true (caller MUST
+         * have re-checked `fcrm_manage_contact_cats` before passing true).
+         *
+         * @param array $items
+         * @param bool  $autoCreate
+         * @return array{ids: int[], created: array<int, array{id:int,title:string}>}
+         */
+        public static function resolveTagIds($items, $autoCreate = false)
+        {
+        }
+        /**
+         * Same as resolveTagIds() but for lists.
+         *
+         * @param array $items
+         * @param bool  $autoCreate
+         * @return array{ids: int[], created: array<int, array{id:int,title:string}>}
+         */
+        public static function resolveListIds($items, $autoCreate = false)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Formatting
+        // ---------------------------------------------------------------------
+        /**
+         * Build the rich contact record consumed by get-contact / upsert-contact.
+         *
+         * @param Subscriber $subscriber
+         * @param array      $opts {
+         *     @type array $include One or more of: notes, email_history, automations,
+         *                          activity, purchase_history, support_tickets,
+         *                          ai_summary, info_widgets.
+         * }
+         * @return array
+         */
+        public static function formatContactForMCP($subscriber, $opts = [])
+        {
+        }
+        public static function formatContactSummary($subscriber)
+        {
+        }
+        public static function formatContactList($paginated, $includeCustomFields = false)
+        {
+        }
+        public static function formatTagList($tags)
+        {
+        }
+        public static function formatListList($lists)
+        {
+        }
+        public static function formatNoteForMCP($note)
+        {
+        }
+        /**
+         * Return up to $limit recent notes for a subscriber.
+         */
+        public static function formatNotesFor($subscriber, $limit = 50)
+        {
+        }
+        /**
+         * Recent campaign emails sent to / on behalf of a subscriber, paginated to
+         * a small set so heavy installs don't drown the response (per MCP_PLAN
+         * § 10.7).
+         */
+        public static function formatEmailHistoryFor($subscriber, $limit = 10)
+        {
+        }
+        public static function formatAutomationsFor($subscriber)
+        {
+        }
+        public static function formatCampaignSummary($campaign, $includeStats = true)
+        {
+        }
+        /**
+         * Compact stats for a single campaign. Mirrors the per-campaign columns
+         * the admin list does (sent/views/clicks via fc_campaign_emails) and
+         * pulls unsubscribers from fc_campaign_url_metrics where type='unsubscribe'
+         * — there is no is_unsubscribed column on fc_campaign_emails.
+         *
+         * Anonymous-tracking aware: when the campaign is configured for
+         * anonymous click/open tracking, the per-contact columns will read 0
+         * even when there's real engagement (the data goes to campaign meta
+         * instead). We surface tracking_mode + an aggregate fallback so the
+         * agent doesn't mis-diagnose anonymous campaigns as having zero
+         * engagement (round-4 review P1 #5).
+         */
+        public static function campaignStatsCompact($campaign)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Filter translation
+        // ---------------------------------------------------------------------
+        /**
+         * Translate the universal MCP filter shape (MCP_PLAN.md § 3.6) into an
+         * array of args ContactsQuery accepts.
+         */
+        public static function buildContactsQueryArgs($filter)
+        {
+        }
+        /**
+         * Apply created_after / created_before to a query model directly. Avoids
+         * the whereTimestamp phantom-method bug in
+         * Subscriber::applyGeneralFilterQuery (round-4 review P1 #4) — using
+         * raw `where(... '>=', ...)` SQL instead.
+         *
+         * Pass either a ContactsQuery instance (we'll grab getModel()) or an
+         * Eloquent query directly.
+         */
+        public static function applyDateFilters($queryOrCq, $filter)
+        {
+        }
+        /**
+         * Build a paginated ContactsQuery directly from the universal filter shape.
+         * The MCP layer reads $_REQUEST['page'] and `per_page` to drive the
+         * underlying paginator (matches `$model->paginate()` behavior).
+         */
+        public static function buildContactsQuery($filter)
+        {
+        }
+        /**
+         * Validate the universal-filter shape before it's used. Returns
+         * `true` on success or a WP_Error (`invalid_param`) on failure.
+         *
+         * Checks enforced (all fail-closed — a bad value never silently widens
+         * the result set):
+         *   1. `statuses[]` — must be in fluentcrm_subscriber_statuses().
+         *   2. `sms_statuses[]` — must be in fluentcrm_subscriber_sms_statuses().
+         *   3. `contact_type` — must be a key in fluentcrm_contact_types().
+         *   4. `advanced_filters` — items must carry source[provider, property] +
+         *      operator, and the (provider, property) pair must be registered in
+         *      Helper::getAdvancedFilterOptions(). Otherwise the matching engine
+         *      silently falls back to "match everyone".
+         *
+         * Operator-test report 2026-05-07 #1 — invalid statuses were being
+         * silently dropped by buildContactsQueryArgs(), which made the agent
+         * think it was targeting a narrow segment while actually hitting all
+         * 12,863 contacts. Round-2 review #3 covered the advanced_filters
+         * shape; round-4 review P0 #2 covered the (provider, property) pair.
+         */
+        public static function validateUniversalFilter($filter)
+        {
+        }
+        /**
+         * Drop malformed entries from a caller-provided advanced_filters payload
+         * so ContactsQuery::formatAdvancedFilters doesn't fatal on a count(null).
+         *
+         * Each item must be {source: [provider, property], operator, value[,
+         * extra_value]}. Items without a 2-tuple `source` and a non-empty
+         * `operator` are silently dropped. Empty groups are removed.
+         *
+         * @param mixed $groups
+         * @return array
+         */
+        public static function normalizeAdvancedFilters($groups)
+        {
+        }
+        /**
+         * Cached map of registered (provider => [property, ...]) pairs that
+         * FluentCRM actually understands. Used to validate caller-supplied
+         * advanced_filters before they hit ContactsQuery — without this gate,
+         * an unknown (provider, property) pair causes a silent fallback to
+         * "match everyone" because the action hook simply doesn't fire and
+         * the where-clause never narrows (round-4 review P0 #2).
+         *
+         * Source of truth: Helper::getAdvancedFilterOptions() — the same
+         * registry the admin UI uses.
+         */
+        public static function knownAdvancedFilterPairs()
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Content handling
+        // ---------------------------------------------------------------------
+        /**
+         * Strip HTML tags, decode entities, collapse whitespace. Keeps anchor URLs
+         * inline as `[text](url)` so plain-text consumers don't lose them.
+         */
+        public static function htmlToText($html)
+        {
+        }
+        public static function detectContentType($body)
+        {
+        }
+        public static function dualBodyShape($html)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Pagination
+        // ---------------------------------------------------------------------
+        /**
+         * Normalize page/per_page from input. Mutates `$_REQUEST` so the framework
+         * paginator picks up the values — that is FluentCRM's existing pattern.
+         */
+        public static function paginationFromInput($input, $defaultPerPage = 15, $maxPerPage = 100)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Validation
+        // ---------------------------------------------------------------------
+        /**
+         * Return the registered custom-field slugs for contacts. Cached for
+         * the request lifetime — fluentcrm_get_custom_contact_fields() is
+         * already statically cached but we don't want to repeat the array
+         * walk for every bulk row.
+         *
+         * @return string[]
+         */
+        public static function knownContactCustomFieldSlugs()
+        {
+        }
+        /**
+         * Diff caller-supplied custom-field keys against the registered
+         * schema. Unknown keys would otherwise be silently dropped by
+         * Subscriber::syncCustomFieldValues — the agent thinks the value
+         * persisted but nothing was saved (operator-test report 2026-05-07
+         * #6).
+         *
+         * @param  array $customFields
+         * @return array{known: array<string,mixed>, unknown: string[]}
+         */
+        public static function diffCustomFields($customFields)
+        {
+        }
+        /**
+         * Parse and validate an agent-supplied scheduled_at into a DateTime in
+         * the site timezone. Operator-test report 2026-05-07 #3 — previously
+         * the validated DateTime was discarded and the raw input string was
+         * passed through to MySQL, which silently dropped the offset (a
+         * datetime column has no timezone). On read, toIso8601 then re-parsed
+         * the naive string in PHP's default timezone (UTC), producing wrong
+         * absolute times.
+         *
+         * Input convention:
+         *   - ISO-8601 with offset → respected as written.
+         *   - Bare datetime / date  → interpreted as SITE timezone (matches
+         *     FluentCRM's storage convention).
+         *
+         * The caller stores `$dt->format('Y-m-d H:i:s')` which is now
+         * unambiguous because `$dt` carries the site tz.
+         */
+        public static function validateScheduledAt($iso, $minFutureSeconds = 60)
+        {
+        }
+        /**
+         * Heuristic: does the string carry timezone info (Z or ±HH:MM / ±HHMM)
+         * after the time component? Date-only strings always count as bare.
+         */
+        private static function stringHasTimezone($s)
+        {
+        }
+        /**
+         * Site timezone as a DateTimeZone — the object form callers need for
+         * DateTime construction / setTimezone. wp_timezone() ships in WP 5.3+
+         * (we target 6.9+).
+         */
+        public static function siteTimezoneObject()
+        {
+        }
+        /**
+         * Format a stored mysql datetime (assumed in site tz) into the dual
+         * shape callers expose to agents — get-campaign / actionSchedule
+         * surface this so an operator never has to guess which timezone a
+         * scheduled_at value is in.
+         *
+         * @return array{utc:?string, site_local:?string, site_timezone:string}|null
+         */
+        public static function formatScheduledAtDual($value)
+        {
+        }
+        /**
+         * Friendly site timezone label. wp_timezone() returns a numeric offset
+         * like "+00:00" when gmt_offset is 0 and timezone_string is empty;
+         * fluentCrmGetTimezoneString() correctly returns "UTC" in that case.
+         */
+        public static function siteTimezoneName()
+        {
+        }
+        public static function permissionGuard($cap)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Errors
+        // ---------------------------------------------------------------------
+        public static function error($code, $message, $details = [])
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Misc
+        // ---------------------------------------------------------------------
+        public static function toIso8601($value)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Modules\MCP {
+    /**
+     * Bootstrap for FluentCRM's Model Context Protocol (MCP) integration.
+     *
+     * Hooks the WordPress 6.9 Abilities API + WP MCP Adapter (separate plugin):
+     *  - registers a `fluent-crm` ability category
+     *  - hands AbilitiesRegistrar a chance to declare every CRM ability
+     *  - fires `fluent_crm/mcp_loaded` so FluentCampaign Pro can register its own
+     *    abilities under the same namespace
+     *  - filters the adapter's default-server config to expose every CRM ability
+     *    as a direct MCP tool (not just an adapter wrapper)
+     *
+     * All the heavy lifting is gated by the lazy-register guard in
+     * `app/Hooks/actions.php`, which checks `function_exists('wp_register_ability')`
+     * before instantiating this class — so this code never runs on WP < 6.9 or
+     * sites missing the adapter plugin.
+     */
+    class MCPInit
+    {
+        public function init()
+        {
+        }
+        public function registerCategory()
+        {
+        }
+        public function registerAbilities()
+        {
+        }
+        /**
+         * Register the dedicated FluentCRM MCP server when the WP MCP Adapter
+         * fires `mcp_adapter_init`.
+         *
+         * @param \WP\MCP\Core\McpAdapter $adapter
+         */
+        public function registerCustomServer($adapter)
+        {
+        }
+        /**
+         * Public helper used by the Settings UI and the snippet generator to
+         * report a stable endpoint URL for the FluentCRM MCP server.
+         */
+        public static function getEndpointUrl()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Modules\MCP\Tools {
+    /**
+     * Campaign-centric MCP tools.
+     *
+     * Read tools (Phase 2): listCampaigns, getCampaign.
+     * Write tools (Phase 3): upsertCampaign, changeCampaignStatus.
+     *
+     * Reads query the Campaign model directly (matching CampaignController's read
+     * paths) and shape the result through MCPHelper formatters.
+     */
+    class CampaignTools
+    {
+        // -----------------------------------------------------------------
+        // Read: list-campaigns
+        // -----------------------------------------------------------------
+        public static function listCampaigns($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Read: get-campaign
+        // -----------------------------------------------------------------
+        public static function getCampaign($params)
+        {
+        }
+        /**
+         * Render a one-off send (`type=custom_email_campaign`) for get-campaign.
+         * One-offs don't have a marketing lifecycle — the row's `status` column
+         * stays 'draft' even after delivery (the real status lives on the
+         * single fc_campaign_emails row). Surface a `one_off_status` field
+         * that reflects what actually happened, plus the recipient. Operator-
+         * test report 2026-05-07 #4.
+         */
+        private static function formatOneOffEmail($campaign)
+        {
+        }
+        /**
+         * Reverse the flat [{list, tag}] storage back into the agent-friendly
+         * {lists:[{id,title}], tags:[{id,title}]} shape for output. Items with
+         * 'all' on either side are treated as wildcards (omitted from the
+         * matching collection). Distinct ids only.
+         */
+        private static function recipientsForOutput($settings, $key)
+        {
+        }
+        private static function settingsForOutput($settings)
+        {
+        }
+        /**
+         * Revenue meta is shaped like ['orderIds' => [1,2,3], 'usd' => 12450,
+         * 'eur' => 600] — currency keys are interleaved with the
+         * 'orderIds' tracking array. Iterating naïvely and grabbing the first
+         * key produced `currency: "orderIds"` and a wrong amount (round-4
+         * review P1 #7). Skip the meta key, sum numeric values across all
+         * currency entries, and surface the order count.
+         */
+        private static function campaignRevenue($campaign)
+        {
+        }
+        /**
+         * A/B subjects live in fc_meta keyed by object_id (NOT campaign_id —
+         * that column doesn't exist on fc_meta). The Subject model's global
+         * scope handles the object_type filter.
+         *
+         * Storage shape (per Campaign::syncSubjects): `key` is a stable
+         * identifier, `value` is the subject string itself. Operator-test
+         * report 2026-05-07 #7 — the read path previously assumed `value`
+         * was a serialized {email_subject, weight} array (which it isn't),
+         * so the response always came back empty even after a successful
+         * upsert.
+         */
+        private static function campaignSubjects($campaign)
+        {
+        }
+        /**
+         * Link report — delegate to CampaignUrlMetric::getLinksReport, which
+         * joins fc_campaign_url_metrics → fc_url_stores correctly (the metrics
+         * table only stores url_id; the URL string lives in fc_url_stores).
+         */
+        private static function campaignLinkReport($campaign)
+        {
+        }
+        /**
+         * Find the first available title shaped like "Title (2)", "Title (3)", …
+         * given a base title that already exists. Mirrors what CampaignController
+         * ::ensureUniqueDefaultTitle does for the "Untitled" placeholder, but
+         * for any agent-supplied title.
+         */
+        private static function nextAvailableTitle($baseTitle)
+        {
+        }
+        /**
+         * Estimate recipients for a campaign using its stored segment settings.
+         *
+         * Routes through the same `Campaign::getSubscriberIdsCountBySegmentSettings`
+         * helper as `upsert-campaign.estimated_recipients` and the underlying
+         * estimator behind `estimate-dynamic-segment` (via ContactsQuery's filter
+         * translation) — so all three callers converge on the same number for the
+         * same filter (review bug #4).
+         */
+        private static function campaignRecipientsEstimate($campaign)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: upsert-campaign
+        // -----------------------------------------------------------------
+        public static function upsertCampaign($params)
+        {
+        }
+        /**
+         * Pre-flight validation for upsert-campaign — must run BEFORE any
+         * Campaign row is created so a bad payload never leaves an orphan
+         * draft (operator-test report 2026-05-07 #2). Centralizes:
+         *
+         *   - design_template enum (free includes only, no visual_builder)
+         *   - recipients shape (lists/tags/sending_filter only)
+         *   - exclude_recipients shape (same constraint)
+         *
+         * @return true|\WP_Error
+         */
+        private static function validateUpsertInput($params)
+        {
+        }
+        /**
+         * Campaigns can target lists + tags only. The `recipients` object on
+         * upsert-campaign accepts the universal filter shape but anything
+         * other than {tags, lists, sending_filter} is silently dropped on
+         * persistence — and previously that drop didn't even produce a
+         * warning. Hard-error now so the agent can take the documented
+         * workaround (apply a temporary tag, target by tag, remove after
+         * send).
+         *
+         * Round-4 review P0 #1 — single most damaging bug, 3.5x audience
+         * inflation in one test.
+         *
+         * @param array  $recipients
+         * @param string $paramName Either 'recipients' or 'exclude_recipients'
+         * @return true|\WP_Error
+         */
+        private static function rejectUnsupportedRecipientKeys($recipients, $paramName)
+        {
+        }
+        /**
+         * Translate the universal filter shape to the flat
+         * [{list, tag}] array that Campaign settings.subscribers expects
+         * (see Campaign::getSubscribeIdsByListModel — its loop reads
+         * `$item['list']` and `$item['tag']` directly).
+         *
+         * Semantics match ContactsQuery:
+         *   - tags only        → [{list:'all', tag:N}, ...]            (tag IN [...])
+         *   - lists only       → [{list:N, tag:'all'}, ...]            (list IN [...])
+         *   - lists AND tags   → cross product so every (list, tag) pair lands
+         *                        in queryGroups, ANDed within a pair, ORed across
+         *
+         * Storage shape: array of {list, tag} pairs at the top level
+         * (NOT a nested {lists:[], tags:[]} object — that was the round-1 bug).
+         */
+        private static function filterToCampaignSegment($filter)
+        {
+        }
+        private static function estimateRecipientsFromSettings($settings)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: change-campaign-status
+        // -----------------------------------------------------------------
+        public static function changeCampaignStatus($params)
+        {
+        }
+        private static function actionSchedule($campaign, $params, $previousStatus)
+        {
+        }
+        private static function actionUnschedule($campaign, $previousStatus)
+        {
+        }
+        private static function actionPause($campaign, $previousStatus)
+        {
+        }
+        private static function actionResume($campaign, $previousStatus)
+        {
+        }
+        private static function actionDuplicate($campaign, $params)
+        {
+        }
+        private static function actionDelete($campaign)
+        {
+        }
+    }
+    /**
+     * Contact-centric MCP tools.
+     *
+     * Read tools (Phase 2): listContacts, getContact.
+     * Write tools (Phase 3): upsertContact, bulkUpsertContacts, deleteContact,
+     * applySegmentsToContacts, addContactNote.
+     *
+     * Each method delegates to existing FluentCRM services (ContactsQuery,
+     * Subscriber model, Helper::deleteContacts, etc.) — no business-logic
+     * duplication — and shapes the result through MCPHelper formatters.
+     */
+    class ContactTools
+    {
+        // -----------------------------------------------------------------
+        // Read: list-contacts
+        // -----------------------------------------------------------------
+        public static function listContacts($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Read: get-contact
+        // -----------------------------------------------------------------
+        public static function getContact($params)
+        {
+        }
+        /**
+         * Activity timeline = tracked events. The fc_event_tracking table is
+         * created by the free plugin's migrations but may not exist on legacy
+         * installs that never ran the migration. Probe with SHOW TABLES so we
+         * never trigger wpdb's print_error (which leaks HTML into the response
+         * body before the JSON envelope, even when the exception is caught).
+         */
+        private static function buildActivityTimeline($subscriber)
+        {
+        }
+        private static function buildPurchaseHistory($subscriber)
+        {
+        }
+        private static function buildSupportTickets($subscriber)
+        {
+        }
+        private static function buildInfoWidgets($subscriber)
+        {
+        }
+        private static function buildAiSummary($subscriber, $generate = false)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: upsert-contact
+        // -----------------------------------------------------------------
+        public static function upsertContact($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: delete-contact-note (round 3 review #11)
+        // -----------------------------------------------------------------
+        public static function deleteContactNote($params)
+        {
+        }
+        /**
+         * Compute the would-create list for a dry-run preview. Skips numeric
+         * inputs (those are id lookups, not creation candidates — review B3
+         * round 3) and only flags string names that have no existing match.
+         */
+        private static function wouldCreateNames($items, $kind = 'tag')
+        {
+        }
+        /**
+         * Map the agent-facing {line_1, line_2, city, state, postal_code,
+         * country} shape onto the column-named payload that Subscriber
+         * createOrUpdate consumes. Mutates $payload by reference. Shared
+         * between upsert-contact and bulk-upsert-contacts so both stay in
+         * lock-step (operator-test report 2026-05-07 #5).
+         */
+        private static function applyAddressShape(array &$payload, $address)
+        {
+        }
+        /**
+         * Snapshot the diff-relevant columns of a Subscriber before any
+         * in-place mutation (rename, save). diffFields() compares against
+         * this snapshot so fields_updated stays correct even after the row
+         * has been written.
+         *
+         * @return array<string,string>
+         */
+        private static function snapshotCompareFields($subscriber)
+        {
+        }
+        private static function compareFieldNames()
+        {
+        }
+        /**
+         * @param array<string,string>|null $before  Snapshot from snapshotCompareFields()
+         * @param object                    $after   Subscriber model post-save
+         */
+        private static function diffFields($before, $after)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: bulk-upsert-contacts
+        // -----------------------------------------------------------------
+        public static function bulkUpsertContacts($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: delete-contact
+        // -----------------------------------------------------------------
+        public static function deleteContact($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: apply-segments-to-contacts
+        // -----------------------------------------------------------------
+        public static function applySegmentsToContacts($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: add-contact-note
+        // -----------------------------------------------------------------
+        public static function addContactNote($params)
+        {
+        }
+    }
+    /**
+     * `get-crm-context` — discovery surface (MCP_PLAN.md § 5.1).
+     *
+     * The agent calls this once per session to learn:
+     *  - who they are (current WP user, FluentCRM permissions)
+     *  - what reference data is available (top tags, lists, custom fields)
+     *  - which enums are valid (statuses, contact types, design templates, etc.)
+     *  - the install's current sender configuration
+     *  - guidelines that nudge the agent toward correct usage
+     *
+     * Cached for 60 seconds per WP user via transient. Invalidation hooks (set up
+     * in `MCPInit::init()` lifecycle) clear the cache when underlying reference
+     * data changes.
+     */
+    class ContextTools
+    {
+        const CACHE_TTL = 60;
+        public static function getContext($params = [])
+        {
+        }
+        private static function buildContext($userId)
+        {
+        }
+        /**
+         * Per-tool safety classification — round-3 review R3.
+         *
+         * Lets agents branch on a stable code instead of parsing tool
+         * descriptions or relying on annotations alone (which only
+         * differentiate readonly / destructive in two coarse buckets).
+         *
+         * Levels:
+         *   safe_render          — no DB writes, no sends, no side effects
+         *   readonly             — DB reads only
+         *   creates_or_mutates_draft — writes data the user can still review/cancel
+         *   mutating_with_dry_run    — writes data; dry_run preview available
+         *   destructive_send         — actually sends mail to a real recipient
+         *   destructive_irrecoverable — deletion / cannot be undone
+         */
+        private static function buildSafetyLevels()
+        {
+        }
+        /**
+         * Rate / cap hints — round-3 review R4.
+         *
+         * Surfaces the limits that are otherwise embedded only in tool
+         * descriptions ("Cap 5000 per call"). Lets agents pre-validate
+         * batch sizes deterministically.
+         */
+        private static function buildRateHints()
+        {
+        }
+        /**
+         * Versioned capabilities map — round-3 review R9.
+         *
+         * Lets agents adapt their strategy across MCP versions without trial
+         * and error. Bump `version` whenever a capability is added/removed.
+         */
+        private static function buildCapabilities()
+        {
+        }
+        private static function buildStats()
+        {
+        }
+        private static function topTagsForContext($limit = 50)
+        {
+        }
+        private static function topListsForContext($limit = 50)
+        {
+        }
+        private static function formatRefList($items, $keyField)
+        {
+        }
+        /**
+         * Design templates the MCP tools allow agents to select. The
+         * visual_builder template is intentionally excluded — it's an
+         * interactive Gutenberg editor experience, not something an agent
+         * should be authoring against. Use `mcp_allowed_design_templates`
+         * to publish it deliberately if a custom workflow needs it.
+         */
+        public static function allowedDesignTemplates()
+        {
+        }
+        private static function buildDefaultSender()
+        {
+        }
+        private static function buildCustomFieldSchema()
+        {
+        }
+        /**
+         * Flatten Helper::getGlobalSmartCodes() into a compact, agent-friendly
+         * shape — review #19. Preserves group structure so the agent can find
+         * codes by source (contact / custom fields / general / extensions).
+         */
+        private static function buildSmartCodes()
+        {
+        }
+        private static function detectAiProvider()
+        {
+        }
+        private static function buildGuidelines()
+        {
+        }
+        /**
+         * Invalidate cached context for every user. Hooked from MCPInit on the
+         * relevant FluentCRM events.
+         */
+        public static function invalidateCache()
+        {
+        }
+    }
+    /**
+     * One-off email tools — wraps SubscriberController::sendCustomEmail
+     * (MCP_PLAN.md § 5.9), exposing every option the contact-profile "Send
+     * Custom Email" UI surfaces *except* the interactive ones (visual_builder
+     * design template and template_id picker):
+     *
+     *   - subject + preheader + body
+     *   - design_template (plain | classic | raw_html | raw_classic)
+     *   - mailer overrides: from_name/from_email/reply_to_name/reply_to_email
+     *   - is_transactional (auto-disables the footer to match UI behavior)
+     *   - explicit disable_footer override
+     *   - click/open trackers (yes|no|anonymous)
+     *   - UTM tagging
+     *   - free-form settings passthrough for template_config / footer_settings
+     *
+     * Reuses the normal queue + bounce + FluentSMTP plumbing so MCP-sent emails
+     * behave identically to one-offs sent from the contact profile.
+     */
+    class EmailTools
+    {
+        public static function sendEmailToContact($params)
+        {
+        }
+        /**
+         * Render an RFC-5322 "Display Name <addr>" string. Previous version
+         * (`trim(... ' <>')`) ate the closing `>` from any "Name (with parens)"
+         * — review #15.
+         */
+        private static function formatAddress($name, $email)
+        {
+        }
+        /**
+         * `send-test-email` — render and send a one-off test copy of either:
+         *   - a saved campaign (pass campaign_id), or
+         *   - a draft body/subject the agent supplies inline.
+         *
+         * Differs from send-email-to-contact: NO campaign record is created,
+         * NO subscriber is enrolled, NO row is logged to fc_campaign_emails,
+         * and the recipient does NOT need to be subscribed. The subject is
+         * prefixed with "TEST:" to match what the contact-profile UI does.
+         * Mirrors CampaignController::sendTestEmail.
+         */
+        public static function sendTestEmail($params)
+        {
+        }
+        private static function yesNo($value, $default = 'no')
+        {
+        }
+        private static function trackerValue($value)
+        {
+        }
+    }
+    /**
+     * Automation (funnel) MCP tools.
+     *
+     * Read tools (Phase 2): listAutomations, getAutomation.
+     * Write tools (Phase 3): updateContactAutomationStatus.
+     */
+    class FunnelTools
+    {
+        // -----------------------------------------------------------------
+        // Read: list-automations
+        // -----------------------------------------------------------------
+        public static function listAutomations($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Read: get-automation
+        // -----------------------------------------------------------------
+        public static function getAutomation($params)
+        {
+        }
+        /**
+         * Format funnel sequences for MCP. By default we strip large body
+         * fields out of `settings` (action_name=send_custom_email embeds an
+         * entire campaign payload including email_body). Pass include_bodies
+         * = true to get the full settings tree — review #7 (token bloat).
+         */
+        private static function formatSequences($sequences, $includeBodies = false)
+        {
+        }
+        /**
+         * Recursively redact body / html fields. Replaces them with a marker so
+         * the agent knows the field exists and can re-fetch with include_bodies.
+         *
+         * Round-3 review B5: dropped the previous "only if >200 chars" gate —
+         * any stored body field gets stripped now, regardless of size, so the
+         * include_bodies=false contract is honored consistently. Rare to have a
+         * truly tiny body field anyway, and the marker is shorter than most
+         * email bodies.
+         */
+        private static function stripBodyFields($value)
+        {
+        }
+        private static function buildStepReport($funnel)
+        {
+        }
+        private static function inProgressCount($funnelId)
+        {
+        }
+        private static function triggerLabelMap()
+        {
+        }
+        // -----------------------------------------------------------------
+        // Read: list-funnel-subscribers (round-4 review P3 #11)
+        // -----------------------------------------------------------------
+        /**
+         * List the contacts currently in a funnel filtered by subscription
+         * status. Closes a real workflow gap: "this customer just upgraded —
+         * pull them out of trial-onboarding" requires knowing who's in the
+         * funnel first, and there was no way to find that without already
+         * knowing the contact id.
+         */
+        public static function listFunnelSubscribers($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Write: update-contact-automation-status
+        // -----------------------------------------------------------------
+        public static function updateContactAutomationStatus($params)
+        {
+        }
+    }
+    /**
+     * Tag/list management — round-3 review item #11.
+     *
+     * `manage-tag` and `manage-list` cover create, update, delete, and merge
+     * operations. Splitting create/update/delete into separate tools would
+     * triple the surface; the action enum keeps it compact while the
+     * `destructive` annotation tells MCP clients to confirm delete + merge.
+     *
+     * Merge semantics: re-pivot every subscriber attached to a `from` tag/list
+     * onto the `to` target, then delete the `from` rows. Idempotent — running
+     * the same merge twice no-ops on the second call (subscribers are already
+     * pivoted, sources already deleted).
+     */
+    class SegmentTools
+    {
+        // -----------------------------------------------------------------
+        // manage-tag
+        // -----------------------------------------------------------------
+        public static function manageTag($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // manage-list
+        // -----------------------------------------------------------------
+        public static function manageList($params)
+        {
+        }
+        private static function manageSegment($params, $kind)
+        {
+        }
+        private static function actionCreate($params, $kind)
+        {
+        }
+        private static function actionUpdate($params, $kind)
+        {
+        }
+        private static function actionDelete($params, $kind)
+        {
+        }
+        private static function actionMerge($params, $kind)
+        {
+        }
+        // -----------------------------------------------------------------
+        // helpers
+        // -----------------------------------------------------------------
+        private static function find($id, $kind)
+        {
+        }
+        private static function lookupByTitleOrSlug($title, $slug, $kind)
+        {
+        }
+        private static function format($row)
+        {
+        }
+        private static function attachedSubscriberCount($row, $kind)
+        {
+        }
+        private static function attachedSubscribers($row, $kind)
+        {
+        }
+        private static function createdHook($kind)
+        {
+        }
+        private static function deletedHook($kind)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services {
+    class AutoSubscribe
+    {
+        public function getRegistrationSettings()
+        {
+        }
+        public function getRegistrationFields()
+        {
+        }
+        public function getCommentSettings()
+        {
+        }
+        public function getCommentFields()
+        {
+        }
+        public function getUserSyncSettings()
+        {
+        }
+        public function getUserSyncFields()
+        {
+        }
+        public function getWooCheckoutSettings()
+        {
+        }
+        public function getWooCheckoutFields()
+        {
+        }
+    }
+    class BlockParser
+    {
+        public function __construct($subscriber = null)
+        {
+        }
+        public function parse($content)
+        {
+        }
+        private function shouldFallbackToLegacy($content, $parsed)
+        {
+        }
+        private static $syncedPatternCache = [];
+        private function renderSyncedPattern($data)
+        {
+        }
+        private function parseWithLegacyParser($content)
+        {
+        }
+        private function sanitizeBlock($block)
+        {
+        }
+        public function alterBlockContent($content, $data)
+        {
+        }
+        private function getMediaTextOpening($block)
+        {
+        }
+        private function getMediaTextClosing($block)
+        {
+        }
+        private function getRowOpening($block)
+        {
+        }
+        private function getRowClosing($block)
+        {
+        }
+        private function getColumnOpening($block)
+        {
+        }
+        private function getColumnClosing($block)
+        {
+        }
+        private function getButtonsOpening($block)
+        {
+        }
+        private function getButtonWrapper($content, $data)
+        {
+        }
+        private function getButtonsClosing($block)
+        {
+        }
+        private function renderConditionalBlock($content, $data)
+        {
+        }
+        private function getConditionalBlockSubscriber()
+        {
+        }
+        /**
+         * Keep backward compatibility with v2 conditional block values.
+         */
+        private function normalizeConditionalCheckType($checkType)
+        {
+        }
+        private function getImageBlockHtml($block)
+        {
+        }
+        private function renderLatestPosts($attributes)
+        {
+        }
+        private function getSpacing($key, $block)
+        {
+        }
+    }
+    class BlockParserHelper
+    {
+        private static $subscriber;
+        public static function setSubscriber($subscriber)
+        {
+        }
+        public static function getSubscriber()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\BlockRender {
+    class BlockEditorHelper
+    {
+        public static function getStyleDefauls()
+        {
+        }
+        public static function getDefaultPreset($key = '')
+        {
+        }
+        public static function getStyleDefaultPresets()
+        {
+        }
+        public static function replaceStyleSlugsWithValues($css = '')
+        {
+        }
+        public static function renderAtts($atts = [], $echo = false)
+        {
+        }
+        public static function renderStyles($styles = [], $echo = false)
+        {
+        }
+        public static function getBorderColor($attrs = [], $default = '')
+        {
+        }
+        public static function getDynamicCssForEditor()
+        {
+        }
+        public static function getDefaultPrefConfig()
+        {
+        }
+    }
+    class CartProduct
+    {
+        private static $productsCache = [];
+        public static function renderProduct($buttonHtml, $data)
+        {
+        }
+        private static function getProductData($productId)
+        {
+        }
+        private static function getContentTd($contentHtml, $template, $extraStyle = '')
+        {
+        }
+        private static function buildButtonStyle($atts)
+        {
+        }
+        private static function normalizeTemplate($template)
+        {
+        }
+    }
+    class CartProductData
+    {
+        /**
+         * Query FluentCart products and return normalized product payloads.
+         *
+         * @param array $options
+         * @param string $imageSize
+         * @return array
+         */
+        public static function getProducts($options = [], $imageSize = 'large')
+        {
+        }
+        /**
+         * Get a single FluentCart product by ID.
+         *
+         * @param int $productId
+         * @param string $imageSize
+         * @return array|null
+         */
+        public static function getProductById($productId, $imageSize = 'large')
+        {
+        }
+        /**
+         * Build query args for FluentCart products.
+         *
+         * @param array $options
+         * @return array
+         */
+        public static function buildQueryArgs($options = [])
+        {
+        }
+        private static function buildDetailMap($postIds)
+        {
+        }
+        private static function mapPostToProduct($post, $detailMap, $imageSize)
+        {
+        }
+    }
+    class CartProducts
+    {
+        /**
+         * Render FluentCart products list block for email body.
+         *
+         * @param string $content
+         * @param array $data
+         * @return string
+         */
+        public static function renderProducts($content, $data)
+        {
+        }
+        private static function getFluentCartProducts($atts)
+        {
+        }
+    }
+    class ProductListRenderer
+    {
+        /**
+         * Default block attributes for list-style product blocks.
+         *
+         * @param array $attrs
+         * @return array
+         */
+        public static function mergeDefaultAttributes($attrs = [])
+        {
+        }
+        /**
+         * Convert normalized product arrays into email-safe HTML.
+         *
+         * @param array $products
+         * @param array $atts
+         * @param string $tableClass
+         * @return string
+         */
+        public static function renderProducts($products, $atts, $tableClass = 'fc_woo_products')
+        {
+        }
+        public static function postProcessRendered($html, $data)
+        {
+        }
+        private static function renderProduct($product, $atts, $layout)
+        {
+        }
+        private static function renderLayoutTwoProduct($title, $description, $priceHtml, $image, $permalink, $buttonText, $titleStyle, $descriptionStyle, $priceStyle, $buttonStyle, $showImage, $showDescription, $showPrice, $showButton)
+        {
+        }
+        private static function normalizeLayout($layout)
+        {
+        }
+        /**
+         * Prepare product price markup for email/block-editor visual output.
+         *
+         * WooCommerce sale price HTML includes screen-reader helper spans. Remove
+         * those snippet-visible labels while keeping visible sale prices readable.
+         *
+         * @param string $priceHtml Raw product price HTML.
+         * @param string $fallback Fallback text when no price is available.
+         * @return string
+         */
+        public static function preparePriceHtml($priceHtml, $fallback = '')
+        {
+        }
+        private static function removeScreenReaderText($html)
+        {
+        }
+        private static function addInlineStyleToTag($html, $tag, $style)
+        {
+        }
+        private static function removeAttributeFromTag($html, $tag, $attribute)
+        {
+        }
+        private static function removeProductImagePlaceholders($html)
+        {
+        }
+        private static function stripImageColumnsWithRegex($html)
+        {
+        }
+        private static function normalizeCellStyle($style)
+        {
+        }
+        private static function removeNode($node)
+        {
+        }
+        private static function isImageOnlyCell($cell)
+        {
+        }
+        private static function isShowImageEnabled($attrs)
+        {
+        }
+    }
+    class RenderValueHelper
+    {
+        /**
+         * Normalize mixed values coming from block attrs into bool.
+         *
+         * @param mixed $value
+         * @param bool $default
+         * @return bool
+         */
+        public static function normalizeBool($value, $default = true)
+        {
+        }
+    }
+    class WooProduct
+    {
+        private static $productsCache = [];
+        public static function renderProduct($buttonHtml, $data)
+        {
+        }
+        private static function getContentTd($contentHtml, $template, $extraStyle = '')
+        {
+        }
+        /**
+         * Returns the main product image URL.
+         *
+         * @param \WC_Product $product Product object.
+         * @param string $size Image size, defaults to 'full'.
+         * @return string
+         */
+        public static function getImage($product, $size = 'full')
+        {
+        }
+    }
+    class WooProducts
+    {
+        /**
+         * Render WooCommerce products list block for email body.
+         *
+         * @param string $content
+         * @param array $data
+         * @return string
+         */
+        public static function renderProducts($content, $data)
+        {
+        }
+        private static function getWooProducts($atts)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services {
+    class CampaignProcessor
+    {
+        protected $campaignId = false;
+        protected $initialStatus = 'scheduling';
+        public function __construct($campaignId)
+        {
+        }
+        /*
+         * By Default, this function will process emails in chunks of 30 (customizable) and run for max 30 seconds per processing cycle
+         * @param int $perChunk
+         * @param int $runTime
+         * @return Campaign|false
+         */
+        public function processEmails($perChunk = 0, $runTime = 30)
+        {
+        }
+        private function subscribe($campaign, $subscribersModel)
+        {
+        }
+        /**
+         * Atomically acquire the processing lock for this campaign.
+         *
+         * Uses fc_meta table with the '_processing_emails' key. The lock row
+         * is created on first acquire and reused. A single UPDATE with a WHERE
+         * clause prevents TOCTOU race conditions.
+         *
+         * @return bool True if lock acquired, false if another process holds it.
+         */
+        private function acquireProcessingLock()
+        {
+        }
+        /**
+         * Refresh the lock timestamp to prevent stale-lock detection.
+         */
+        private function refreshProcessingLock()
+        {
+        }
+        /**
+         * Release the processing lock.
+         */
+        private function releaseProcessingLock()
+        {
+        }
+        public function getSchedulingMethod()
+        {
+        }
+    }
+    class ContactsQuery
+    {
+        private $args = [];
+        private $model = null;
+        public function __construct($args = [])
+        {
+        }
+        private function setupQuery()
+        {
+        }
+        public function get()
+        {
+        }
+        public function paginate()
+        {
+        }
+        public function getModel()
+        {
+        }
+        private function returnSubscribers($subscribers)
+        {
+        }
+        private function formatAdvancedFilters()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\CrmMigrator {
+    abstract class BaseMigrator
+    {
+        abstract public function getInfo();
+        abstract public function verifyCredentials($credential);
+        abstract public function getSummary($settings);
+        abstract public function runImport($settings);
+        abstract public function getListTagMappings($settings);
+        public function getFillables($with = ['main_fields', 'address', 'custom_fields'])
+        {
+        }
+        public function getMergedData($remoteData, $fieldMaps)
+        {
+        }
+        /**
+         * Maybe create field options.
+         *
+         * When importing multi-checkbox or multi-select data, we can save time by
+         * auto-populating the options into the FluentCRM custom field config.
+         *
+         * @param array $mergeData The loaded custom field data.
+         * @since 2.8.34
+         *
+         */
+        public function maybeCreateFieldOptions($mergeData)
+        {
+        }
+        public function mapTags($tagMappings)
+        {
+        }
+        public function getTagId($tagName)
+        {
+        }
+        public function getListId($listName)
+        {
+        }
+        public function getInfoIcon()
+        {
+        }
+    }
+    class ActiveCampaignMigrator extends \FluentCrm\App\Services\CrmMigrator\BaseMigrator
+    {
+        public function getInfo()
+        {
+        }
+        public function verifyCredentials($credential)
+        {
+        }
+        public function getListTagMappings($postedData)
+        {
+        }
+        public function getSummary($postedData)
+        {
+        }
+        public function runImport($postedData)
+        {
+        }
+        private function getApi($credentials)
+        {
+        }
+        private function getListingArray($listMappings)
+        {
+        }
+        public function getSvgLogo()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\CrmMigrator\Api {
+    class ActiveCampaign
+    {
+        protected $apiUrl = null;
+        protected $apiKey = null;
+        public function __construct($apiUrl, $apiKey = null)
+        {
+        }
+        public function default_options()
+        {
+        }
+        public function make_request($action, $options = array(), $method = 'GET')
+        {
+        }
+        /**
+         * Test the provided API credentials.
+         *
+         * @access public
+         * @return bool
+         */
+        public function auth_test()
+        {
+        }
+        /**
+         * Get all custom list fields.
+         *
+         * @access public
+         * @return array
+         */
+        public function get_custom_fields()
+        {
+        }
+        public function getContacts($args = ['offset' => 0, 'status' => -1])
+        {
+        }
+        public function contactPaginator($args = ['limit' => 20, 'public' => 0])
+        {
+        }
+        /**
+         * Get all lists in the system.
+         *
+         * @access public
+         * @return array
+         */
+        public function get_lists()
+        {
+        }
+        public function getTags()
+        {
+        }
+        public function maybeError($response)
+        {
+        }
+    }
+    class ConvertKit
+    {
+        protected $apiUrl = 'https://api.convertkit.com/v3/';
+        protected $apiKey = null;
+        protected $apiSecret = null;
+        public function __construct($apiKey = null, $apiSecret = null)
+        {
+        }
+        public function default_options()
+        {
+        }
+        public function make_request($action, $options = array(), $method = 'GET')
+        {
+        }
+        /**
+         * Test the provided API credentials.
+         *
+         * @access public
+         * @return bool
+         */
+        public function auth_test()
+        {
+        }
+        public function subscribe($formId, $data)
+        {
+        }
+        /**
+         * Get all Forms in the system.
+         *
+         * @access public
+         * @return array
+         */
+        public function getLists()
+        {
+        }
+        /**
+         * Get all Tags in the system.
+         *
+         * @access public
+         * @return array
+         */
+        public function getTags()
+        {
+        }
+        public function getCustomFields()
+        {
+        }
+        public function getSubscribers($args = [])
+        {
+        }
+        public function getTagSubscribers($tagId, $args = [])
+        {
+        }
+        public function getSubscriberTags($contactId)
+        {
+        }
+    }
+    class Drip
+    {
+        protected $apiKey = null;
+        protected $accountId = null;
+        private $apiUrl = "https://api.getdrip.com/v2/";
+        public function __construct($apiKey = null, $accountId = null)
+        {
+        }
+        public function make_request($endpoint = '', $data = array(), $method = 'POST')
+        {
+        }
+        /**
+         * Test the provided API credentials.
+         *
+         * @access public
+         * @return array|\WP_Error
+         */
+        public function auth_test()
+        {
+        }
+        public function sendAccountItems($endpoint, $args = [])
+        {
+        }
+        public function addContact($contact)
+        {
+        }
+        public function add_note($contact_id, $email, $note)
+        {
+        }
+    }
+    /**
+     * Super-simple, minimum abstraction MailChimp API v3 wrapper
+     * MailChimp API v3: http://developer.mailchimp.com
+     * This wrapper: https://github.com/drewm/mailchimp-api
+     *
+     * @author Drew McLellan <drew.mclellan@gmail.com>
+     * @version 2.4
+     */
+    class MailChimp
+    {
+        private $api_key;
+        private $api_endpoint = 'https://<dc>.api.mailchimp.com/3.0';
+        const TIMEOUT = 10;
+        /*  SSL Verification
+                Read before disabling:
+                http://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/
+            */
+        public $verify_ssl = true;
+        private $request_successful = false;
+        private $last_error = '';
+        private $last_response = array();
+        private $last_request = array();
+        /**
+         * Create a new instance
+         * @param string $api_key Your MailChimp API key
+         * @param string $api_endpoint Optional custom API endpoint
+         * @throws \Exception
+         */
+        public function __construct($api_key, $api_endpoint = null)
+        {
+        }
+        /**
+         * @return string The url to the API endpoint
+         */
+        public function getApiEndpoint()
+        {
+        }
+        /**
+         * Convert an email address into a 'subscriber hash' for identifying the subscriber in a method URL
+         * @param   string $email The subscriber's email address
+         * @return  string          Hashed version of the input
+         */
+        public function subscriberHash($email)
+        {
+        }
+        /**
+         * Was the last request successful?
+         * @return bool  True for success, false for failure
+         */
+        public function success()
+        {
+        }
+        /**
+         * Get the last error returned by either the network transport, or by the API.
+         * If something didn't work, this should contain the string describing the problem.
+         * @return  string|false  describing the error
+         */
+        public function getLastError()
+        {
+        }
+        /**
+         * Get an array containing the HTTP headers and the body of the API response.
+         * @return array  Assoc array with keys 'headers' and 'body'
+         */
+        public function getLastResponse()
+        {
+        }
+        /**
+         * Get an array containing the HTTP headers and the body of the API request.
+         * @return array  Assoc array
+         */
+        public function getLastRequest()
+        {
+        }
+        /**
+         * Make an HTTP DELETE request - for deleting data
+         * @param   string $method URL of the API request method
+         * @param   array $args Assoc array of arguments (if any)
+         * @param   int $timeout Timeout limit for request in seconds
+         * @return  array|false   Assoc array of API response, decoded from JSON
+         */
+        public function delete($method, $args = array(), $timeout = self::TIMEOUT)
+        {
+        }
+        /**
+         * Make an HTTP GET request - for retrieving data
+         * @param   string $method URL of the API request method
+         * @param   array $args Assoc array of arguments (usually your data)
+         * @param   int $timeout Timeout limit for request in seconds
+         * @return  array|false   Assoc array of API response, decoded from JSON
+         */
+        public function get($method, $args = array(), $timeout = self::TIMEOUT)
+        {
+        }
+        /**
+         * Make an HTTP PATCH request - for performing partial updates
+         * @param   string $method URL of the API request method
+         * @param   array $args Assoc array of arguments (usually your data)
+         * @param   int $timeout Timeout limit for request in seconds
+         * @return  array|false   Assoc array of API response, decoded from JSON
+         */
+        public function patch($method, $args = array(), $timeout = self::TIMEOUT)
+        {
+        }
+        /**
+         * Make an HTTP POST request - for creating and updating items
+         * @param   string $method URL of the API request method
+         * @param   array $args Assoc array of arguments (usually your data)
+         * @param   int $timeout Timeout limit for request in seconds
+         * @return  array|false   Assoc array of API response, decoded from JSON
+         */
+        public function post($method, $args = array(), $timeout = self::TIMEOUT)
+        {
+        }
+        /**
+         * Make an HTTP PUT request - for creating new items
+         * @param string $method URL of the API request method
+         * @param array $args Assoc array of arguments (usually your data)
+         * @param int $timeout Timeout limit for request in seconds
+         * @return  array|false   Assoc array of API response, decoded from JSON
+         * @throws \Exception
+         */
+        public function put($method, $args = array(), $timeout = self::TIMEOUT)
+        {
+        }
+        /**
+         * Performs the underlying HTTP request. Not very exciting.
+         * @param  string $http_verb The HTTP verb to use: get, post, put, patch, delete
+         * @param  string $method The API method to be called
+         * @param  array $args Assoc array of parameters to be passed
+         * @param int $timeout
+         * @return array|false Assoc array of decoded result
+         * @throws \Exception
+         */
+        private function makeRequest($http_verb, $method, $args = array(), $timeout = self::TIMEOUT)
+        {
+        }
+        /**
+         * @param string $http_verb
+         * @param string $method
+         * @param string $url
+         * @param integer $timeout
+         */
+        private function prepareStateForRequest($http_verb, $method, $url, $timeout)
+        {
+        }
+        /**
+         * Get the HTTP headers as an array of header-name => header-value pairs.
+         *
+         * The "Link" header is parsed into an associative array based on the
+         * rel names it contains. The original value is available under
+         * the "_raw" key.
+         *
+         * @param string $headersAsString
+         * @return array
+         */
+        private function getHeadersAsArray($headersAsString)
+        {
+        }
+        /**
+         * Extract all rel => URL pairs from the provided Link header value
+         *
+         * Mailchimp only implements the URI reference and relation type from
+         * RFC 5988, so the value of the header is something like this:
+         *
+         * 'https://us13.api.mailchimp.com/schema/3.0/Lists/Instance.json; rel="describedBy", <https://us13.admin.mailchimp.com/lists/members/?id=XXXX>; rel="dashboard"'
+         *
+         * @param string $linkHeaderAsString
+         * @return array
+         */
+        private function getLinkHeaderAsArray($linkHeaderAsString)
+        {
+        }
+        /**
+         * Encode the data and attach it to the request
+         * @param   resource $ch cURL session handle, used by reference
+         * @param   array $data Assoc array of data to attach
+         */
+        private function attachRequestPayload(&$ch, $data)
+        {
+        }
+        /**
+         * Decode the response and format any error messages for debugging
+         * @param array $response The response from the curl request
+         * @return array|false    The JSON decoded into an array
+         */
+        private function formatResponse($response)
+        {
+        }
+        /**
+         * Do post-request formatting and setting state from the response
+         * @param array $response The response from the curl request
+         * @param string $responseContent The body of the response from the curl request
+         * * @return array    The modified response
+         */
+        private function setResponseState($response, $responseContent, $ch)
+        {
+        }
+        /**
+         * Check if the response was successful or a failure. If it failed, store the error.
+         * @param array $response The response from the curl request
+         * @param array|false $formattedResponse The response body payload from the curl request
+         * @param int $timeout The timeout supplied to the curl request.
+         * @return bool     If the request was successful
+         */
+        private function determineSuccess($response, $formattedResponse, $timeout)
+        {
+        }
+        /**
+         * Find the HTTP status code from the headers or API response body
+         * @param array $response The response from the curl request
+         * @param array|false $formattedResponse The response body payload from the curl request
+         * @return int  HTTP status code
+         */
+        private function findHTTPStatus($response, $formattedResponse)
+        {
+        }
+    }
+    class MailerLite
+    {
+        protected $apiUrl = 'https://api.mailerlite.com/api/v2/';
+        protected $apiKey = null;
+        protected $apiSecret = null;
+        public function __construct($apiKey = null)
+        {
+        }
+        public function default_options()
+        {
+        }
+        public function make_request($action, $options = array(), $method = 'GET')
+        {
+        }
+        /**
+         * Test the provided API credentials.
+         *
+         * @access public
+         * @return bool
+         */
+        public function auth_test()
+        {
+        }
+        /**
+         * Get all Forms in the system.
+         *
+         * @access public
+         * @return array
+         */
+        public function getGroups()
+        {
+        }
+        public function getGroupSubscribers($groupId, $args = [])
+        {
+        }
+        public function getContactCountByGroup($groupId)
+        {
+        }
+        public function getCustomFields()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\CrmMigrator {
+    class ConvertKitMigrator extends \FluentCrm\App\Services\CrmMigrator\BaseMigrator
+    {
+        public function getInfo()
+        {
+        }
+        public function verifyCredentials($credential)
+        {
+        }
+        public function getListTagMappings($postedData)
+        {
+        }
+        public function getSummary($postedData)
+        {
+        }
+        public function runImport($postedData)
+        {
+        }
+        private function getApi($credential)
+        {
+        }
+        public function getSvgLogo()
+        {
+        }
+    }
+    class DripMigrator extends \FluentCrm\App\Services\CrmMigrator\BaseMigrator
+    {
+        public function getInfo()
+        {
+        }
+        public function verifyCredentials($credential)
+        {
+        }
+        public function getListTagMappings($postedData)
+        {
+        }
+        public function getSummary($postedData)
+        {
+        }
+        public function runImport($postedData)
+        {
+        }
+        private function getApi($credentials)
+        {
+        }
+        public function getSvgLogo()
+        {
+        }
+    }
+    class MailChimpMigrator extends \FluentCrm\App\Services\CrmMigrator\BaseMigrator
+    {
+        private $tagNameCache = [];
+        private $taggingArray = [];
+        public function getInfo()
+        {
+        }
+        public function verifyCredentials($credential)
+        {
+        }
+        public function getListTagMappings($postedData)
+        {
+        }
+        public function getSummary($postedData)
+        {
+        }
+        public function runImport($postedData)
+        {
+        }
+        private function formatRemoteTags($remoteTags, $isAuto, $mapSettings)
+        {
+        }
+        private function getApi($credential)
+        {
+        }
+        public function getSvgLogo()
+        {
+        }
+    }
+    class MailerLiteMigrator extends \FluentCrm\App\Services\CrmMigrator\BaseMigrator
+    {
+        public function getInfo()
+        {
+        }
+        public function verifyCredentials($credential)
+        {
+        }
+        public function getListTagMappings($postedData)
+        {
+        }
+        public function getSummary($postedData)
+        {
+        }
+        public function runImport($postedData)
+        {
+        }
+        private function getApi($credential)
+        {
+        }
+        public function getSvgLogo()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations {
+    class BricksBuilderIntegration
+    {
+        public function register()
+        {
+        }
+        public function addConditionGroup($groups)
+        {
+        }
+        public function addConditionOptions($options)
+        {
+        }
+        public function checkCondition($result, $condition_key, $condition)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Funnel {
+    abstract class BaseBenchMark
+    {
+        protected $triggerName;
+        protected $actionArgNum = 1;
+        protected $priority = 10;
+        public function __construct()
+        {
+        }
+        public function register()
+        {
+        }
+        public function addBenchmark($benchMarks)
+        {
+        }
+        public function pushBlockFields($fields, $funnel)
+        {
+        }
+        public function getConditionDefaults($benchMark)
+        {
+        }
+        public function getConditionFields($benchMark)
+        {
+        }
+        public function benchmarkTypeField()
+        {
+        }
+        public function canEnterField()
+        {
+        }
+        public function assertCurrentGoalState($asserted, $benchmark, $funnelSubscriber)
+        {
+        }
+        abstract public function getBlock();
+        abstract public function getBlockFields($funnel);
+        abstract public function handle($benchMark, $originalArgs);
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\Benchmarks {
+    class OrderSuccessBenchmark extends \FluentCrm\App\Services\Funnel\BaseBenchMark
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getDefaultSettings()
+        {
+        }
+        public function getBlockFields($funnel)
+        {
+        }
+        public function handle($benchMark, $originalArgs)
+        {
+        }
+        private function checkConditions($conditions, $order)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart {
+    class CartHelper
+    {
+        public static function getFluentCartProducts($items, $search, $ids = [])
+        {
+        }
+        public static function getFluentCartCoupons($items, $search, $ids)
+        {
+        }
+        public static function getFluentCartProductCategories($items, $search, $ids)
+        {
+        }
+        public static function getProductCategoriesByIds($ids)
+        {
+        }
+        public static function getFluentCartSubscriptionProducts($items, $search, $ids)
+        {
+        }
+        public static function prepareSubscriberData($customer)
+        {
+        }
+        public static function getCustomersByProductIds($productIds, $offset = 0, $limit = 100)
+        {
+        }
+        public static function getPurchasedProductsByCustomerId($customerId)
+        {
+        }
+    }
+    class CartImporter
+    {
+        // Customers processed per request (page size)
+        const PER_PAGE = 150;
+        // public function __construct()
+        // {
+        //     $this->importKey = 'fluent_cart';
+        //     parent::__construct();
+        // }
+        private static function getPluginName()
+        {
+        }
+        // public function getInfo()
+        // {
+        //     return [
+        //         'label'    => $this->getPluginName(),
+        //         'logo'     => fluentCrmMix('images/woo.svg'),
+        //         'disabled' => false
+        //     ];
+        // }
+        public static function processUserDriver($config, $request)
+        {
+        }
+        public static function importData($returnData, $config, $page)
+        {
+        }
+        private static function mapCustomerTags($purchasedProducts, $productTagMaps)
+        {
+        }
+        private static function purchasedProductsOfImportedCustomer($customerId, $productIds)
+        {
+        }
+        private static function getSyncStatus()
+        {
+        }
+    }
+    class FluentCart
+    {
+        public function init()
+        {
+        }
+        public function addAutomations()
+        {
+        }
+        public function addHooks()
+        {
+        }
+        public function getProducts($items, $search, $ids)
+        {
+        }
+        public function getProductCategories($items, $search, $ids)
+        {
+        }
+        public function getSubscriptionProducts($items, $search, $ids)
+        {
+        }
+        public function addCartIcon($icons)
+        {
+        }
+        public function purchaseHistory($data, $subscriber)
+        {
+        }
+        private function formatOrders($orders)
+        {
+        }
+        private function getSidebarHtml($subscriber = null)
+        {
+        }
+        public function addAutomationConditions($groups)
+        {
+        }
+        public function assessAutomationConditions($result, $conditions, $subscriber)
+        {
+        }
+    }
+    /**
+     * Stamps the originating campaign id (`_fc_cid` cookie set by RedirectionHandler when an
+     * email link is clicked) onto each FluentCart order at creation time, then rolls the
+     * paid total into the `_campaign_revenue` campaign meta when the order is paid.
+     *
+     * This mirrors the WooCommerce/EDD revenue attribution flow used by
+     * CampaignAnalyticsController so the existing campaign analytics UI works for FluentCart.
+     */
+    class RevenueTracker
+    {
+        public function init()
+        {
+        }
+        /**
+         * Stamp the originating campaign id on the order while we still have access to
+         * the visitor's `fc_cid` cookie (the request runs in the user's browser context here;
+         * by the time `order_paid` fires from a gateway webhook the cookie is gone).
+         */
+        public function attributeOrder($eventData)
+        {
+        }
+        /**
+         * On payment success, accumulate this order's total into the campaign's
+         * `_campaign_revenue` meta. Helper::recordCampaignRevenue handles dedup
+         * (same order_id won't be counted twice) and per-currency bucketing.
+         */
+        public function recordRevenue($eventData)
+        {
+        }
+        private function getCampaignIdFromCookie()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\SmartCode {
+    class SmartCodeParser
+    {
+        public static function parseCartOrder($code, $valueKey, $defaultValue, $subscriber)
+        {
+        }
+        public static function parseCartCustomer($code, $valueKey, $defaultValue, $subscriber)
+        {
+        }
+        public static function parseCartTransaction($code, $valueKey, $defaultValue, $subscriber)
+        {
+        }
+        public static function parseCartReceipt($code, $valueKey, $defaultValue, $subscriber)
+        {
+        }
+        public static function parseOrderProps($order, $valueKey, $defaultValue)
+        {
+        }
+        public static function parseTransactionProps($transaction, $valueKey, $defaultValue)
+        {
+        }
+        public static function parseCustomerProps($customer, $valueKey, $defaultValue)
+        {
+        }
+        public static function parseReceiptProps($order, $valueKey, $defaultValue)
+        {
+        }
+        private static function paymentReceipt($order)
+        {
+        }
+    }
+    class SmartCodeRegister
+    {
+        public static function push()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\Triggers {
+    class OrderCanceledTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        public function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class OrderDeliveredTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        public function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class OrderPaidTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        public function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class OrderRefundedTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        public function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class OrderShippedTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        public function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class OrderStatusChangedTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $subscriberData, $fromStatus, $toStatus, $order)
+        {
+        }
+    }
+    class SubscriptionActivatedTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        public function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        private function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class SubscriptionCancelledTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        public function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        private function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class SubscriptionEndOfTermTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        public function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        private function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class SubscriptionExpiredTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        public function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        private function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+    class SubscriptionRenewedTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        public function isProcessable($funnel, $order, $subscriberData)
+        {
+        }
+        private function checkConditions($conditions, $order, $subscriber)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\FluentForm {
+    class Bootstrap extends \FluentForm\App\Http\Controllers\IntegrationManagerController
+    {
+        public $hasGlobalMenu = false;
+        public $disableGlobalSettings = 'yes';
+        public function __construct()
+        {
+        }
+        public function pushIntegration($integrations, $formId)
+        {
+        }
+        public function getIntegrationDefaults($settings, $formId)
+        {
+        }
+        public function getSettingsFields($settings, $formId)
+        {
+        }
+        public function getMergeFields($list, $listId, $formId)
+        {
+        }
+        protected function getLists()
+        {
+        }
+        protected function getTags()
+        {
+        }
+        /*
+         * Form Submission Hooks Here
+         */
+        public function notify($feed, $formData, $entry, $form)
+        {
+        }
+        private function runFeed($feed, $formData, $entry, $form)
+        {
+        }
+        public function isConfigured()
+        {
+        }
+        public function isEnabled()
+        {
+        }
+        protected function addLog($title, $status, $description, $formId, $entryId)
+        {
+        }
+        /*
+         * We will remove this in future
+         */
+        protected function getSelectedTagIds($data, $inputData, $simpleKey = 'tag_ids', $routingId = 'tag_ids_selection_type', $routersKey = 'tag_routers')
+        {
+        }
+        /*
+         * We will remove this in future
+         */
+        protected function evaluateRoutings($routings, $inputData)
+        {
+        }
+        private function registerPaymentEvents()
+        {
+        }
+        private function handlePaymentEvent($submission, $event)
+        {
+        }
+    }
+    class FluentFormInit
+    {
+        public function init()
+        {
+        }
+        public function pushContactWidget($widgets, $resources, $submission)
+        {
+        }
+        public function pushSubscriberInfoWidget($widgets, $subscriber)
+        {
+        }
+        private function generateSubscriptionHtml($subscription)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\MailComplaince {
+    class Webhook
+    {
+        /**
+         * @param $serviceName
+         * @param $request \FluentCrm\Framework\Http\Request\Request
+         */
+        public function handle($serviceName, $request)
+        {
+        }
+        /**
+         * @param $request \FluentCrm\Framework\Http\Request\Request
+         */
+        private function handleMailgun($request)
+        {
+        }
+        /**
+         * @param $request \FluentCrm\Framework\Http\Request\Request
+         * @return boolean
+         */
+        private function handleSendgrid($request)
+        {
+        }
+        /**
+         * @param $request \FluentCrm\Framework\Http\Request\Request
+         * @return boolean
+         */
+        private function handlePepipost($request)
+        {
+        }
+        /**
+         * @param $request \FluentCrm\Framework\Http\Request\Request
+         * @return boolean
+         */
+        private function handleSparkpost($request)
+        {
+        }
+        /**
+         * @param $request \FluentCrm\Framework\Http\Request\Request
+         * @return boolean
+         */
+        private function handlePostmark($request)
+        {
+        }
+        private function handleElasticemail($request)
+        {
+        }
+        private function handlePostalserver($request)
+        {
+        }
+        private function handleSmtp2go($request)
+        {
+        }
+        /**
+         * @param $request \FluentCrm\Framework\Http\Request\Request
+         * @return boolean
+         */
+        private function handleBrevo($request)
+        {
+        }
+        private function handleTosend($request)
+        {
+        }
+        private function resolvePayload($request, $default = [])
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations {
+    class Maintenance
+    {
+        public function maybeProcessData()
+        {
+        }
+        private function getData()
+        {
+        }
+        private function isAllowed()
+        {
+        }
+        private function timeMatched()
+        {
+        }
+        private function getApiUrl()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\Oxygen {
+    class ConditionBuilder
+    {
+        public function init()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Funnel {
+    abstract class BaseAction
+    {
+        protected $actionName;
+        protected $funnel;
+        protected $priority = 10;
+        public function __construct()
+        {
+        }
+        public function register()
+        {
+        }
+        public function pushBlock($blocks, $funnel)
+        {
+        }
+        public function pushBlockFields($fields, $funnel)
+        {
+        }
+        abstract public function getBlock();
+        abstract public function getBlockFields();
+        abstract public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric);
+    }
+}
+namespace FluentCrm\App\Services\Funnel\Actions {
+    class ApplyCompanyAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class ApplyListAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class ApplyTagAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class DetachCompanyAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class DetachListAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class DetachTagAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class SendEmailAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function savingAction($sequence, $funnel)
+        {
+        }
+        public function gettingAction($sequence, $funnel)
+        {
+        }
+        public function deleteAction($sequence, $funnel)
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class WaitTimeAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function gettingAction($sequence, $funnel)
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Funnel\Benchmarks {
+    class ListAppliedBenchmark extends \FluentCrm\App\Services\Funnel\BaseBenchMark
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getDefaultSettings()
+        {
+        }
+        public function getBlockFields($funnel)
+        {
+        }
+        public function handle($benchMark, $originalArgs)
+        {
+        }
+        private function isListMatched($subscriberLists, $benchmarkLists, $settings)
+        {
+        }
+        public function assertCurrentGoalState($asserted, $benchmark, $funnelSubscriber)
+        {
+        }
+    }
+    class RemoveFromListBenchmark extends \FluentCrm\App\Services\Funnel\BaseBenchMark
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getDefaultSettings()
+        {
+        }
+        public function getBlockFields($funnel)
+        {
+        }
+        public function handle($benchMark, $originalArgs)
+        {
+        }
+        private function isListMatched($listIds, $subscriber, $settings)
+        {
+        }
+        public function assertCurrentGoalState($asserted, $benchmark, $funnelSubscriber)
+        {
+        }
+    }
+    class RemoveFromTagBenchmark extends \FluentCrm\App\Services\Funnel\BaseBenchMark
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getDefaultSettings()
+        {
+        }
+        public function getBlockFields($funnel)
+        {
+        }
+        public function handle($benchMark, $originalArgs)
+        {
+        }
+        private function isTagMatched($tagIds, $subscriber, $settings)
+        {
+        }
+        public function assertCurrentGoalState($asserted, $benchmark, $funnelSubscriber)
+        {
+        }
+    }
+    class TagAppliedBenchmark extends \FluentCrm\App\Services\Funnel\BaseBenchMark
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getDefaultSettings()
+        {
+        }
+        public function getBlockFields($funnel)
+        {
+        }
+        public function handle($benchMark, $originalArgs)
+        {
+        }
+        private function isTagMatched($subscriberTags, $benchmarkTags, $settings)
+        {
+        }
+        public function assertCurrentGoalState($asserted, $benchmark, $funnelSubscriber)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Funnel {
+    class FunnelHelper
+    {
+        public static function changeFunnelSubSequenceStatus($funnelSubId, $sequenceId, $status = 'complete')
+        {
+        }
+        public static function getUpdateOptions()
+        {
+        }
+        public static function prepareUserData($user)
+        {
+        }
+        public static function getSubscriber($emailOrUserId)
+        {
+        }
+        public static function createOrUpdateContact($data)
+        {
+        }
+        public static function getUserRoles($keyed = false)
+        {
+        }
+        public static function ifAlreadyInFunnel($funnelId, $subscriberId)
+        {
+        }
+        public static function maybeExplodeFullName($data)
+        {
+        }
+        public static function syncTags($subscriber, $tags = [])
+        {
+        }
+        public static function syncLists($subscriber, $lists = [])
+        {
+        }
+        public static function getPrimaryContactFieldMaps()
+        {
+        }
+        public static function getSecondaryContactFieldMaps()
+        {
+        }
+        public static function removeSubscribersFromFunnel($funnelId, $subscriberIds)
+        {
+        }
+        public static function saveFunnelSequence($funnelId, $data)
+        {
+        }
+        private static function createOrUpdateSequence($sequence)
+        {
+        }
+        public static function getDelayInSecond($settings)
+        {
+        }
+        public static function getCurrentDelayInSeconds($settings, $sequence = null, $funnelSubId = null)
+        {
+        }
+        /*
+         * Get the next earliest day provided to $days array as ['Mon', Wed, 'Fri']
+         * @param array $days
+         * @return string $earliest
+         */
+        private static function getEarliestDay($days, $time = '')
+        {
+        }
+        /**
+         * Check if a string is a valid calendar date in Y-m-d format (avoids strtotime normalizing invalid dates).
+         *
+         * @param string $ymd Date string (e.g. 2024-02-31).
+         * @return bool
+         */
+        private static function isValidYmd($ymd)
+        {
+        }
+        private static function saveChildSequences($sequence, $funnel)
+        {
+        }
+        public static function getFunnelSequences($funnel, $isFiltered = false)
+        {
+        }
+        public static function maybeMigrateConditions($funnelId)
+        {
+        }
+        public static function migrateConditionSequence($sequence, $dryRun = false)
+        {
+        }
+        public static function createWpUserFromSubscriber($subscriber, $sendWelcomeEmail = false, $password = '', $role = '', $metaData = [])
+        {
+        }
+        public static function getCountryShortName($countryName)
+        {
+        }
+        public static function getFunnelSubscriberStatus($defaultStatus, $funnel, $subscriber)
+        {
+        }
+    }
+    class FunnelProcessor
+    {
+        private $subscribersCache = [];
+        private $sequenceFunnelCache = [];
+        private $funnelCache = [];
+        public function getSubscriber($id)
+        {
+        }
+        public function setSubscriber($id)
+        {
+        }
+        public function getSequence($id)
+        {
+        }
+        public function getFunnel($id)
+        {
+        }
+        public function setFunnel($id)
+        {
+        }
+        public function startFunnelSequence($funnel, $subscriberData, $funnelSubArgs = [], $subscriber = false)
+        {
+        }
+        public function startSequences($subscriber, $funnel, $funnelSubArgs = [])
+        {
+        }
+        public function processSequencePoints(\FluentCrm\App\Services\Funnel\SequencePoints $sequencePoints, $subscriber, $funnelSubscriber)
+        {
+        }
+        public function processSequence($subscriber, $sequence, $funnelSubscriberId)
+        {
+        }
+        public function resumeFunnelSubscriber($funnel, $subscriber, $funnelSubscriber)
+        {
+        }
+        public function completeFunnelSequence($funnelSubscriber)
+        {
+        }
+        public function followUpSequenceActions()
+        {
+        }
+        public function processFunnelAction($funnelSubscriber)
+        {
+        }
+        public function startFunnelFromSequencePoint($startSequence, $subscriber, $args = [], $metricArgs = [])
+        {
+        }
+        public function recordFunnelMetric($subscriber, $sequence, $metricArgs = [])
+        {
+        }
+        public function initChildSequences($parent, $isMatched, $subscriber, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+    }
+    class ProFunnelItems
+    {
+        public function __construct()
+        {
+        }
+        private function getProTriggers()
+        {
+        }
+        private function getProBlocks()
+        {
+        }
+        private function getCrmTriggers()
+        {
+        }
+    }
+    class SequencePoints
+    {
+        private $nextSequence = null;
+        private $immediateSequences = [];
+        private $lastSequence = null;
+        private $requiredBenchMark = null;
+        private $funnel;
+        private $hasNext = null;
+        private $funnelSubscriber;
+        private $nextSequenceExecutionTime = false;
+        public $hasEndSequence = false;
+        public function __construct($funnel, $funnelSubscriber = false)
+        {
+        }
+        private function setupData()
+        {
+        }
+        private function resolveLastSequence()
+        {
+        }
+        private function queryRemainingSequences(&$isInChild)
+        {
+        }
+        private function queryFromLastSequence(&$isInChild)
+        {
+        }
+        private function queryParentEscapeSequences()
+        {
+        }
+        private function queryFromStart()
+        {
+        }
+        /**
+         * Single-pass classification of sequences into immediate, next, benchmark, and end categories.
+         *
+         * @param \Illuminate\Support\Collection $sequences
+         * @param bool $isInChild Whether we're inside a conditional child block
+         * @param bool &$inWaitTimes Tracks whether a wait-time action has been encountered
+         */
+        private function classifySequences($sequences, $isInChild, &$inWaitTimes)
+        {
+        }
+        /**
+         * When a child block is exhausted, find the next top-level sequences after the parent conditional.
+         */
+        private function handleChildToParentTransition($inWaitTimes)
+        {
+        }
+        public function getCurrentSequences()
+        {
+        }
+        public function getNextSequence()
+        {
+        }
+        public function hasNext()
+        {
+        }
+        public function getRequiredBenchmark()
+        {
+        }
+        public function hasSequences()
+        {
+        }
+    }
+    class StaticTemplates
+    {
+        public static function get()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Funnel\Triggers {
+    class FluentFormSubmissionTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        protected function getForms($funnel)
+        {
+        }
+        protected function getValueOptions($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $subscriberData)
+        {
+        }
+    }
+    class FluentFormSubscriptionCancelledTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        protected function getForms($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $subscription, $subscriberData)
+        {
+        }
+    }
+    class FluentFormSubscriptionPaymentReceivedTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        protected function getValueOptions($funnel)
+        {
+        }
+        protected function getForms($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function processOtherFields(array $otherFields)
+        {
+        }
+        private function isProcessable($funnel, $subscriberData)
+        {
+        }
+    }
+    class UserRegistrationTrigger extends \FluentCrm\App\Services\Funnel\BaseTrigger
+    {
+        public function __construct()
+        {
+        }
+        public function getTrigger()
+        {
+        }
+        public function getFunnelSettingsDefaults()
+        {
+        }
+        public function getSettingsFields($funnel)
+        {
+        }
+        public function getFunnelConditionDefaults($funnel)
+        {
+        }
+        public function getConditionFields($funnel)
+        {
+        }
+        public function handle($funnel, $originalArgs)
+        {
+        }
+        private function isProcessable($funnel, $subscriberData)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services {
+    class GutenbergEmailParser
+    {
+        private $inlineStyles = [];
+        private $childCss = '';
+        private $autoPaddedElements = ['core/heading', 'core/paragraph', 'core/list'];
+        /**
+         * Parse Gutenberg blocks and convert to email HTML
+         *
+         * @param string $content The post content with Gutenberg blocks
+         * @return string Email-compatible HTML
+         */
+        public function parse($content)
+        {
+        }
+        private function collectInlineStyles($id, $attrs, $blockName = '')
+        {
+        }
+        private function setDefaultBlockStyles($id, $styles = [])
+        {
+        }
+        private function getDirectionalTextAlign($align, $default = 'left')
+        {
+        }
+        private function camelCaseToKebabCase($string)
+        {
+        }
+        private function transformToCssVar($cssProperty)
+        {
+        }
+        private function normalizeCssSize($value)
+        {
+        }
+        private function normalizeHtmlWidthAttribute($width)
+        {
+        }
+        private function generateInlineStyles()
+        {
+        }
+        /**
+         * Manual block parser (fallback if parse_blocks not available)
+         */
+        private function parseBlocksManually($content)
+        {
+        }
+        /**
+         * Render blocks to email HTML
+         */
+        private function renderBlocks($blocks, $nested = false)
+        {
+        }
+        /**
+         * Render individual block
+         */
+        private function renderBlock($block, $isNested = false)
+        {
+        }
+        /**
+         * Render paragraph block
+         */
+        private function renderParagraph($content, $attrs)
+        {
+        }
+        /**
+         * Render heading block
+         */
+        private function renderHeading($content, $attrs)
+        {
+        }
+        /**
+         * Render image block
+         */
+        private function renderImage($attrs, $innerHTML = '')
+        {
+        }
+        /**
+         * Render list block
+         */
+        private function renderList($content, $innerBlocks, $attrs)
+        {
+        }
+        /**
+         * Render list item
+         */
+        private function renderListItem($content, $attrs)
+        {
+        }
+        /**
+         * Render quote block
+         */
+        private function renderQuote($content, $innerBlocks, $attrs)
+        {
+        }
+        /**
+         * Render buttons container
+         */
+        private function renderButtons($innerBlocks, $attrs)
+        {
+        }
+        /**
+         * Render button block
+         */
+        private function renderButton($content, $attrs)
+        {
+        }
+        /**
+         * Render legacy Woo single product block.
+         */
+        private function renderWooProductBlock($block, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Find the first nested Gutenberg button attrs inside product blocks.
+         */
+        private function getFirstButtonBlockAttrs($block)
+        {
+        }
+        /**
+         * Render FluentCart single product block.
+         */
+        private function renderCartProductBlock($block, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Render legacy latest posts block from FluentCampaign (if available).
+         */
+        private function renderLatestPostsBlock($block, $attrs)
+        {
+        }
+        /**
+         * Render product listing blocks via dedicated renderer.
+         */
+        private function renderProductsBlock($block, $attrs, $blockName)
+        {
+        }
+        private function renderCartProductsBlock($block, $attrs)
+        {
+        }
+        /**
+         * Render conditional group block based on subscriber tags.
+         */
+        private function renderConditionalGroupBlock($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Render a synced pattern (core/block) by looking up its content from fc_meta
+         * and recursively rendering the contained blocks.
+         */
+        private static $syncedPatternCache = [];
+        private function renderSyncedPattern($attrs, $nested = false)
+        {
+        }
+        private function renderCodeBlock($innerHTML, $attrs)
+        {
+        }
+        private function renderPullQuote($innerHTML, $attrs)
+        {
+        }
+        /**
+         * Check per-block conditional visibility attributes.
+         * Returns true if the block should be shown, false if hidden.
+         */
+        private function checkBlockConditionVisibility($attrs)
+        {
+        }
+        /**
+         * Keep backward compatibility with legacy conditional values.
+         */
+        private function normalizeConditionalCheckType($checkType)
+        {
+        }
+        /**
+         * Render columns block
+         */
+        private function renderColumns($innerBlocks, $attrs)
+        {
+        }
+        /**
+         * Render column block
+         */
+        private function renderColumn($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Render cover block
+         */
+        private function renderCover($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Render separator block
+         */
+        private function renderSeparator($innerHTML, $attrs)
+        {
+        }
+        /**
+         * Render spacer block
+         */
+        private function renderSpacer($innerHtml, $attrs)
+        {
+        }
+        /**
+         * Render group block
+         */
+        private function renderGroup($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Render row block.
+         */
+        private function renderRow($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Render table block
+         */
+        private function renderTable($content, $attrs)
+        {
+        }
+        /**
+         * Render social links block
+         */
+        private function renderSocialLinks($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Get social media icon HTML (with better styling)
+         */
+        private function getSocialIconHtml($service, $label = '')
+        {
+        }
+        /**
+         * Get social media icon SVG or text representation
+         */
+        private function getSocialIconSVG($service)
+        {
+        }
+        /**
+         * Get color from WordPress color slug
+         */
+        private function getColorFromSlug($slug)
+        {
+        }
+        /**
+         * Get font size from WordPress font size slug
+         */
+        private function getFontSizeFromSlug($slug)
+        {
+        }
+        /**
+         * Get font family from WordPress font family slug or return as-is
+         */
+        private function getFontFamilyFromSlug($fontFamily)
+        {
+        }
+        /**
+         * Resolve Gutenberg font-family values to email-safe values.
+         */
+        private function resolveFontFamilyValue($fontFamilyValue)
+        {
+        }
+        /**
+         * Debug helper: Log all theme colors (for development only)
+         * Uncomment the call in getColorFromSlug() to use
+         */
+        private function debugThemeColors()
+        {
+        }
+        /**
+         * Wrap content in email-safe table structure
+         */
+        private function wrapInTable($content, $atts = [])
+        {
+        }
+        private function resolveFontSizeValue($slugOrSize)
+        {
+        }
+        /**
+         * Generate complete email HTML with wrapper
+         */
+        public function generateEmailHtml($content, $title = '')
+        {
+        }
+    }
+    class Helper
+    {
+        /**
+         * Determine if the active Easy Digital Downloads version is supported.
+         *
+         * FluentCRM's EDD integration is EDD 3+ only because the current
+         * integration depends on the EDD 3 order APIs and database tables.
+         *
+         * @return bool
+         */
+        public static function isEdd3()
+        {
+        }
+        /**
+         * Parse mixed input into an array.
+         *
+         * Accepts either a native array or a JSON string. For string inputs,
+         * it attempts decoding the raw payload first, then retries with
+         * `wp_unslash()` only when the string changes. Returns `$default` when
+         * decoding fails or when the decoded JSON is not an array.
+         *
+         * @param mixed $value Input value from request/body.
+         * @param array $default Fallback value when parsing fails.
+         * @return array
+         */
+        public static function parseArrayOrJson($value, $default = [])
+        {
+        }
+        public static function getLinksFromString($string)
+        {
+        }
+        public static function urlReplaces($string)
+        {
+        }
+        public static function attachUrls($html, $campaignUrls, $insertId, $hash = false)
+        {
+        }
+        public static function attachAnonymousUrls($html, $campaignUrls, $insertId, $hash = false)
+        {
+        }
+        /**
+         * Generate an HMAC signature for smart URL verification.
+         *
+         * Uses a dedicated persistent key (not wp_salt) so that WordPress
+         * salt rotation does not invalidate previously sent email links.
+         *
+         * @param string $hash The email hash to sign.
+         * @return string
+         */
+        public static function signSmartUrlHash($hash)
+        {
+        }
+        /**
+         * Verify a smart URL signed hash.
+         *
+         * Supports both the new HMAC signatures and legacy bcrypt hashes
+         * for backward compatibility with emails sent before the migration.
+         *
+         * @param string $emailHash The campaign email hash.
+         * @param string $signedHash The signed hash from the URL.
+         * @return bool
+         */
+        public static function verifySmartUrlHash($emailHash, $signedHash)
+        {
+        }
+        public static function generateEmailHash($insertId = null)
+        {
+        }
+        public static function injectTrackerPixel($emailBody, $hash, $emailId = null)
+        {
+        }
+        public static function getProfileSections()
+        {
+        }
+        public static function getDefaultEmailTemplate()
+        {
+        }
+        public static function getGlobalSmartCodes()
+        {
+        }
+        public static function getExtendedSmartCodes()
+        {
+        }
+        public static function getDoubleOptinSettings()
+        {
+        }
+        public static function getEmailDesignTemplates()
+        {
+        }
+        public static function getTemplateConfig($templateName = '', $withGlobal = true)
+        {
+        }
+        public static function getActivatedFeatures()
+        {
+        }
+        public static function getContactPrefixes($withKeyed = false)
+        {
+        }
+        public static function getGlobalEmailSettings()
+        {
+        }
+        public static function getPurchaseHistoryProviders()
+        {
+        }
+        public static function getThemePrefScheme()
+        {
+        }
+        public static function funnelLabelColors()
+        {
+        }
+        public static function getColorSchemeValue($colorName)
+        {
+        }
+        public static function getColorBySlug($color_palette, $slug)
+        {
+        }
+        public static function getThemeColorPalette()
+        {
+        }
+        public static function getThemeFontSizes()
+        {
+        }
+        public static function generateThemePrefCss()
+        {
+        }
+        private static function normalizeColorSlug($slug)
+        {
+        }
+        public static function kebabCase($string)
+        {
+        }
+        public static function getMailHeadersFromSettings($emailSettings = [])
+        {
+        }
+        public static function getMailHeader($existingHeader = [])
+        {
+        }
+        public static function recordCampaignRevenue($campaignId, $amount, $orderId, $currency = 'USD', $isRefunded = false)
+        {
+        }
+        public static function getWPMapUserInfo($user)
+        {
+        }
+        public static function isUserSyncEnabled()
+        {
+        }
+        public static function isContactDeleteOnUserDeleteEnabled()
+        {
+        }
+        public static function deleteContacts($contactIds)
+        {
+        }
+        public static function sendDoubleOptin($contactIds)
+        {
+        }
+        public static function hasComplianceText($text)
+        {
+        }
+        public static function maybeDisableEmojiOnEmail()
+        {
+        }
+        public static function getPublicLists()
+        {
+        }
+        public static function getAdvancedFilterOptions()
+        {
+        }
+        public static function getComplianceSettings()
+        {
+        }
+        public static function getSiteUrl($path = '', $scheme = null)
+        {
+        }
+        public static function isExperimentalEnabled($module)
+        {
+        }
+        public static function getExperimentalSettings()
+        {
+        }
+        public static function willMultiThreadEmail($minPendingLimit = 300)
+        {
+        }
+        public static function getUpcomingEmailCount()
+        {
+        }
+        public static function sanitizeHtml($html)
+        {
+        }
+        public static function hasConditionOnString($string)
+        {
+        }
+        public static function getEmailFooterContent($campaign = null)
+        {
+        }
+        public static function getFooterConfig($campaign = null)
+        {
+        }
+        public static function isCompanyEnabled()
+        {
+        }
+        public static function companyCategories()
+        {
+        }
+        public static function companyTypes()
+        {
+        }
+        public static function getCompanyProfileSections()
+        {
+        }
+        public static function maybeParseAndFilterWebhookData(\FluentCrm\App\Models\Webhook $webhook, $postData, $key)
+        {
+        }
+        public static function getNoteSyncFields()
+        {
+        }
+        public static function debugLog($title, $description = '', $type = 'info')
+        {
+        }
+        public static function getNextMinuteTaskTimeStamp()
+        {
+        }
+        public static function isWooHposEnabled()
+        {
+        }
+        public static function searchWPUsers($searchQuery, $limit = 20)
+        {
+        }
+        public static function latestListIdOfSubscriber($contactId)
+        {
+        }
+        public static function createNewTags($tagsArray)
+        {
+        }
+        public static function createNewLists($listsArray)
+        {
+        }
+        public static function getNewAttachableLists($listsArray, $currentListIds, $ListsForAllContacts)
+        {
+        }
+        public static function getNewAttachableTags($tagsArray, $currentTagIds, $TagsForAllContacts)
+        {
+        }
+        private static function createList($listTitle)
+        {
+        }
+        private static function createTag($tagTitle)
+        {
+        }
+        /**
+         * Converts text into a URL-friendly slug, handling Latin and non-Latin scripts.
+         *
+         * @param string $text Input text to slugify
+         * @param string $fallback Fallback slug if input is empty or invalid
+         * @return string Sanitized slug
+         */
+        public static function slugify($text, $fallback = '')
+        {
+        }
+        /**
+         * Generates a unique, hyphenated identifier (~11-12 characters).
+         *
+         * @return string Unique ID, e.g., '6f1a2-xyz12'
+         */
+        public static function generateUniqueId()
+        {
+        }
+        public static function getStatusText($text)
+        {
+        }
+        public static function wasProcessedByKeyId($emailLogId)
+        {
+        }
+        public static function setInstantOption($optionKey, $value, $expire = 300)
+        {
+        }
+        public static function getInstantOption($optionKey)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Html {
+    class FormElementBuilder
+    {
+        public function renderFields($fields, $print = false)
+        {
+        }
+        public function renderField($field)
+        {
+        }
+        public function renderSelect($field)
+        {
+        }
+        public function renderRadio($field)
+        {
+        }
+        public function renderCheckboxes($field)
+        {
+        }
+        public function renderContainer($field)
+        {
+        }
+        public function renderLabel($field, $innerHtml = '')
+        {
+        }
+        public function renderInput($field)
+        {
+        }
+        public function renderDate($field)
+        {
+        }
+        public function renderDateDropdowns($field)
+        {
+        }
+        public function renderButton($field)
+        {
+        }
+        private function buildAttributes($atts)
+        {
+        }
+        private function renderTextarea($field)
+        {
+        }
+        public function renderMultiSelect($field)
+        {
+        }
+        public function renderDateTimePicker($field)
+        {
+        }
+        public function renderDatePicker($field)
+        {
+        }
+        private function addExternalScriptsAndCss()
+        {
+        }
+        private function renderDatePickerScript()
+        {
+        }
+        private function renderDateTimePickerScript()
+        {
+        }
+        private function renderMultiSelectScript()
+        {
+        }
+        private function enqueueDatePickerAssets()
+        {
+        }
+        private function enqueueMultiSelectAssets()
+        {
+        }
+    }
+    class TableBuilder
+    {
+        private $header = [];
+        private $rows = [];
+        public $tableClass = 'fc_horizontal_table';
+        public function setHeader($header)
+        {
+        }
+        public function addRow($row)
+        {
+        }
+        public function getHtml()
+        {
+        }
+        public function printHtml()
+        {
+        }
+        public function reset()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Libs {
+    class ConditionAssessor
+    {
+        public static function matchAllGroups($groups, $inputs, $matchType = 'match_any')
+        {
+        }
+        public static function evaluate($conditionGroup, $inputs)
+        {
+        }
+        public static function matchAllConditions($conditions, $inputs)
+        {
+        }
+        public static function assess($conditional, $inputs)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Libs\Emogrifier {
+    class Emogrifier
+    {
+        private $html = '';
+        private $disableInvisibleNode = false;
+        public function __construct($html)
+        {
+        }
+        public function disableInvisibleNodeRemoval()
+        {
+        }
+        public function emogrify()
+        {
+        }
+        private function handleTijsVerkoyen()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Libs {
+    class FileSystem
+    {
+        /**
+         * Read file content from custom upload dir of this application
+         * @return string [path]
+         */
+        public function _get($file)
+        {
+        }
+        /**
+         * Get custom upload dir name of this application
+         * @return string [directory path]
+         */
+        public function _getDir()
+        {
+        }
+        /**
+         * Get absolute path of file using custom upload dir name of this application
+         * @return string [file path]
+         */
+        public function _getAbsolutePathOfFile($file)
+        {
+        }
+        /**
+         * Upload files into custom upload dir of this application
+         * @return array
+         */
+        public function _uploadFromRequest()
+        {
+        }
+        /**
+         * Upload files into custom upload dir of this application
+         * @param array $files
+         * @return array
+         */
+        public function _put($files)
+        {
+        }
+        /**
+         * Delete a file from custom upload directory of this application
+         * @param array $files
+         * @return void
+         */
+        public function _delete($files)
+        {
+        }
+        /**
+         * Register filters for custom upload dir
+         */
+        public function _overrideUploadDir()
+        {
+        }
+        /**
+         * Set plugin's custom upload dir
+         * @param array $param
+         * @return array $param
+         */
+        public function _setCustomUploadDir($param)
+        {
+        }
+        /**
+         * Rename the uploaded file name before saving
+         * @param array $file
+         * @return array $file
+         */
+        public function _renameFileName($file)
+        {
+        }
+        public static function __callStatic($method, $params)
+        {
+        }
+        public function __call($method, $params)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Libs\Mailer {
+    abstract class BaseHandler
+    {
+        protected $startedAt = 0;
+        protected $runnerTitle = '';
+        protected $sentCount = 0;
+        protected $maximumProcessingTime = 50;
+        protected $calledFrom = 'cron';
+        protected $startingTimeStamp = null;
+        protected $optionKey = 'fluentcrm_is_sending_emails';
+        protected $isMultiThread = false;
+        protected $dispatchedWithinOneSecond = 0;
+        protected $emailLimitPerSecond = 0;
+        protected $sendingChunkNumber = 0;
+        abstract protected function isTimeUp();
+        protected function sendEmails($campaignEmails)
+        {
+        }
+        protected function processBatchEmails()
+        {
+        }
+        abstract protected function getNextBatchEmails();
+        protected function logSentCount()
+        {
+        }
+        /**
+         * Memory exceeded
+         *
+         * Ensures the batch process never exceeds 90% of the maximum WordPress memory.
+         *
+         * Based on WP_Background_Process::memory_exceeded()
+         *
+         * @return bool
+         */
+        protected function memoryExceeded()
+        {
+        }
+        protected function reachedEmailLimitPerSecond()
+        {
+        }
+        protected function restartWhenOneSecondExceeds()
+        {
+        }
+        protected function updateEmailsStatus($ids, $status)
+        {
+        }
+        protected function handleFailedLog()
+        {
+        }
+        protected function getEmailLimitPerSecond()
+        {
+        }
+        /**
+         * Atomically acquire the processing lock.
+         *
+         * Replaces the old isProcessing() + processing() two-step pattern
+         * which had a TOCTOU race condition — two processes could both read
+         * "not processing" and both start sending emails.
+         *
+         * @return bool True if the lock was acquired, false if another process holds it.
+         */
+        protected function acquireLock()
+        {
+        }
+        /**
+         * Refresh the lock timestamp (heartbeat) to prevent stuck-lock detection.
+         */
+        protected function refreshLock()
+        {
+        }
+        /**
+         * Release the processing lock so another process can acquire it.
+         */
+        protected function releaseLock()
+        {
+        }
+    }
+    class CampaignEmailIterator implements \Iterator
+    {
+        protected $key = 0;
+        protected $limit = 0;
+        protected $offset = 0;
+        protected $emails = null;
+        protected $campaignId = null;
+        public function __construct($campaignId = null, $limit = 10)
+        {
+        }
+        #[\ReturnTypeWillChange]
+        public function current()
+        {
+        }
+        #[\ReturnTypeWillChange]
+        public function key()
+        {
+        }
+        #[\ReturnTypeWillChange]
+        public function next()
+        {
+        }
+        #[\ReturnTypeWillChange]
+        public function rewind()
+        {
+        }
+        #[\ReturnTypeWillChange]
+        public function valid()
+        {
+        }
+    }
+    class CliSendingHandler extends \FluentCrm\App\Services\Libs\Mailer\BaseHandler
+    {
+        protected $runnerTitle = 'CliSendingHandler::handle';
+        protected $sendingPerChunk = 30;
+        protected $maximumProcessingTime = 50;
+        public $offset = 350;
+        public $minPendingRequired = 400;
+        protected $optionKey = 'fluentcrm_is_sending_cli_emails';
+        public function __construct($optionName = 'fluentcrm_is_sending_cli_emails', $runTime = 50, $offset = 350, $minPendingRequired = 400)
+        {
+        }
+        public function handle()
+        {
+        }
+        private function isSystemOk()
+        {
+        }
+        protected function getNextBatchEmails()
+        {
+        }
+        public function setRunnerTitle($title)
+        {
+        }
+        protected function isTimeUp()
+        {
+        }
+    }
+    class Handler extends \FluentCrm\App\Services\Libs\Mailer\BaseHandler
+    {
+        protected $runnerTitle = 'Handler::handle';
+        protected $sendingPerChunk = 20;
+        protected $maximumProcessingTime = 50;
+        protected $optionKey = 'fluentcrm_is_sending_emails';
+        public function __construct()
+        {
+        }
+        public function handle()
+        {
+        }
+        private function isSystemOk()
+        {
+        }
+        protected function getNextBatchEmails()
+        {
+        }
+        public function processSubscriberEmail($subscriberId)
+        {
+        }
+        public function sendDoubleOptInEmail($subscriber)
+        {
+        }
+        private function callBackGround()
+        {
+        }
+        protected function isTimeUp()
+        {
+        }
+        /**
+         * Fire a non-blocking POST request using cURL directly.
+         *
+         * Bypasses WordPress's WP_Http which adds SSL verification filters
+         * that break loopback requests on local/self-signed cert environments.
+         * Connection timeout is 1 second — we don't wait for the response.
+         *
+         * @param string $url
+         * @param array $body POST body data
+         */
+        public static function fireNonBlockingRequest($url, $body = [])
+        {
+        }
+    }
+    class Mailer
+    {
+        public static function send($data, $subscriber = null, $emailModel = null)
+        {
+        }
+        protected static function buildHeaders($data, $subscriber = null, $emailModel = null)
+        {
+        }
+        private static function willIncludeName()
+        {
+        }
+    }
+    class MultiThreadHandler extends \FluentCrm\App\Services\Libs\Mailer\BaseHandler
+    {
+        protected $runnerTitle = 'MultiThreadHandler::handle';
+        protected $sendingPerChunk = 20;
+        protected $maximumProcessingTime = 50;
+        protected $optionKey = 'fluentcrm_is_sending_multi_emails';
+        public function __construct()
+        {
+        }
+        public function handle()
+        {
+        }
+        private function isSystemOk()
+        {
+        }
+        protected function getNextBatchEmails()
+        {
+        }
+        protected function isTimeUp()
+        {
+        }
+        private function callBackGround()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Libs\Parser {
+    class Parser
+    {
+        public function __call($method, $params)
+        {
+        }
+        public static function __callStatic($method, $params)
+        {
+        }
+    }
+    class ShortcodeParser
+    {
+        public function parse($templateString, $data)
+        {
+        }
+        public function parseCrmValue($templateString, $subscriber)
+        {
+        }
+        public function replaceExtendedCrmValue($matches, $subscriber)
+        {
+        }
+        public function parseShortcode($string, $data)
+        {
+        }
+        protected function replace($matches, $subscriber)
+        {
+        }
+        protected function getWpValue($valueKey, $defaultValue, $subscriber = [])
+        {
+        }
+        protected function getCrmValue($valueKey, $defaultValue = '', $subscriber = [])
+        {
+        }
+        protected function getSubscriberValue($subscriber, $valueKey, $defaultValue)
+        {
+        }
+        protected function getUserValue($valueKey, $defaultValue, $subscriber)
+        {
+        }
+        protected function parseOtherValue($valueKey, $defaultValue, $subscriber)
+        {
+        }
+    }
+}
+namespace League\Csv\Config {
+    /**
+     *  A trait to configure and check CSV file and content
+     *
+     * @package League.csv
+     * @since  6.0.0
+     *
+     */
+    trait Controls
+    {
+        /**
+         * the field delimiter (one character only)
+         *
+         * @var string
+         */
+        protected $delimiter = ',';
+        /**
+         * the field enclosure character (one character only)
+         *
+         * @var string
+         */
+        protected $enclosure = '"';
+        /**
+         * the field escape character (one character only)
+         *
+         * @var string
+         */
+        protected $escape = '\\';
+        /**
+         * the \SplFileObject flags holder
+         *
+         * @var int
+         */
+        protected $flags;
+        /**
+         * newline character
+         *
+         * @var string
+         */
+        protected $newline = "\n";
+        /**
+         * Sets the field delimiter
+         *
+         * @param string $delimiter
+         *
+         * @throws InvalidArgumentException If $delimiter is not a single character
+         *
+         * @return $this
+         */
+        public function setDelimiter($delimiter)
+        {
+        }
+        /**
+         * Tell whether the submitted string is a valid CSV Control character
+         *
+         * @param string $str The submitted string
+         *
+         * @return bool
+         */
+        protected function isValidCsvControls($str)
+        {
+        }
+        /**
+         * Returns the current field delimiter
+         *
+         * @return string
+         */
+        public function getDelimiter()
+        {
+        }
+        /**
+         * Detects the CSV file delimiters
+         *
+         * Returns a associative array where each key represents
+         * the number of occurences and each value a delimiter with the
+         * given occurence
+         *
+         * This method returns incorrect informations when two delimiters
+         * have the same occurrence count
+         *
+         * DEPRECATION WARNING! This method will be removed in the next major point release
+         *
+         * @deprecated deprecated since version 7.2
+         *
+         * @param int      $nb_rows
+         * @param string[] $delimiters additional delimiters
+         *
+         * @return string[]
+         */
+        public function detectDelimiterList($nb_rows = 1, array $delimiters = [])
+        {
+        }
+        /**
+         * Detect Delimiters occurences in the CSV
+         *
+         * Returns a associative array where each key represents
+         * a valid delimiter and each value the number of occurences
+         *
+         * @param string[] $delimiters the delimiters to consider
+         * @param int      $nb_rows    Detection is made using $nb_rows of the CSV
+         *
+         * @throws InvalidArgumentException If $nb_rows value is invalid
+         *
+         * @return array
+         */
+        public function fetchDelimitersOccurrence(array $delimiters, $nb_rows = 1)
+        {
+        }
+        /**
+         * Returns the CSV Iterator
+         *
+         * @return SplFileObject
+         */
+        abstract public function getIterator();
+        /**
+         * Sets the field enclosure
+         *
+         * @param string $enclosure
+         *
+         * @throws InvalidArgumentException If $enclosure is not a single character
+         *
+         * @return $this
+         */
+        public function setEnclosure($enclosure)
+        {
+        }
+        /**
+         * Returns the current field enclosure
+         *
+         * @return string
+         */
+        public function getEnclosure()
+        {
+        }
+        /**
+         * Sets the field escape character
+         *
+         * @param string $escape
+         *
+         * @throws InvalidArgumentException If $escape is not a single character
+         *
+         * @return $this
+         */
+        public function setEscape($escape)
+        {
+        }
+        /**
+         * Returns the current field escape character
+         *
+         * @return string
+         */
+        public function getEscape()
+        {
+        }
+        /**
+         * Sets the Flags associated to the CSV SplFileObject
+         *
+         * @param int $flags
+         *
+         * @throws InvalidArgumentException If the argument is not a valid integer
+         *
+         * @return $this
+         */
+        public function setFlags($flags)
+        {
+        }
+        /**
+         * @inheritdoc
+         */
+        abstract protected function filterInteger($int, $minValue, $errorMessage);
+        /**
+         * Returns the file Flags
+         *
+         * @return int
+         */
+        public function getFlags()
+        {
+        }
+        /**
+         * Sets the newline sequence characters
+         *
+         * @param string $newline
+         *
+         * @return static
+         */
+        public function setNewline($newline)
+        {
+        }
+        /**
+         * Returns the current newline sequence characters
+         *
+         * @return string
+         */
+        public function getNewline()
+        {
+        }
+    }
+    /**
+     *  A trait to output CSV
+     *
+     * @package League.csv
+     * @since  6.3.0
+     *
+     */
+    trait Output
+    {
+        /**
+         * Charset Encoding for the CSV
+         *
+         * @var string
+         */
+        protected $encodingFrom = 'UTF-8';
+        /**
+         * The Input file BOM character
+         * @var string
+         */
+        protected $input_bom;
+        /**
+         * The Output file BOM character
+         * @var string
+         */
+        protected $output_bom;
+        /**
+         * Returns the CSV Iterator
+         *
+         * @return Iterator
+         */
+        abstract protected function getConversionIterator();
+        /**
+         * Returns the CSV Iterator
+         *
+         * @return Iterator
+         */
+        abstract public function getIterator();
+        /**
+         * Sets the CSV encoding charset
+         *
+         * @param string $str
+         *
+         * @return static
+         */
+        public function setEncodingFrom($str)
+        {
+        }
+        /**
+         * Gets the source CSV encoding charset
+         *
+         * @return string
+         */
+        public function getEncodingFrom()
+        {
+        }
+        /**
+         * Sets the BOM sequence to prepend the CSV on output
+         *
+         * @param string $str The BOM sequence
+         *
+         * @return static
+         */
+        public function setOutputBOM($str = null)
+        {
+        }
+        /**
+         * Returns the BOM sequence in use on Output methods
+         *
+         * @return string
+         */
+        public function getOutputBOM()
+        {
+        }
+        /**
+         * Returns the BOM sequence of the given CSV
+         *
+         * @return string
+         */
+        public function getInputBOM()
+        {
+        }
+        /**
+         * Outputs all data on the CSV file
+         *
+         * @param string $filename CSV downloaded name if present adds extra headers
+         *
+         * @return int Returns the number of characters read from the handle
+         *             and passed through to the output.
+         */
+        public function output($filename = null)
+        {
+        }
+        /**
+         * Outputs all data from the CSV
+         *
+         * @return int Returns the number of characters read from the handle
+         *             and passed through to the output.
+         */
+        protected function fpassthru()
+        {
+        }
+        /**
+         * Retrieves the CSV content
+         *
+         * @return string
+         */
+        public function __toString()
+        {
+        }
+        /**
+         * JsonSerializable Interface
+         *
+         * @return array
+         */
+        #[\ReturnTypeWillChange]
+        public function jsonSerialize()
+        {
+        }
+        /**
+         * Convert Csv file into UTF-8
+         *
+         * @param Iterator $iterator
+         *
+         * @return Iterator
+         */
+        protected function convertToUtf8(\Iterator $iterator)
+        {
+        }
+        /**
+         * Returns a HTML table representation of the CSV Table
+         *
+         * @param string $class_name optional classname
+         *
+         * @return string
+         */
+        public function toHTML($class_name = 'table-csv-data')
+        {
+        }
+        /**
+         * Transforms a CSV into a XML
+         *
+         * @param string $root_name XML root node name
+         * @param string $row_name  XML row node name
+         * @param string $cell_name XML cell node name
+         *
+         * @return DomDocument
+         */
+        public function toXML($root_name = 'csv', $row_name = 'row', $cell_name = 'cell')
+        {
+        }
+    }
+}
+namespace League\Csv\Modifier {
+    /**
+     *  A Trait to Query rows against a SplFileObject
+     *
+     * @package League.csv
+     * @since  4.2.1
+     *
+     */
+    trait QueryFilter
+    {
+        /**
+         * Callables to filter the iterator
+         *
+         * @var callable[]
+         */
+        protected $iterator_filters = [];
+        /**
+         * Callables to sort the iterator
+         *
+         * @var callable[]
+         */
+        protected $iterator_sort_by = [];
+        /**
+         * iterator Offset
+         *
+         * @var int
+         */
+        protected $iterator_offset = 0;
+        /**
+         * iterator maximum length
+         *
+         * @var int
+         */
+        protected $iterator_limit = -1;
+        /**
+         * Stripping BOM status
+         *
+         * @var boolean
+         */
+        protected $strip_bom = false;
+        /**
+         * Stripping BOM setter
+         *
+         * @param bool $status
+         *
+         * @return $this
+         */
+        public function stripBom($status)
+        {
+        }
+        /**
+         * Tell whether we can strip or not the leading BOM sequence
+         *
+         * @return bool
+         */
+        protected function isBomStrippable()
+        {
+        }
+        /**
+         * {@inheritdoc}
+         */
+        abstract public function getInputBom();
+        /**
+         * Set LimitIterator Offset
+         *
+         * @param $offset
+         *
+         * @return $this
+         */
+        public function setOffset($offset = 0)
+        {
+        }
+        /**
+         * @inheritdoc
+         */
+        abstract protected function filterInteger($int, $minValue, $errorMessage);
+        /**
+         * Set LimitIterator Count
+         *
+         * @param int $limit
+         *
+         * @return $this
+         */
+        public function setLimit($limit = -1)
+        {
+        }
+        /**
+         * Set an Iterator sorting callable function
+         *
+         * @param callable $callable
+         *
+         * @return $this
+         */
+        public function addSortBy(callable $callable)
+        {
+        }
+        /**
+         * Remove a callable from the collection
+         *
+         * @param callable $callable
+         *
+         * @return $this
+         */
+        public function removeSortBy(callable $callable)
+        {
+        }
+        /**
+         * Detect if the callable is already registered
+         *
+         * @param callable $callable
+         *
+         * @return bool
+         */
+        public function hasSortBy(callable $callable)
+        {
+        }
+        /**
+         * Remove all registered callable
+         *
+         * @return $this
+         */
+        public function clearSortBy()
+        {
+        }
+        /**
+         * Set the Iterator filter method
+         *
+         * @param callable $callable
+         *
+         * @return $this
+         */
+        public function addFilter(callable $callable)
+        {
+        }
+        /**
+         * Remove a filter from the callable collection
+         *
+         * @param callable $callable
+         *
+         * @return $this
+         */
+        public function removeFilter(callable $callable)
+        {
+        }
+        /**
+         * Detect if the callable filter is already registered
+         *
+         * @param callable $callable
+         *
+         * @return bool
+         */
+        public function hasFilter(callable $callable)
+        {
+        }
+        /**
+         * Remove all registered callable filter
+         *
+         * @return $this
+         */
+        public function clearFilter()
+        {
+        }
+        /**
+         * Remove the BOM sequence from the CSV
+         *
+         * @param Iterator $iterator
+         *
+         * @return \Iterator
+         */
+        protected function applyBomStripping(\Iterator $iterator)
+        {
+        }
+        /**
+         * Return the Iterator without the BOM sequence
+         *
+         * @param Iterator $iterator
+         *
+         * @return Iterator
+         */
+        protected function getStripBomIterator(\Iterator $iterator)
+        {
+        }
+        /**
+         * {@inheritdoc}
+         */
+        abstract public function getEnclosure();
+        /**
+         * Filter the Iterator
+         *
+         * @param \Iterator $iterator
+         *
+         * @return \Iterator
+         */
+        protected function applyIteratorFilter(\Iterator $iterator)
+        {
+        }
+        /**
+         * Sort the Iterator
+         *
+         * @param \Iterator $iterator
+         *
+         * @return \Iterator
+         */
+        protected function applyIteratorInterval(\Iterator $iterator)
+        {
+        }
+        /**
+         * Sort the Iterator
+         *
+         * @param \Iterator $iterator
+         *
+         * @return \Iterator
+         */
+        protected function applyIteratorSortBy(\Iterator $iterator)
+        {
+        }
+    }
+    /**
+     *  A Trait to ease PHP Stream Filters manipulation
+     *  with a SplFileObject
+     *
+     * @package League.csv
+     * @since  6.0.0
+     *
+     */
+    trait StreamFilter
+    {
+        /**
+         * collection of stream filters
+         *
+         * @var array
+         */
+        protected $stream_filters = [];
+        /**
+         * Stream filtering mode to apply on all filters
+         *
+         * @var int
+         */
+        protected $stream_filter_mode = STREAM_FILTER_ALL;
+        /**
+         *the real path
+         *
+         * @var string the real path to the file
+         *
+         */
+        protected $stream_uri;
+        /**
+         * PHP Stream Filter Regex
+         *
+         * @var string
+         */
+        protected $stream_regex = ',^
+        php://filter/
+        (?P<mode>:?read=|write=)?  # The resource open mode
+        (?P<filters>.*?)           # The resource registered filters
+        /resource=(?P<resource>.*) # The resource path
+        $,ix';
+        /**
+         * Internal path setter
+         *
+         * The path must be an SplFileInfo object
+         * an object that implements the `__toString` method
+         * a path to a file
+         *
+         * @param \SplFileObject|string $path The file path
+         */
+        protected function initStreamFilter($path)
+        {
+        }
+        /**
+         * Get the stream mode
+         *
+         * @param string $mode
+         *
+         * @return int
+         */
+        protected function fetchStreamModeAsInt($mode)
+        {
+        }
+        /**
+         * Check if the trait methods can be used
+         *
+         * @throws LogicException If the API can not be use
+         */
+        protected function assertStreamable()
+        {
+        }
+        /**
+         * Tells whether the stream filter capabilities can be used
+         *
+         * @return bool
+         */
+        public function isActiveStreamFilter()
+        {
+        }
+        /**
+         * stream filter mode Setter
+         *
+         * Set the new Stream Filter mode and remove all
+         * previously attached stream filters
+         *
+         * @param int $mode
+         *
+         * @throws OutOfBoundsException If the mode is invalid
+         *
+         * @return $this
+         */
+        public function setStreamFilterMode($mode)
+        {
+        }
+        /**
+         * stream filter mode getter
+         *
+         * @return int
+         */
+        public function getStreamFilterMode()
+        {
+        }
+        /**
+         * append a stream filter
+         *
+         * @param string $filter_name a string or an object that implements the '__toString' method
+         *
+         * @return $this
+         */
+        public function appendStreamFilter($filter_name)
+        {
+        }
+        /**
+         * prepend a stream filter
+         *
+         * @param string $filter_name a string or an object that implements the '__toString' method
+         *
+         * @return $this
+         */
+        public function prependStreamFilter($filter_name)
+        {
+        }
+        /**
+         * Sanitize the stream filter name
+         *
+         * @param string $filter_name the stream filter name
+         *
+         * @return string
+         */
+        protected function sanitizeStreamFilter($filter_name)
+        {
+        }
+        /**
+         * Detect if the stream filter is already present
+         *
+         * @param string $filter_name
+         *
+         * @return bool
+         */
+        public function hasStreamFilter($filter_name)
+        {
+        }
+        /**
+         * Remove a filter from the collection
+         *
+         * @param string $filter_name
+         *
+         * @return $this
+         */
+        public function removeStreamFilter($filter_name)
+        {
+        }
+        /**
+         * Remove all registered stream filter
+         *
+         * @return $this
+         */
+        public function clearStreamFilter()
+        {
+        }
+        /**
+         * Return the filter path
+         *
+         * @return string
+         */
+        protected function getStreamFilterPath()
+        {
+        }
+        /**
+         * Return PHP stream filter prefix
+         *
+         * @return string
+         */
+        protected function getStreamFilterPrefix()
+        {
+        }
+    }
+}
+namespace League\Csv {
+    /**
+     *  An abstract class to enable basic CSV manipulation
+     *
+     * @package League.csv
+     * @since  4.0.0
+     *
+     */
+    abstract class AbstractCsv implements \JsonSerializable, \IteratorAggregate
+    {
+        use \League\Csv\Config\Controls;
+        use \League\Csv\Config\Output;
+        use \League\Csv\Modifier\QueryFilter;
+        use \League\Csv\Modifier\StreamFilter;
+        /**
+         *  UTF-8 BOM sequence
+         */
+        const BOM_UTF8 = "﻿";
+        /**
+         * UTF-16 BE BOM sequence
+         */
+        const BOM_UTF16_BE = "\xfe\xff";
+        /**
+         * UTF-16 LE BOM sequence
+         */
+        const BOM_UTF16_LE = "\xff\xfe";
+        /**
+         * UTF-32 BE BOM sequence
+         */
+        const BOM_UTF32_BE = "\x00\x00\xfe\xff";
+        /**
+         * UTF-32 LE BOM sequence
+         */
+        const BOM_UTF32_LE = "\x00\x00\xff\xfe";
+        /**
+         * The constructor path
+         *
+         * can be a SplFileInfo object or the string path to a file
+         *
+         * @var SplFileObject|string
+         */
+        protected $path;
+        /**
+         * The file open mode flag
+         *
+         * @var string
+         */
+        protected $open_mode;
+        /**
+         * Default SplFileObject flags settings
+         *
+         * @var int
+         */
+        protected $defaultFlags;
+        /**
+         * Creates a new instance
+         *
+         * The path must be an SplFileInfo object
+         * an object that implements the `__toString` method
+         * a path to a file
+         *
+         * @param SplFileObject|string $path      The file path
+         * @param string               $open_mode the file open mode flag
+         */
+        protected function __construct($path, $open_mode = 'r+')
+        {
+        }
+        /**
+         * The destructor
+         */
+        public function __destruct()
+        {
+        }
+        /**
+         * Returns the CSV Iterator
+         *
+         * @return SplFileObject
+         */
+        #[\ReturnTypeWillChange]
+        public function getIterator()
+        {
+        }
+        /**
+         * Returns the CSV Iterator for conversion
+         *
+         * @return Iterator
+         */
+        protected function getConversionIterator()
+        {
+        }
+        /**
+         * Creates a {@link AbstractCsv} from a string
+         *
+         * The path can be:
+         * - an SplFileInfo,
+         * - a SplFileObject,
+         * - an object that implements the `__toString` method,
+         * - a string
+         *
+         * BUT NOT a SplTempFileObject
+         *
+         * <code>
+         *<?php
+         * $csv = new Reader::createFromPath('/path/to/file.csv', 'a+');
+         * $csv = new Reader::createFromPath(new SplFileInfo('/path/to/file.csv'));
+         * $csv = new Reader::createFromPath(new SplFileObject('/path/to/file.csv'), 'rb');
+         *
+         * ?>
+         * </code>
+         *
+         * @param mixed  $path      file path
+         * @param string $open_mode the file open mode flag
+         *
+         * @throws InvalidArgumentException If $path is a \SplTempFileObject object
+         *
+         * @return static
+         */
+        public static function createFromPath($path, $open_mode = 'r+')
+        {
+        }
+        /**
+         * validate a string
+         *
+         * @param mixed $str the value to evaluate as a string
+         *
+         * @throws InvalidArgumentException if the submitted data can not be converted to string
+         *
+         * @return string
+         */
+        protected static function validateString($str)
+        {
+        }
+        /**
+         * Creates a {@link AbstractCsv} from a SplFileObject
+         *
+         * The path can be:
+         * - a SplFileObject,
+         * - a SplTempFileObject
+         *
+         * <code>
+         *<?php
+         * $csv = new Writer::createFromFileObject(new SplFileInfo('/path/to/file.csv'));
+         * $csv = new Writer::createFromFileObject(new SplTempFileObject);
+         *
+         * ?>
+         * </code>
+         *
+         * @param SplFileObject $file
+         *
+         * @return static
+         */
+        public static function createFromFileObject(\SplFileObject $file)
+        {
+        }
+        /**
+         * Creates a {@link AbstractCsv} from a string
+         *
+         * The string must be an object that implements the `__toString` method,
+         * or a string
+         *
+         * @param string $str     the string
+         * @param string $newline the newline character
+         *
+         * @return static
+         */
+        public static function createFromString($str, $newline = "\n")
+        {
+        }
+        /**
+         * Creates a {@link AbstractCsv} instance from another {@link AbstractCsv} object
+         *
+         * @param string $class_name the class to be instantiated
+         * @param string $open_mode  the file open mode flag
+         *
+         * @return static
+         */
+        protected function newInstance($class_name, $open_mode)
+        {
+        }
+        /**
+         * Creates a {@link Writer} instance from a {@link AbstractCsv} object
+         *
+         * @param string $open_mode the file open mode flag
+         *
+         * @return Writer
+         */
+        public function newWriter($open_mode = 'r+')
+        {
+        }
+        /**
+         * Creates a {@link Reader} instance from a {@link AbstractCsv} object
+         *
+         * @param string $open_mode the file open mode flag
+         *
+         * @return Reader
+         */
+        public function newReader($open_mode = 'r+')
+        {
+        }
+        /**
+         * Validate the submitted integer
+         *
+         * @param int    $int
+         * @param int    $minValue
+         * @param string $errorMessage
+         *
+         * @throws InvalidArgumentException If the value is invalid
+         *
+         * @return int
+         */
+        protected function filterInteger($int, $minValue, $errorMessage)
+        {
+        }
+    }
+}
+namespace League\Csv\Exception {
+    /**
+     *  Thrown when a data is not validated prior to insertion
+     *
+     * @package League.csv
+     * @since  7.0.0
+     *
+     */
+    class InvalidRowException extends \InvalidArgumentException
+    {
+        /**
+         * Validator which did not validated the data
+         * @var string
+         */
+        private $name;
+        /**
+         * Validator Data which caused the error
+         * @var array
+         */
+        private $data;
+        /**
+         * New Instance
+         *
+         * @param string $name    validator name
+         * @param array  $data    invalid  data
+         * @param string $message exception message
+         */
+        public function __construct($name, array $data = [], $message = '')
+        {
+        }
+        /**
+         * return the validator name
+         *
+         * @return string
+         */
+        public function getName()
+        {
+        }
+        /**
+         * return the invalid data submitted
+         *
+         * @return array
+         */
+        public function getData()
+        {
+        }
+    }
+}
+namespace League\Csv\Modifier {
+    /**
+     *  A simple MapIterator
+     *
+     * @package League.csv
+     * @since  3.3.0
+     * @internal used internally to modify CSV content
+     *
+     */
+    class MapIterator extends \IteratorIterator
+    {
+        /**
+         * The function to be apply on all InnerIterator element
+         *
+         * @var callable
+         */
+        private $callable;
+        /**
+         * The Constructor
+         *
+         * @param Iterator $iterator
+         * @param callable $callable
+         */
+        public function __construct(\Iterator $iterator, callable $callable)
+        {
+        }
+        /**
+         * Get the value of the current element
+         *
+         * @return mixed
+         */
+        #[\ReturnTypeWillChange]
+        public function current()
+        {
+        }
+    }
+    /**
+     *  Trait to format and validate the row before insertion
+     *
+     * @package League.csv
+     * @since  7.0.0
+     *
+     */
+    trait RowFilter
+    {
+        /**
+         * Callables to validate the row before insertion
+         *
+         * @var callable[]
+         */
+        protected $validators = [];
+        /**
+         * Callables to format the row before insertion
+         *
+         * @var callable[]
+         */
+        protected $formatters = [];
+        /**
+         * add a formatter to the collection
+         *
+         * @param callable $callable
+         *
+         * @return $this
+         */
+        public function addFormatter(callable $callable)
+        {
+        }
+        /**
+         * Remove a formatter from the collection
+         *
+         * @param callable $callable
+         *
+         * @return $this
+         */
+        public function removeFormatter(callable $callable)
+        {
+        }
+        /**
+         * Detect if the formatter is already registered
+         *
+         * @param callable $callable
+         *
+         * @return bool
+         */
+        public function hasFormatter(callable $callable)
+        {
+        }
+        /**
+         * Remove all registered formatter
+         *
+         * @return $this
+         */
+        public function clearFormatters()
+        {
+        }
+        /**
+         * add a Validator to the collection
+         *
+         * @param callable $callable
+         * @param string   $name     the rule name
+         *
+         * @return $this
+         */
+        public function addValidator(callable $callable, $name)
+        {
+        }
+        /**
+         * Remove a validator from the collection
+         *
+         * @param string $name the validator name
+         *
+         * @return $this
+         */
+        public function removeValidator($name)
+        {
+        }
+        /**
+         * Detect if a validator is already registered
+         *
+         * @param string $name the validator name
+         *
+         * @return bool
+         */
+        public function hasValidator($name)
+        {
+        }
+        /**
+         * Remove all registered validators
+         *
+         * @return $this
+         */
+        public function clearValidators()
+        {
+        }
+        /**
+         * Format the given row
+         *
+         * @param array|string $row
+         *
+         * @return array
+         */
+        protected function formatRow(array $row)
+        {
+        }
+        /**
+         * validate a row
+         *
+         * @param array $row
+         *
+         * @throws InvalidRowException If the validation failed
+         */
+        protected function validateRow(array $row)
+        {
+        }
+    }
+}
+namespace League\Csv\Plugin {
+    /**
+     *  A class to manage column consistency on data insertion into a CSV
+     *
+     * @package League.csv
+     * @since  7.0.0
+     *
+     */
+    class ColumnConsistencyValidator
+    {
+        /**
+         * The number of column per row
+         *
+         * @var int
+         */
+        private $columns_count = -1;
+        /**
+         * should the class detect the column count based the inserted row
+         *
+         * @var bool
+         */
+        private $detect_columns_count = false;
+        /**
+         * Set Inserted row column count
+         *
+         * @param int $value
+         *
+         * @throws InvalidArgumentException If $value is lesser than -1
+         *
+         */
+        public function setColumnsCount($value)
+        {
+        }
+        /**
+         * Column count getter
+         *
+         * @return int
+         */
+        public function getColumnsCount()
+        {
+        }
+        /**
+         * The method will set the $columns_count property according to the next inserted row
+         * and therefore will also validate the next line whatever length it has no matter
+         * the current $columns_count property value.
+         *
+         */
+        public function autodetectColumnsCount()
+        {
+        }
+        /**
+         * Is the submitted row valid
+         *
+         * @param array $row
+         *
+         * @return bool
+         */
+        public function __invoke(array $row)
+        {
+        }
+    }
+    /**
+     *  A class to validate null value handling on data insertion into a CSV
+     *
+     * @package League.csv
+     * @since  7.0.0
+     *
+     */
+    class ForbiddenNullValuesValidator
+    {
+        /**
+         * Is the submitted row valid
+         *
+         * @param array $row
+         *
+         * @return bool
+         */
+        public function __invoke(array $row)
+        {
+        }
+    }
+    /**
+     *  A class to remove null value from data before insertion into a CSV
+     *
+     * @package League.csv
+     * @since  7.0.0
+     *
+     */
+    class SkipNullValuesFormatter
+    {
+        /**
+         * remove null value form the submitted array
+         *
+         * @param array $row
+         *
+         * @return array
+         */
+        public function __invoke(array $row)
+        {
+        }
+    }
+}
+namespace League\Csv {
+    /**
+     *  A class to manage extracting and filtering a CSV
+     *
+     * @package League.csv
+     * @since  3.0.0
+     *
+     */
+    class Reader extends \League\Csv\AbstractCsv
+    {
+        /**
+         * @inheritdoc
+         */
+        protected $stream_filter_mode = STREAM_FILTER_READ;
+        /**
+         * Returns a Filtered Iterator
+         *
+         * DEPRECATION WARNING! This method will be removed in the next major point release
+         *
+         * @deprecated deprecated since version 7.2
+         *
+         * @return Iterator
+         */
+        public function query(callable $callable = null)
+        {
+        }
+        /**
+         * Return a Filtered Iterator
+         *
+         * @param callable $callable a callable function to be applied to each Iterator item
+         *
+         * @return Iterator
+         */
+        public function fetch(callable $callable = null)
+        {
+        }
+        /**
+         * Applies a callback function on the CSV
+         *
+         * The callback function must return TRUE in order to continue
+         * iterating over the iterator.
+         *
+         * @param callable $callable The callback function
+         *
+         * @return int the iteration count
+         */
+        public function each(callable $callable)
+        {
+        }
+        /**
+         * Returns a single row from the CSV
+         *
+         * @param int $offset
+         *
+         * @throws InvalidArgumentException If the $offset is not a valid Integer
+         *
+         * @return array
+         */
+        public function fetchOne($offset = 0)
+        {
+        }
+        /**
+         * Returns a sequential array of all CSV lines
+         *
+         * The callable function will be applied to each Iterator item
+         *
+         * @param callable $callable a callable function
+         *
+         * @return array
+         */
+        public function fetchAll(callable $callable = null)
+        {
+        }
+        /**
+         * Returns a single column from the CSV data
+         *
+         * The callable function will be applied to each value to be return
+         *
+         * @param int      $column_index field Index
+         * @param callable $callable     a callable function
+         *
+         * @throws InvalidArgumentException If the column index is not a positive integer or 0
+         *
+         * @return array
+         */
+        public function fetchColumn($column_index = 0, callable $callable = null)
+        {
+        }
+        /**
+         * Returns a sequential array of all CSV lines;
+         *
+         * The rows are presented as associated arrays
+         * The callable function will be applied to each Iterator item
+         *
+         * @param int|array $offset_or_keys the name for each key member OR the row Index to be
+         *                                  used as the associated named keys
+         *
+         * @param callable $callable a callable function
+         *
+         * @throws InvalidArgumentException If the submitted keys are invalid
+         *
+         * @return Iterator
+         */
+        public function fetchAssoc($offset_or_keys = 0, callable $callable = null)
+        {
+        }
+        /**
+         * Selects the array to be used as key for the fetchAssoc method
+         *
+         * @param int|array $offset_or_keys the assoc key OR the row Index to be used
+         *                                  as the key index
+         *
+         * @throws InvalidArgumentException If the row index and/or the resulting array is invalid
+         *
+         * @return array
+         */
+        protected function getAssocKeys($offset_or_keys)
+        {
+        }
+        /**
+         * Validates the array to be used by the fetchAssoc method
+         *
+         * @param array $keys
+         *
+         * @throws InvalidArgumentException If the submitted array fails the assertion
+         */
+        protected function validateAssocKeys(array $keys)
+        {
+        }
+        /**
+         * Returns a single row from the CSV without filtering
+         *
+         * @param int $offset
+         *
+         * @throws InvalidArgumentException If the $offset is not valid or the row does not exist
+         *
+         * @return array
+         */
+        protected function getRow($offset)
+        {
+        }
+    }
+    /**
+     *  A class to manage data insertion into a CSV
+     *
+     * @package League.csv
+     * @since  4.0.0
+     *
+     */
+    class Writer extends \League\Csv\AbstractCsv
+    {
+        use \League\Csv\Modifier\RowFilter;
+        /**
+         * @inheritdoc
+         */
+        protected $stream_filter_mode = STREAM_FILTER_WRITE;
+        /**
+         * The CSV object holder
+         *
+         * @var \SplFileObject
+         */
+        protected $csv;
+        /**
+         * fputcsv method from SplFileObject
+         *
+         * @var ReflectionMethod
+         */
+        protected static $fputcsv;
+        /**
+         * Nb parameters for SplFileObject::fputcsv method
+         *
+         * @var integer
+         */
+        protected static $fputcsv_param_count;
+        /**
+         * @inheritdoc
+         */
+        protected function __construct($path, $open_mode = 'r+')
+        {
+        }
+        /**
+         * initiate a SplFileObject::fputcsv method
+         */
+        protected static function initFputcsv()
+        {
+        }
+        /**
+         * Adds multiple lines to the CSV document
+         *
+         * a simple wrapper method around insertOne
+         *
+         * @param Traversable|array $rows a multidimensional array or a Traversable object
+         *
+         * @throws InvalidArgumentException If the given rows format is invalid
+         *
+         * @return static
+         */
+        public function insertAll($rows)
+        {
+        }
+        /**
+         * Adds a single line to a CSV document
+         *
+         * @param string[]|string $row a string, an array or an object implementing to '__toString' method
+         *
+         * @return static
+         */
+        public function insertOne($row)
+        {
+        }
+        /**
+         * returns the parameters for SplFileObject::fputcsv
+         *
+         * @param array $fields The fields to be add
+         *
+         * @return array
+         */
+        protected function getFputcsvParameters(array $fields)
+        {
+        }
+        /**
+         *  {@inheritdoc}
+         */
+        public function isActiveStreamFilter()
+        {
+        }
+        /**
+         *  {@inheritdoc}
+         */
+        public function __destruct()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services {
+    class PermissionManager
+    {
+        public static function getReadablePermissions()
+        {
+        }
+        public static function pluginPermissions()
+        {
+        }
+        public static function attachPermissions($user, $permissions)
+        {
+        }
+        public static function deleteManagerPermissions($userId)
+        {
+        }
+        public static function getUserPermissions($user = false)
+        {
+        }
+        /**
+         * Reads WP caps for a user, writes them to meta, removes the old caps.
+         * Called once per user — subsequent calls hit meta directly.
+         */
+        private static function migrateUserFromWpCaps($user)
+        {
+        }
+        public static function currentUserPermissions($cached = true)
+        {
+        }
+        public static function currentUserCan($permission)
+        {
+        }
+    }
+    trait ReportingHelperTrait
+    {
+        protected static $daily = 'P1D';
+        protected static $weekly = 'P1W';
+        protected static $monthly = 'P1M';
+        protected function makeFromDate($from)
+        {
+        }
+        protected function makeToDate($to)
+        {
+        }
+        protected function makeDatePeriod($from, $to, $interval = null)
+        {
+        }
+        protected function getFrequency($from, $to)
+        {
+        }
+        protected function prepareSelect($frequency, $dateField = 'created_at')
+        {
+        }
+        protected function getGroupAndOrder($frequency)
+        {
+        }
+        protected function getDateRangeArray($period)
+        {
+        }
+        protected function getResult($period, $items)
+        {
+        }
+        protected function isMonthly($period)
+        {
+        }
+        protected function basicFormatter($date)
+        {
+        }
+        protected function monYearFormatter($date)
+        {
+        }
+    }
+    class Reporting
+    {
+        use \FluentCrm\App\Services\ReportingHelperTrait;
+        public function getSubscribersGrowth($from = false, $to = false, $tagId = 0, $listId = 0)
+        {
+        }
+        public function getEmailOpenStats($from = false, $to = false, $campaignId = 0)
+        {
+        }
+        public function getEmailClickStats($from = false, $to = false, $campaignId = 0)
+        {
+        }
+        public function getEmailStats($from = false, $to = false, $status = 'sent', $campaignId = 0)
+        {
+        }
+        public function getUnsubscribeStats($from = false, $to = false)
+        {
+        }
+        public function funnelStat($funnelId, $sequences = [], $from = false, $to = false)
+        {
+        }
+        public function getEmailPerformance($from = null, $to = null)
+        {
+        }
+    }
+    class RoleBasedTagging
+    {
+        public function getSettings($withFiller = false)
+        {
+        }
+        public function getFields()
+        {
+        }
+    }
+    class Sanitize
+    {
+        public static function campaign($data)
+        {
+        }
+        public static function contact($data)
+        {
+        }
+        public static function contactNote($data)
+        {
+        }
+        public static function funnel($data)
+        {
+        }
+        public static function company($data)
+        {
+        }
+        public static function sanitizeTagIds($inputTagIds, $willCreate = true)
+        {
+        }
+        public static function sanitizeListIds($inputListIds, $willCreate = true)
+        {
+        }
+    }
+    class Stats
+    {
+        public function getCounts()
+        {
+        }
+        public function getQuickLinks()
+        {
+        }
+        public function getOnboardingStat()
+        {
+        }
+        public function getRecentContacts($limit = 5)
+        {
+        }
+        public function getActiveAutomations($limit = 5)
+        {
+        }
+        public function getRecentCampaigns($limit = 5)
+        {
+        }
+    }
+    // This is an auto-generated file. Please do not edit manually.
+    class TransStrings
+    {
+        public static function getStrings()
+        {
+        }
+    }
+    /**
+     * Gutenberg iframe specific translation map for custom-editor React helpers.
+     */
+    class TransStringsGuten
+    {
+        public static function getStrings()
+        {
+        }
+    }
+}
+namespace FluentCrm\App {
+    class Vite
+    {
+        private array $moduleScripts = [];
+        private string $viteHostProtocol = 'http://';
+        private string $viteHost = 'localhost';
+        private string $vitePort = '5174';
+        private string $resourceDirectory = 'resources/';
+        /**
+         * Bridge from Mix-era enqueue paths to Vite source paths.
+         *
+         * The PHP codebase still calls fluentCrmMix('admin/js/app.js') and
+         * fluentCrmMix('admin/css/app3.css') even though Vite's manifest and
+         * dev server are keyed by source paths (admin/app.js, styles/app3.scss).
+         * Both mapToSourcePath() and getSourcePathForManifest() read this
+         * table — one source of truth.
+         */
+        private const MIX_TO_VITE_PATH_MAP = [
+            // JS: Mix wrote `admin/js/<name>.js`, Vite reads the source path
+            'admin/js/boot.js' => 'admin/boot.js',
+            'admin/js/app.js' => 'admin/app.js',
+            'admin/js/adminbar-search.js' => 'admin/adminbar-search.js',
+            'admin/js/global_admin.js' => 'admin/global_admin.js',
+            'admin/js/setup-wizard.js' => 'admin/setup-wizard.js',
+            'admin/js/contact-navigations.js' => 'admin/experiments/contact-navigations.js',
+            'admin/js/visual-editor.js' => 'admin/visual-editor/visual-editor.js',
+            'public/public_pref.js' => 'public/public_pref.js',
+            // CSS: Mix wrote `admin/css/<name>.css`, Vite serves SCSS sources
+            'admin/css/admin_rtl.css' => 'scss/admin_rtl.scss',
+            'admin/css/app_global.css' => 'scss/app_global.scss',
+            'admin/css/setup-wizard.css' => 'scss/setup-wizard.scss',
+            'admin/css/app3.css' => 'styles/app3.scss',
+            'public/public_pref.css' => 'scss/public_pref.scss',
+        ];
+        protected static ?\FluentCrm\App\Vite $instance = null;
+        public ?string $lastJsHandle = null;
+        private ?array $manifestData = null;
+        private array $enqueuedChunkCss = [];
+        public function __construct()
+        {
+        }
+        /**
+         * Convert scripts from Vite dev server or built assets to ES modules
+         */
+        public function maybeConvertToModule($tag, $handle, $src): string
+        {
+        }
+        private static function getInstance(): \FluentCrm\App\Vite
+        {
+        }
+        /**
+         * @throws Exception
+         */
+        private function loadViteManifest()
+        {
+        }
+        public static function enqueueScript($handle, $src, $dependency = [], $version = null, $inFooter = false): \FluentCrm\App\Vite
+        {
+        }
+        private function enqueue_script($handle, $src, $dependency = [], $version = null, $inFooter = false): \FluentCrm\App\Vite
+        {
+        }
+        private function getFileFromManifest($src)
+        {
+        }
+        private function getProductionFilePath($file): string
+        {
+        }
+        // Per-chunk CSS auto-enqueue. The Vite build's mergeCssChunksPlugin
+        // collapses most chunk CSS into admin/css/style.css (which AdminMenu.php
+        // enqueues explicitly), and the moveManifestPlugin then strips the
+        // merged paths from the manifest. What remains in manifest `css` arrays
+        // is only files that survived to disk (e.g. legacy SCSS entry outputs
+        // like admin/css/admin_rtl.css) — those we enqueue here.
+        private function ensureChunkCssIsLoaded($file)
+        {
+        }
+        private function collectChunkCssFiles($file, &$visited = []): array
+        {
+        }
+        public function with($params)
+        {
+        }
+        public static function enqueueStyle($handle, $src, $dependency = [], $version = null, $media = 'all')
+        {
+        }
+        private function enqueue_style($handle, $src, $dependency = [], $version = null, $media = 'all')
+        {
+        }
+        public static function enqueueStaticScript($handle, $src, $dependency = [], $version = null, $inFooter = false): \FluentCrm\App\Vite
+        {
+        }
+        private function enqueue_static_script($handle, $src, $dependency = [], $version = null, $inFooter = false): \FluentCrm\App\Vite
+        {
+        }
+        private function getStaticEnqueuePath($path): string
+        {
+        }
+        public static function enqueueStaticStyle($handle, $src, $dependency = [], $version = null, $media = 'all')
+        {
+        }
+        private function enqueue_static_style($handle, $src, $dependency = [], $version = null, $media = 'all')
+        {
+        }
+        public static function underDevelopment(): bool
+        {
+        }
+        public function usingDevMode(): bool
+        {
+        }
+        /**
+         * True only when env=dev AND the Vite dev server is reachable.
+         * Use this — not usingDevMode() — to decide whether to proxy URLs to
+         * the Vite server. When the server is down we fall back to built assets.
+         */
+        private function shouldServeViaDevServer(): bool
+        {
+        }
+        /**
+         * Check if Vite dev server is actually running
+         */
+        private function isViteServerRunning(): bool
+        {
+        }
+        public function getVitePath(): string
+        {
+        }
+        public static function getEnqueuePath($path = ''): string
+        {
+        }
+        /**
+         * Resolve a Mix-style enqueue path to a dev-server URL.
+         * Used when the Vite dev server is running.
+         */
+        private function mapToSourcePath($path): string
+        {
+        }
+        /**
+         * Resolve a Mix-style enqueue path to the manifest source key.
+         * Used in production for manifest lookups.
+         */
+        private function getSourcePathForManifest($path): string
+        {
+        }
+        public static function getAssetUrl($path = ''): string
+        {
+        }
+        private function get_asset_url($path = ''): string
+        {
+        }
+        static function getAssetPath(): string
+        {
+        }
+        /**
+         * Inject Vite client for HMR in development mode
+         */
+        public static function injectViteClient()
+        {
+        }
+    }
+}
+namespace {
+    class FluentCRMDBMigrator
+    {
+        public static function run($network_wide = \false)
+        {
+        }
+        public static function migrate()
+        {
+        }
+    }
+}
+namespace FluentCrmMigrations {
+    class ActivityLogsMigrator
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class CampaignEmails
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class CampaignUrlMetrics
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class Campaigns
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class CompaniesMigrator
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class FunnelMetrics
+    {
+        /**
+         * Migrate the table.
+         *
+         * @param bool $isForced
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class FunnelSequences
+    {
+        /**
+         * Migrate the table.
+         *
+         * @param bool $isForced
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class FunnelSubscribers
+    {
+        /**
+         * Migrate the table.
+         *
+         * @param bool $isForced
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class Funnels
+    {
+        /**
+         * Migrate the table.
+         *
+         * @param bool $isForced
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class Lists
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class Meta
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class SubscriberEventTracking
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class SubscriberMeta
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class SubscriberNotes
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class SubscriberPivot
+    {
+        /**
+         * Migrate the table.
+         *
+         * This table will maintain many-to-many relationships
+         * between subscriber & lists and subscriber & tags.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class Subscribers
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class Tags
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class TermRelations
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class Terms
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+    class UrlStores
+    {
+        /**
+         * Migrate the table.
+         *
+         * @return void
+         */
+        public static function migrate()
+        {
+        }
+    }
+}
+namespace FluentCrm\Includes\Helpers {
+    /**
+     * @deprecated No longer used by internal code and not recommended. Please use FluentCrm\Framework\Support\Arr instead
+     */
+    class Arr
+    {
+        /**
+         * Taken from Illuminate\Support\Arr (Laravel Framework)
+         */
+        /**
+         * Check if an item or items exist in an array using "dot" notation.
+         *
+         * @param \ArrayAccess|array $array
+         * @param string|array $keys
+         * @return bool
+         */
+        public static function has($array, $keys)
+        {
+        }
+        /**
+         * Get an item from an array using "dot" notation.
+         *
+         * @param \ArrayAccess|array $array
+         * @param string $key
+         * @param mixed $default
+         * @return mixed
+         */
+        public static function get($array, $key, $default = null)
+        {
+        }
+        /**
+         * Set an array item to a given value using "dot" notation.
+         *
+         * If no key is given to the method, the entire array will be replaced.
+         *
+         * @param array $array
+         * @param string $key
+         * @param mixed $value
+         * @return array
+         */
+        public static function set(&$array, $key, $value)
+        {
+        }
+        /**
+         * Get a subset of the items from the given array.
+         *
+         * @param array $array
+         * @param array|string $keys
+         * @return array
+         */
+        public static function only($array, $keys)
+        {
+        }
+        /**
+         * Get all of the given array except for a specified array of items.
+         *
+         * @param array $array
+         * @param array|string $keys
+         * @return array
+         */
+        public static function except($array, $keys)
+        {
+        }
+        /**
+         * Remove one or many array items from a given array using "dot" notation.
+         *
+         * @param array $array
+         * @param array|string $keys
+         * @return void
+         */
+        public static function forget(&$array, $keys)
+        {
+        }
+        /**
+         * Return the first element in an array passing a given truth test.
+         *
+         * @param array $array
+         * @param \Closure $callback
+         * @param mixed $default
+         * @return mixed
+         */
+        public static function first($array, $callback, $default = null)
+        {
+        }
+        /**
+         * Determine whether the given value is array accessible.
+         *
+         * @param mixed $value
+         * @return bool
+         */
+        public static function accessible($value)
+        {
+        }
+        /**
+         * Determine if the given key exists in the provided array.
+         *
+         * @param \ArrayAccess|array $array
+         * @param string|int $key
+         * @return bool
+         */
+        public static function exists($array, $key)
+        {
+        }
+        /**
+         * Return the default value of the given value.
+         *
+         * @param mixed $value
+         * @return mixed
+         */
+        public static function value($value)
+        {
+        }
+        /**
+         * Flatten a multi-dimensional associative array with dots.
+         *
+         * @param array $array
+         * @param string $prepend
+         *
+         * @return array
+         */
+        public static function dot($array, $prepend = '')
+        {
+        }
+        public static function isTrue($array, $key)
+        {
+        }
+    }
+    /**
+     * @deprecated No longer used by internal code and not recommended. Please use FluentCrm\App\Services\Libs\ConditionAssessor instead
+     */
+    class ConditionAssesor
+    {
+        public static function matchAllGroups($groups, $inputs, $matchType = 'match_any')
+        {
+        }
+        public static function evaluate($conditionGroup, $inputs)
+        {
+        }
+        public static function assess($conditional, $inputs)
+        {
+        }
+    }
+    /**
+     * @deprecated No longer used by internal code and not recommended. Please use FluentCrm\Framework\Support\Str instead
+     */
+    class Str
+    {
+        /**
+         * Determine if a given string starts with a given substring.
+         *
+         * @param string $haystack
+         * @param string|array $needles
+         * @return bool
+         */
+        public static function startsWith($haystack, $needles)
+        {
+        }
+        /**
+         * Determine if a given string ends with a given substring.
+         *
+         * @param string $haystack
+         * @param string|array $needles
+         * @return bool
+         */
+        public static function endsWith($haystack, $needles)
+        {
+        }
+        /**
+         * Determine if a given string contains a given substring.
+         *
+         * @param string $haystack
+         * @param string|array $needles
+         * @return bool
+         */
+        public static function contains($haystack, $needles)
+        {
+        }
+        public static function crm_mb_strpos($haystack, $needle)
+        {
+        }
+        /**
+         * Determine if a given string does not contain a given substring.
+         *
+         * @param string $haystack
+         * @param string|array $needles
+         * @return bool
+         */
+        public static function doNotContains($haystack, $needles)
+        {
+        }
+    }
+}
+namespace {
+    /**
+     * @param null|string $module Module name or empty string to get the app of specific moduleFh
+     * @return \FluentCrm\App\App $app | object $instance if specific FluentCRM Framework Module
+     */
+    function FluentCrm($module = \null)
+    {
+    }
+    /**
+     * @param string|null $key
+     * @return Object $phpApiInstance Get Contacts/Lists/Tags Php API Wrapper
+     */
+    function FluentCrmApi($key = \null)
+    {
+    }
+    /**
+     * Internal function for debugging
+     */
+    function dd($data)
+    {
+    }
+    /**
+     * Internal function for debugging
+     */
+    function ddd($data)
+    {
+    }
+    /**
+     * Generate URL for static assets for plugin's assets directory
+     * Now uses Vite helper for HMR support in dev mode
+     *
+     * @param string $path
+     * @param string $manifestDirectory (deprecated, kept for compatibility)
+     *
+     * @return string
+     */
+    function fluentCrmMix($path, $manifestDirectory = '')
+    {
+    }
+    /**
+     * Get Current Date time
+     *
+     * @return string Datetime in format Y-m-d H:i:s
+     */
+    function fluentCrmTimestamp($timestamp = \null)
+    {
+    }
+    /**
+     * Get Actual Timezone string for WP
+     *
+     * @source https://www.skyverge.com/blog/down-the-rabbit-hole-wordpress-and-timezones/
+     * @return string
+     */
+    function fluentCrmGetTimezoneString()
+    {
+    }
+    /*
+     * Internal Function For debugging only
+     */
+    function fluentCrmMaybeRegisterQueryLoggerIfAvailable($app)
+    {
+    }
+    /*
+     * Internal Function For debugging only
+     */
+    function fluentCrmQueryLoggingEnabled()
+    {
+    }
+    /*
+     * Internal Function For debugging only
+     */
+    function fluentCrmEnableQueryLog()
+    {
+    }
+    /*
+     * Internal Function For debugging only
+     */
+    function fluentCrmGetQueryLog($withStack = \true)
+    {
+    }
+    /**
+     * Get meta entry of a FluentCRM entity
+     * @param int $objectId ID of referenced object
+     * @param string $objectType Type of referenced object
+     * @param string $key Key of the reference
+     * @return object FluentCrm\App\Models\Meta Object of the Meta Table Model
+     */
+    function fluentcrm_get_meta($objectId, $objectType, $key)
+    {
+    }
+    /**
+     * Update or create a meta entry of the given entity
+     * @param int $objectId ID of referenced object
+     * @param string $objectType Type of referenced object
+     * @param string $key Key of the reference
+     * @param mixed $value
+     * @return \FluentCrm\App\Models\Meta|object
+     */
+    function fluentcrm_update_meta($objectId, $objectType, $key, $value)
+    {
+    }
+    /**
+     * Delete a Object Meta of FluentCRM
+     * @param int $objectId ID of referenced entity
+     * @param string $objectType Type of referenced entity
+     * @param string $key Key of the reference
+     * @return boolean
+     */
+    function fluentcrm_delete_meta($objectId, $objectType, $key = '')
+    {
+    }
+    /**
+     * Get FluentCRM Option
+     * @param $optionName string
+     * @param mixed $default
+     * @return mixed|string
+     */
+    function fluentcrm_get_option($optionName, $default = '')
+    {
+    }
+    /**
+     * Update FluentCRM Option
+     * @param $optionName
+     * @param $value
+     * @return int Created or updated meta entry id
+     */
+    function fluentcrm_update_option($optionName, $value)
+    {
+    }
+    /**
+     * Delete FluentCRM Option
+     * @param $optionName
+     * @return boolean
+     */
+    function fluentcrm_delete_option($optionName)
+    {
+    }
+    /**
+     * Get Email Campaign meta value
+     * @param int $campaignId ID of the campaign
+     * @param string $key Key of the meta
+     * @param false $returnValue If true, return the value, otherwise return the meta object
+     * @return false|object
+     */
+    function fluentcrm_get_campaign_meta($campaignId, $key, $returnValue = \false)
+    {
+    }
+    /**
+     * update Email Campaign meta value
+     * @param int $campaignId ID of the campaign
+     * @param string $key Key of the meta
+     * @param mixed $value Value of the meta
+     * @return \FluentCrm\App\Models\Meta|object
+     */
+    function fluentcrm_update_campaign_meta($campaignId, $key, $value)
+    {
+    }
+    /**
+     * Delete email campaign meta
+     * @param int $campaignId
+     * @param string $key Key of the meta
+     * @return bool
+     */
+    function fluentcrm_delete_campaign_meta($campaignId, $key = '')
+    {
+    }
+    function fluentcrm_get_sms_campaign_meta($campaignId, $key, $returnValue = \false)
+    {
+    }
+    function fluentcrm_update_sms_campaign_meta($campaignId, $key, $value)
+    {
+    }
+    function fluentcrm_delete_sms_campaign_meta($campaignId, $key = '')
+    {
+    }
+    /**
+     * Get Email Campaign meta value
+     * @param int $templateId ID of the template
+     * @param string $key Key of the meta
+     * @return object
+     */
+    function fluentcrm_get_template_meta($templateId, $key)
+    {
+    }
+    /**
+     * update Email Template meta value
+     * @param int $templateId id of the template
+     * @param string $key Key of the meta
+     * @param mixed $value Value of the meta
+     * @return \FluentCrm\App\Models\Meta|object
+     */
+    function fluentcrm_update_template_meta($templateId, $key, $value)
+    {
+    }
+    /**
+     * Delete email template meta
+     * @param int $templateId
+     * @param string $key key of the meta
+     * @return bool
+     */
+    function fluentcrm_delete_template_meta($templateId, $key)
+    {
+    }
+    /**
+     * get meta value of Contact lists
+     * @param int $listId
+     * @param string $key key of the meta
+     * @return object
+     */
+    function fluentcrm_get_list_meta($listId, $key)
+    {
+    }
+    /**
+     * Update meta value of Contact lists
+     * @param int $listId
+     * @param string $key
+     * @param mixed $value
+     * @return \FluentCrm\App\Models\Meta|object
+     */
+    function fluentcrm_update_list_meta($listId, $key, $value)
+    {
+    }
+    /**
+     * Delete meta value of Contact lists
+     * @param int $listId
+     * @param string $key
+     * @return bool
+     */
+    function fluentcrm_delete_list_meta($listId, $key)
+    {
+    }
+    /**
+     * get meta value of a Contact
+     * @param int $subscriberId contact ID
+     * @param string $key key of the meta
+     * @param string $deafult default value if meta not found
+     * @return mixed|string
+     */
+    function fluentcrm_get_subscriber_meta($subscriberId, $key, $deafult = '')
+    {
+    }
+    /**
+     * update meta value of a Contact
+     * @param int $subscriberId
+     * @param string $key
+     * @param mixed $value
+     * @return \FluentCrm\App\Models\SubscriberMeta
+     */
+    function fluentcrm_update_subscriber_meta($subscriberId, $key, $value)
+    {
+    }
+    /**
+     * Delete a meta value of a contact
+     * @param int $subscriberId
+     * @param string $key
+     * @return boolean
+     */
+    function fluentcrm_delete_subscriber_meta($subscriberId, $key)
+    {
+    }
+    /**
+     * Get all subscriber status options.
+     *
+     * @return array
+     */
+    function fluentcrm_subscriber_statuses($isOptions = \false)
+    {
+    }
+    function fluentcrm_subscriber_sms_statuses($isOptions = \false)
+    {
+    }
+    /**
+     * Get all subscriber editable status options.
+     *
+     * @return array
+     */
+    function fluentcrm_subscriber_editable_statuses($isOptions = \false)
+    {
+    }
+    /**
+     * Get Contact Types
+     * @return array
+     */
+    function fluentcrm_contact_types($isOptions = \false)
+    {
+    }
+    /**
+     * Get Contact's Activity Types
+     *
+     * @return array
+     */
+    function fluentcrm_activity_types()
+    {
+    }
+    /**
+     * Get Contact's Strict status Types
+     *
+     * @return array
+     */
+    function fluentcrm_strict_statues()
+    {
+    }
+    /**
+     * Email Template CPT Slug
+     * @return string
+     */
+    function fluentcrmTemplateCPTSlug()
+    {
+    }
+    /**
+     * Email Template CPT Slug
+     * @return string
+     */
+    function fluentcrmCampaignTemplateCPTSlug()
+    {
+    }
+    /**
+     * Get the possible csv mimes.
+     *
+     * @return array
+     */
+    function fluentcrmCsvMimes()
+    {
+    }
+    /**
+     * Get the gravatar from an email.
+     *
+     * @param string $email
+     * @return string
+     */
+    function fluentcrmGravatar($email, $name = '')
+    {
+    }
+    /**
+     * Get avatar HTML for admin-facing UI and guarantee a safe placeholder.
+     *
+     * WordPress get_avatar() can return false when avatars are disabled, which
+     * breaks consumers that expect markup. In that case we fall back to the
+     * plugin's avatar URL helper and return a simple image tag.
+     *
+     * @param string $email
+     * @param string $name
+     * @param int    $size
+     * @return string
+     */
+    function fluentcrmGetAvatarHtml($email, $name = '', $size = 128)
+    {
+    }
+    /**
+     * get FluentCRM's Global Settings
+     * @param string $key key of the setting
+     * @param mixed $default default value
+     * @return mixed
+     */
+    function fluentcrmGetGlobalSettings($key, $default = \false)
+    {
+    }
+    function fluentcrmHrefParams($content, $params = [])
+    {
+    }
+    /**
+     * get if click tracking is enabled or disabled
+     * @return bool|string
+     */
+    function fluentcrmTrackClicking()
+    {
+    }
+    /**
+     * get if open tracking is enabled or disabled or anonymous
+     * @return bool|string
+     */
+    function fluentcrmTrackEmailOpen()
+    {
+    }
+    /**
+     * get if IP Address Tracking is enabled or disabled
+     * @return bool
+     */
+    function fluentCrmWillTrackIp()
+    {
+    }
+    /**
+     * Add tags to a subscriber
+     * @param array $attachedTagIds IDs of the tags that will be added to the subscriber
+     * @param \FluentCrm\App\Models\Subscriber $subscriber
+     * @return void
+     */
+    function fluentcrm_contact_added_to_tags($attachedTagIds, \FluentCrm\App\Models\Subscriber $subscriber)
+    {
+    }
+    function fluentcrm_contact_added_to_companies($attachedCompanyIds, \FluentCrm\App\Models\Subscriber $subscriber)
+    {
+    }
+    /**
+     * Add Lists to a subscriber
+     * @param array $attachedListIds IDs of the lists that will be added to the subscriber
+     * @param \FluentCrm\App\Models\Subscriber $subscriber
+     * @return void
+     */
+    function fluentcrm_contact_added_to_lists($attachedListIds, \FluentCrm\App\Models\Subscriber $subscriber)
+    {
+    }
+    /**
+     * Remove tags from a subscriber
+     * @param $detachedTagIds
+     * @param \FluentCrm\App\Models\Subscriber $subscriber
+     * @return void
+     */
+    function fluentcrm_contact_removed_from_tags($detachedTagIds, \FluentCrm\App\Models\Subscriber $subscriber)
+    {
+    }
+    /**
+     * Remove lists from a subscriber
+     * @param $detachedListIds
+     * @param \FluentCrm\App\Models\Subscriber $subscriber
+     * @return void
+     */
+    function fluentcrm_contact_removed_from_lists($detachedListIds, \FluentCrm\App\Models\Subscriber $subscriber)
+    {
+    }
+    /**
+     * Remove companies from a subscriber
+     * @param $detachedCompanyIds
+     * @param \FluentCrm\App\Models\Subscriber $subscriber
+     * @return void
+     */
+    function fluentcrm_contact_removed_from_companies($detachedCompanyIds, \FluentCrm\App\Models\Subscriber $subscriber)
+    {
+    }
+    /*
+     * Get Current Contact based on the current userID or contact from the cookie value
+     *
+     * @return false|object \FluentCrm\App\Models\Subscriber
+     */
+    function fluentcrm_get_current_contact()
+    {
+    }
+    function fluentcrm_menu_url_base($ext = '')
+    {
+    }
+    function fluent_crm_menu_url_base_new($ext = '')
+    {
+    }
+    /**
+     * Get FluentCRM's contact profile widget HTML
+     *
+     * @param int|string $userIdOrEmail User ID or email address
+     * @param bool $checkPermission Whether to check permission
+     * @param bool $withCss Whether to include CSS
+     * @return false|string HTML of the profile Widget
+     */
+    function fluentcrm_get_crm_profile_html($userIdOrEmail, $checkPermission = \true, $withCss = \true)
+    {
+    }
+    /**
+     * Maybe Disable the FluentSMTP's Email Logging based provided $settings
+     *
+     * @param bool $status
+     * @param array $settings
+     * @return bool
+     */
+    function fluentcrm_maybe_disable_fsmtp_log($status, $settings)
+    {
+    }
+    /**
+     * Get Custom Fields schema for contacts
+     *
+     * @return array
+     */
+    function fluentcrm_get_custom_contact_fields()
+    {
+    }
+    function fluentcrm_get_custom_company_fields()
+    {
+    }
+    /**
+     * Sending a job to background for further processing
+     *
+     * @param string $callbackName - name of the callback
+     * @param mixed $payload
+     * @return bool
+     */
+    function fluentcrm_queue_on_background($callbackName, $payload)
+    {
+    }
+    /**
+     * Check if FluentCRM will render the email contents as RTL mode
+     *
+     * @return mixed|void
+     */
+    function fluentcrm_is_rtl()
+    {
+    }
+    /**
+     * Get FluentCRM Database Connection instance.
+     *
+     * Note: ->table()->get() returns \FluentCrm\Framework\Support\Collection (not array).
+     * Use ->isEmpty() instead of !$result to check for empty results.
+     *
+     * @return \FluentCrm\Framework\Database\Query\WPDBConnection
+     */
+    function fluentCrmDb()
+    {
+    }
+    function fluentCrmIsMemoryExceeded($percent = 75)
+    {
+    }
+    function fluentCrmGetMemoryUsagePercentage()
+    {
+    }
+    function fluentCrmGetMemoryLimit()
+    {
+    }
+    function fluentCrmWillAnonymizeIp()
+    {
+    }
+    function fluentCrmGetContactSecureHash($contactId)
+    {
+    }
+    function fluentCrmGetContactManagedHash($contactId)
+    {
+    }
+    function fluentCrmGetFromCache($key, $callback = \false, $expire = 600)
+    {
+    }
+    function fluentCrmSetCache($key, $value, $expire = 600)
+    {
+    }
+    function fluentCrmGetOptionCache($key, $expire = 60)
+    {
+    }
+    function fluentCrmSetOptionCache($key, $value, $expire = 60)
+    {
+    }
+    function fluentCrmPersistentCache($key, $callback = \false, $expire = 600)
+    {
+    }
+    function fluentCrmAutoProcessCampaignTypes()
+    {
+    }
+    function fluentCrmAutoProcessSmsCampaignTypes()
+    {
+    }
+    function fluentCrmRunTimeCache($key, $value = \NULL)
+    {
+    }
+    function fluentCrmMaxRunTime()
+    {
+    }
+    function fluentCrmIsTimeOut($maxSeconds = 30)
+    {
+    }
+    function fluentCrmEmailSendableStatuses()
+    {
+    }
+    function fcrmOxyCheckTagCondition($value, $operator)
+    {
+    }
+    function fcrmOxyCheckStatusCondition($value, $operator)
+    {
+    }
+    function fcrmOxyCheckContactExistCondition($value, $operator)
+    {
+    }
+    function mkdirOrFail(string $path): void
+    {
+    }
+    function rrmdir(string $dir): void
+    {
+    }
+    function copyDir(string $source, string $target): void
+    {
+    }
+    function removeIfExists(string $path): void
+    {
+    }
+    function php74CompatClass(): string
+    {
+    }
+    function updateInstalledJson(string $path, string $version, string $normalizedVersion, string $reference, string $requirePhp, string $supportSource, string $distUrl): void
+    {
+    }
+    function updateInstalledPhp(string $path, string $version, string $normalizedVersion, string $reference): void
+    {
+    }
+    function updatePlatformCheck(string $path): void
+    {
+    }
+    function fluentcrm_eql()
+    {
+    }
+    function fluentcrm_gql()
+    {
+    }
+    function fluentcrm_plugin_row_meta($links, $file)
+    {
+    }
+}

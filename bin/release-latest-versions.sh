@@ -149,7 +149,7 @@ while IFS= read -r VERSION; do
     fi
 
     # Check if there are any changes to commit
-    if git diff-index --quiet HEAD --; then
+    if [ -z "$(git status --porcelain)" ]; then
         echo "  - No changes to commit for version ${VERSION}, skipping tag."
     else
         # Commit and tag the new version
