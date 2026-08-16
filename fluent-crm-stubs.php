@@ -1510,6 +1510,13 @@ namespace FluentCrm\App\Hooks\Handlers {
         private function mapTriggers($triggerName, $originalArgs, $argNumber)
         {
         }
+        /**
+         * Claim the funnel-processor lock so two runners can't process the same
+         * queue concurrently. Backed by an atomic conditional UPDATE on wp_options
+         * (Helper::acquireDbLock) on every environment — not wp_cache_add(), which
+         * is not atomic under all object-cache drop-ins (e.g. LiteSpeed) and would
+         * let concurrent runners all acquire the lock. See Helper::acquireDbLock().
+         */
         private function acquireFunnelProcessorLock()
         {
         }
@@ -1804,13 +1811,13 @@ namespace FluentCrm\App\Hooks\Handlers {
          * same critical section concurrently (e.g. Action Scheduler + WP-Cron
          * minute ticks landing in the same second).
          *
-         * Uses wp_cache_add() when an external object cache is available, otherwise
-         * a conditional UPDATE on wp_options keyed off a timestamp. The UPDATE
-         * succeeds only if the row is unclaimed or its stored timestamp is older
-         * than $ttl, so a crashed runner's lock self-recovers after the TTL.
-         *
-         * Mirrors BaseHandler::acquireLock() / FunnelHandler::acquireFunnelProcessorLock().
-         * Kept local instead of extracted to a shared helper to limit blast radius.
+         * Backed by a conditional UPDATE on wp_options keyed off a timestamp
+         * (Helper::acquireDbLock). The UPDATE succeeds only if the row is unclaimed
+         * or its stored timestamp is older than $ttl, so a crashed runner's lock
+         * self-recovers after the TTL. This is used on every environment — we no
+         * longer take a wp_cache_add() fast path, because that primitive is not
+         * atomic under all object-cache drop-ins (e.g. LiteSpeed), which let
+         * concurrent runners all acquire the same lock. See Helper::acquireDbLock().
          *
          * @param string $name Lock identifier appended to the option key.
          * @param int    $ttl  Seconds before a held lock is considered abandoned.
@@ -11281,6 +11288,68 @@ namespace FluentCrm\App\Services {
         public static function getInstantOption($optionKey)
         {
         }
+        /**
+         * Acquire a cross-process mutex via a single atomic conditional UPDATE on
+         * wp_options, keyed off a stored timestamp.
+         *
+         * Why DB and not wp_cache_add(): wp_cache_add() is only atomic if the active
+         * object-cache drop-in implements it against the shared backend. Some do NOT
+         * — notably LiteSpeed Object Cache, whose add() only checks the per-process
+         * in-memory array and then unconditionally writes (no Memcached ADD / Redis
+         * SET NX). Under that drop-in every concurrent worker "wins" the lock, so the
+         * mailer ran multiple senders at once and overshot the provider rate limit.
+         * A single-row conditional UPDATE is atomic via the InnoDB row lock on every
+         * backend, mirroring the CAS used by GlobalRateLimiter.
+         *
+         * The UPDATE claims the lock only if it is free (empty value) or stale
+         * (stored timestamp older than $ttl), so a crashed holder self-recovers after
+         * the TTL.
+         *
+         * @param string $key wp_options option_name holding the lock timestamp.
+         * @param int    $ttl Seconds before a held lock is treated as abandoned.
+         * @return bool True if this process acquired the lock.
+         */
+        public static function acquireDbLock($key, $ttl)
+        {
+        }
+        /**
+         * Heartbeat a held lock: push its timestamp to now so the TTL-based stale
+         * detection in acquireDbLock() cannot steal it mid-run. Caller must already
+         * hold the lock.
+         *
+         * @param string $key wp_options option_name holding the lock timestamp.
+         * @return void
+         */
+        public static function refreshDbLock($key)
+        {
+        }
+        /**
+         * Release a lock by clearing its timestamp so the next acquireDbLock() wins
+         * immediately instead of waiting out the TTL. Safe to call even if this
+         * process does not hold the lock (worst case frees the slot a tick early).
+         *
+         * @param string $key wp_options option_name holding the lock timestamp.
+         * @return void
+         */
+        public static function releaseDbLock($key)
+        {
+        }
+        /**
+         * Read the timestamp a lock was last (re)acquired with, straight from the
+         * wp_options row that acquireDbLock()/refreshDbLock() write to.
+         *
+         * Reads via raw SQL — NOT getInstantOption() — so it returns the live lock
+         * value regardless of external-object-cache mode. getInstantOption() reads
+         * the `fc_instant_options` cache group when an object cache is active, but
+         * the DB locks never write there, so it would always miss a held lock on
+         * those sites. Mirrors GlobalRateLimiter's direct-read approach.
+         *
+         * @param string $key wp_options option_name holding the lock timestamp.
+         * @return int Unix timestamp of the last (re)acquire, or 0 if free/absent.
+         */
+        public static function getDbLockTimestamp($key)
+        {
+        }
     }
 }
 namespace FluentCrm\App\Services\Html {
@@ -11558,6 +11627,9 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         }
         /**
          * Refresh the lock timestamp (heartbeat) to prevent stuck-lock detection.
+         *
+         * Writes to the same wp_options row acquireLock() claims, so the heartbeat
+         * and the stale-detection read share one source of truth.
          */
         protected function refreshLock()
         {
