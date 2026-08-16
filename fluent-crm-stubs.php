@@ -1823,6 +1823,34 @@ namespace FluentCrm\App\Hooks\Handlers {
         {
         }
         /**
+         * Whether a campaign's materialized rows are claimable by a sender yet.
+         *
+         * Future-dated campaigns are materialized up to ~6 minutes ahead of their
+         * send time, and senders only claim rows with scheduled_at <= now, so a kick
+         * for one of those would pay for a full PHP bootstrap and find nothing to
+         * do.
+         *
+         * @param \FluentCrm\App\Models\Campaign $campaign
+         * @return bool
+         */
+        private static function isCampaignDue($campaign)
+        {
+        }
+        /**
+         * Fire a non-blocking AJAX request that starts an email sending cycle
+         * immediately instead of waiting for the next scheduler tick.
+         *
+         * Safe to call speculatively: the receiving handler acquires the atomic
+         * sending lock in isSystemOk() before doing any real work, so a kick that
+         * races an in-flight sender bails after one cheap bootstrap. It always
+         * targets the primary Handler — that handler is what spawns the
+         * multi-threaded worker when the queue is large enough, so this single
+         * entry point covers both single- and multi-threaded sending.
+         */
+        public static function fireSendNowRequest()
+        {
+        }
+        /**
          * Fire a background AJAX request to continue processing a specific campaign.
          *
          * @param int $campaignId
