@@ -411,7 +411,24 @@ namespace FluentCrm\App\Hooks\CLI {
          * enabled — it is a parallel sender and shares the cross-process rate budget
          * that only exists in multi-thread mode. No-ops when the flag is off.
          * basic usage: wp fluent_crm cli_send
-         * advanced usage: wp fluent_crm cli_send --force=yes --option_key=fluentcrm_is_sending_cli_emails --run_time=50 --offset=200 --min_pending=300 --silent=yes
+         * advanced usage: wp fluent_crm cli_send --force=yes --option_key=fluentcrm_is_sending_cli_emails --run_time=50 --min_pending=300 --modulo=2 --remainder=0 --silent=yes
+         *
+         * Partitioning: each worker claims rows where (id % modulo) = remainder.
+         * Default 2/0 = even ids; the multi-thread web worker always claims odd
+         * ids (id % 2 = 1). CLI workers must therefore partition WITHIN the even
+         * space: for N parallel CLI workers use --modulo=2N with a distinct EVEN
+         * --remainder each (N=2 -> 4/0 and 4/2; N=3 -> 6/0, 6/2, 6/4), plus a
+         * distinct --option_key per worker. An odd modulo overlaps the web
+         * worker's odd-id partition and re-creates the claim contention this
+         * scheme exists to avoid. A lone CLI worker on an install where the web
+         * multi-thread sender is not actually running can pass --modulo=1 to
+         * claim the whole queue. --modulo is capped at 100 (claims scan ~modulo ×
+         * chunk index entries, so an absurd value would make every claim a huge
+         * locking scan). The old --offset flag is deprecated and ignored.
+         *
+         * Custom --option_key values are auto-prefixed with fluentcrm_is_sending_
+         * so the stale-reset defer can discover the worker's lock; dead custom
+         * lock rows are swept automatically at the start of each CLI run.
          */
         public function cli_send($args, $assoc_args)
         {
@@ -757,6 +774,19 @@ namespace FluentCrm\App\Hooks\Handlers {
          * @param \FluentCrm\App\Models\Subscriber $subscriber
          */
         public function handleContactEmailChanged($subscriber)
+        {
+        }
+        /**
+         * Clear the accumulated soft-bounce strike counter.
+         *
+         * Wired to email changes and double-opt-in confirmations — both are positive
+         * deliverability/consent signals. Without a reset the counter accumulates
+         * across years until the Nth soft bounce silently flips the contact to
+         * `bounced`.
+         *
+         * @param \FluentCrm\App\Models\Subscriber $subscriber
+         */
+        public function resetSoftBounceCount($subscriber)
         {
         }
         /**
@@ -2525,6 +2555,28 @@ namespace FluentCrm\App\Http\Controllers {
         private function getCsvReader($file)
         {
         }
+        /**
+         * Total number of data rows (header excluded) for an import file.
+         *
+         * Counted by streaming the reader once — no array materialization — and cached
+         * in the options table so the ~N/100 follow-up chunk requests skip the recount.
+         */
+        private function getCsvTotalRowCount($reader, $file, $isFirstPage)
+        {
+        }
+        private function clearCsvTotalRowCount($file)
+        {
+        }
+        /**
+         * Fetch one chunk of CSV data rows mapped to $headers WITHOUT parsing the whole
+         * file into an in-memory array (the old iterator_to_array + array_slice pattern
+         * was O(N) memory and O(N²) aggregate parse work across an import's requests).
+         *
+         * $dataOffset is 0-based over data rows; the header line is skipped internally.
+         */
+        private function getCsvRecordsChunk($reader, $headers, $dataOffset, $limit)
+        {
+        }
     }
     /**
      *  CustomContactFieldsController - REST API Handler Class
@@ -2837,9 +2889,6 @@ namespace FluentCrm\App\Http\Controllers {
         public function forceAdvanceSubscriber(\FluentCrm\Framework\Http\Request\Request $request, $funnelId, $subscriberId)
         {
         }
-        private function maybeMigrateDB()
-        {
-        }
         public function getEmailReports(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
         {
         }
@@ -2889,6 +2938,21 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         public function updateFunnelTitle(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
+        {
+        }
+        /**
+         * Create, update or clear an automation's sticky note.
+         *
+         * The note is a plain-text reminder pinned at the top of the funnel editor, meant to
+         * warn whoever opens the automation next ("don't shorten this delay, it's tied to the
+         * webinar"). Sending an empty `content` removes the note.
+         *
+         * Intentionally its own endpoint rather than a field on save-funnel-sequences: that
+         * path rewrites Funnel::settings from the client's snapshot and deletes the
+         * description meta when the key is absent, so folding the note in there would make it
+         * silently vanish on the AJAX fallback save.
+         */
+        public function updateStickyNote(\FluentCrm\Framework\Http\Request\Request $request, $funnelId)
         {
         }
         public function updateLabels(\FluentCrm\Framework\Http\Request\Request $request, $funnel_id)
@@ -3686,6 +3750,28 @@ namespace FluentCrm\App\Http\Controllers {
         protected function formatResult($result)
         {
         }
+        /**
+         * Detects whether a rendered email body contains sensitive material that must not be
+         * surfaced in the contact email-log viewer (accessible to non-admin contact managers).
+         *
+         * Currently matches WordPress password-reset / set-password links, which grant
+         * account takeover if read by anyone other than the recipient. The pattern list is
+         * filterable so integrations can register additional secrets (magic links, OTP URLs).
+         *
+         * @param string $body Rendered email HTML/text.
+         * @return bool
+         */
+        protected function emailLogBodyHasSensitiveData($body)
+        {
+        }
+        /**
+         * The placeholder shown in place of a redacted email-log body.
+         *
+         * @return string
+         */
+        protected function getRedactedEmailBodyNotice()
+        {
+        }
         public function deleteEmails(\FluentCrm\Framework\Http\Request\Request $request, $subscriberId)
         {
         }
@@ -3980,6 +4066,15 @@ namespace FluentCrm\App\Http\Controllers {
         public function getSmartCodes()
         {
         }
+        public function getDefaultCampaignTemplate()
+        {
+        }
+        public function setDefaultCampaignTemplate()
+        {
+        }
+        public function deleteDefaultCampaignTemplate()
+        {
+        }
         protected function smartCodes()
         {
         }
@@ -4241,6 +4336,17 @@ namespace FluentCrm\App\Http\Policies {
         public function detachSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Deleting a company note permanently removes data, so it requires the stronger delete
+         * permission — matching how deleting a company itself is gated via delete() — instead of
+         * the manage permission used for creating/updating notes. See repo Rule 6.
+         *
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function deleteNote(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
         public function bulkDeleteNotes(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4265,7 +4371,19 @@ namespace FluentCrm\App\Http\Policies {
         public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
-        //TODO: masiur vai
+        /**
+         * Authorize reading the global labels list.
+         *
+         * Labels are low-sensitivity taxonomy consumed by the Campaigns, Recurring Campaigns,
+         * SMS, Funnels and Labels screens — each reachable by a different manager capability
+         * (fcrm_read_emails / fcrm_read_funnels / fcrm_manage_settings). So this is gated on
+         * "has any FluentCRM access" (the same signal the admin menu uses to render) rather
+         * than a single cap, which keeps every legitimate screen working while blocking
+         * unauthenticated / no-access requests. Previously this was an always-true stub.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
         public function getLabels(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4279,6 +4397,17 @@ namespace FluentCrm\App\Http\Policies {
         {
         }
         public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Deleting a pattern category permanently removes data, so it requires the delete
+         * permission — consistent with delete()/handleBulkAction() — rather than falling back
+         * to the manage permission via verifyRequest(). See repo Rule 6.
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function deleteCategory(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
     }
@@ -4442,6 +4571,21 @@ namespace FluentCrm\App\Http\Policies {
         public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Authorize sending a one-off email to a single contact from the profile page.
+         *
+         * This is intentionally gated on `fcrm_manage_contacts` (not `fcrm_manage_emails`):
+         * emailing an individual managed contact is part of the Contacts Add/Update feature,
+         * matching the profile UI which shows the "Send Email" button to `fcrm_manage_contacts`
+         * holders. Declared explicitly so this route no longer relies on the verifyRequest
+         * fallback (repo Rule 6: destructive methods must have a dedicated policy method).
+         *
+         * @param \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function sendCustomEmail(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
         public function deleteSubscriber(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4510,6 +4654,18 @@ namespace FluentCrm\App\Http\Policies {
         public function getBuiltInTemplate(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        // public function getDefaultCampaignTemplate(Request $request)
+        // {
+        //     return $this->currentUserCan('fcrm_read_emails') || $this->currentUserCan('fcrm_manage_email_templates');
+        // }
+        // public function setDefaultCampaignTemplate(Request $request)
+        // {
+        //     return $this->currentUserCan('fcrm_manage_email_templates');
+        // }
+        // public function deleteDefaultCampaignTemplate(Request $request)
+        // {
+        //     return $this->currentUserCan('fcrm_manage_email_templates');
+        // }
         public function delete(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4787,6 +4943,15 @@ namespace FluentCrm\App\Models {
         {
         }
         public function getEmailCount()
+        {
+        }
+        /**
+         * Delete duplicate queue rows for this campaign — same subscriber, keep the
+         * lowest id — regardless of row status. Safe to call at any point of
+         * materialization; the pre-check short-circuits on one indexed probe when
+         * there are no duplicates (the common case).
+         */
+        public function deleteDuplicateEmails()
         {
         }
         public function maybeDeleteDuplicates()
@@ -5559,6 +5724,7 @@ namespace FluentCrm\App\Models {
             // lead / customer
             'sms_status',
             // sms_pending / sms_subscribed / sms_unsubscribed / sms_bounced; Default: sms_subscribed
+            // 'whatsapp_status', // whatsapp_subscribed / whatsapp_unsubscribed; Default: whatsapp_unsubscribed
             'address_line_1',
             'address_line_2',
             'postal_code',
@@ -6945,11 +7111,15 @@ namespace FluentCrm\App\Modules\MCP {
         /**
          * Wraps every tool's execute callback in a try/catch that converts
          * unhandled exceptions (SQL errors, type errors, anything that escapes
-         * a tool's own validation) into a structured WP_Error with the actual
-         * exception message instead of the adapter's generic "Tool execution
-         * failed" surface. Without this, the agent has no signal about what
-         * went wrong, which leads to retries against tools that silently
-         * succeeded — see fluentcrm-mcp-review.md bug #1.
+         * a tool's own validation) into a structured WP_Error, so the agent gets
+         * a definite "this tool failed" signal instead of the adapter's ambiguous
+         * surface — without which it retries tools that silently succeeded
+         * (fluentcrm-mcp-review.md bug #1).
+         *
+         * The exception itself never crosses the API boundary. The full record —
+         * class, message, file, line, trace — goes to the server side only, via
+         * the action below and the CRM system log; the client gets a generic
+         * message plus a correlation id to quote to the site administrator.
          */
         private static function wrapExecuteCallback($toolName, $callback)
         {
@@ -6957,6 +7127,201 @@ namespace FluentCrm\App\Modules\MCP {
     }
 }
 namespace FluentCrm\App\Modules\MCP\Helpers {
+    /**
+     * Bridge between MCP tools and FluentCRM's advanced contact filter engine —
+     * the same condition-group search the admin "Advanced Filter" UI runs through
+     * ContactsQuery / Subscriber::build*FilterQuery.
+     *
+     * Why a bridge instead of passing the raw payload through (pattern borrowed
+     * from FluentCart's MCP AdvancedSearch):
+     *
+     *  1. The engine fails SILENTLY in the widening direction — an unknown
+     *     (provider, property) pair, a malformed condition, or a Pro-only
+     *     provider without its handler either matches everyone or matches no one
+     *     with no signal. An agent can't detect "confidently wrong".
+     *  2. The full filter catalog is large (30+ properties across providers,
+     *     each with its own operators, options and value formats). Inlining it
+     *     into list-contacts' input_schema would bloat every session's context;
+     *     instead the get-contact-filter-schema tool serves it on demand and the
+     *     list tools carry one lean `advanced_filters` parameter.
+     *  3. Agents send a lean {property: "provider.property", operator, value}
+     *     triple; the engine-internal wire format (source tuple, extra_value
+     *     passthrough) is produced here — and the admin UI's own
+     *     source: [provider, property] format is still accepted.
+     *
+     * The catalog is derived live from Helper::getAdvancedFilterOptions() — the
+     * same registry the admin UI reads, including the fluentcrm_advanced_filter_options
+     * extensions from Pro / integrations — so the schema can never drift from
+     * what actually executes. Operator sets per property mirror the admin UI's
+     * resolution rules (resources/v3app .../RichFilters/_FilterItem.vue).
+     */
+    class AdvancedFilters
+    {
+        const MAX_GROUPS = 5;
+        const MAX_CONDITIONS_PER_GROUP = 10;
+        // Upper bound on values inside one condition so a huge whereIn fan-out
+        // can't be built. Exceeding it is an error, not a silent slice — slicing
+        // a not_in list would WIDEN the match.
+        const MAX_VALUES_PER_CONDITION = 100;
+        /**
+         * Whether this operator carries no value on this property. is_null /
+         * not_null / never always assert without one. exist / not_exist are
+         * valueless ONLY when the property hides its value input
+         * (disable_values — e.g. FluentCart's commerce_exist / license_exist);
+         * on its purchased_items / variation / license selectors the SAME
+         * operator pair carries the id list, and stripping it would make the
+         * integration handler silently no-op the condition (match everyone in
+         * the group).
+         */
+        private static function isValuelessOperator($operator, array $def)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Catalog
+        // ---------------------------------------------------------------------
+        /**
+         * Live property map: 'provider.property' => {provider, property, def, locked}.
+         *
+         * `locked` marks children the registry flags as `disabled` (free plugin
+         * advertising Pro-only filters) and providers with no registered
+         * fluentcrm_contacts_filter_{provider} handler — either way ContactsQuery
+         * would compile the group to `1 = 0` (match nothing) with no explanation,
+         * so validation refuses them with a pro_required error instead.
+         *
+         * Memoized per request, and it earns it: Helper::getAdvancedFilterOptions()
+         * measured 2 DB queries per call (integrations hook the registry filter and
+         * some of them query), while catalog() is consulted once per condition —
+         * up to 50 in one payload. Without the memo a single filtered list call
+         * would run ~100 extra queries.
+         *
+         * @return array<string, array{provider:string, property:string, def:array, locked:bool}>
+         */
+        public static function catalog()
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Schema (what get-contact-filter-schema returns)
+        // ---------------------------------------------------------------------
+        /**
+         * The agent-facing reference for the advanced_filters parameter: every
+         * filterable property with operators, value kind, options and hints, plus
+         * the payload format and a worked example.
+         */
+        public static function schema()
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Validation + translation to the engine wire format
+        // ---------------------------------------------------------------------
+        /**
+         * Validate an agent payload and translate it into the groups-of-items
+         * structure ContactsQuery::formatAdvancedFilters consumes (items carry
+         * source: [provider, property], operator, value, and extra_value when
+         * given). Returns {groups, warnings} or a WP_Error naming the first
+         * offending condition with enough data to self-correct.
+         *
+         * Memoized per input for the request lifetime. validateUniversalFilter,
+         * buildContactsQueryArgs and the warning surfacing in listContacts each
+         * normalize the SAME payload, and a normalize with a segment.tags condition
+         * measured 2 DB queries (resolving tag refs to ids) — so the memo saves 4
+         * queries per filtered call. Threading one result through those three call
+         * sites instead would mean changing three signatures for the same effect.
+         *
+         * @param mixed $raw
+         * @return array{groups: array, warnings: string[]}|\WP_Error
+         */
+        public static function normalize($raw)
+        {
+        }
+        private static function doNormalize($raw)
+        {
+        }
+        /** True when every element looks like a condition object (flat list form). */
+        private static function isConditionList(array $raw)
+        {
+        }
+        /**
+         * Validate one condition and build the engine item.
+         *
+         * @return array|\WP_Error
+         */
+        private static function normalizeCondition($condition, $groupNo, $conditionNo, array &$warnings)
+        {
+        }
+        /**
+         * Coerce/validate the value for the property's kind, mirroring what the
+         * engine actually executes (Subscriber::build*FilterQuery + filterParser).
+         *
+         * @return mixed|\WP_Error
+         */
+        private static function normalizeValue(array $entry, $operator, $value, array &$warnings)
+        {
+        }
+        /**
+         * For enums whose option set is authoritative (contact statuses/types),
+         * an off-catalog value is an error — the same fail-closed contract the
+         * simple statuses filter enforces. For open catalogs (prefixes, custom
+         * field options that may hold historical values) it's a warning: the
+         * engine matches literally, so unintended values return zero rows.
+         *
+         * @return \WP_Error|null null when fine (possibly with warnings pushed)
+         */
+        private static function checkEnumValues(array $entry, array $values, array &$warnings)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Per-property metadata (operators / kinds / options / hints)
+        // ---------------------------------------------------------------------
+        /**
+         * The operators a property accepts — the admin UI's resolution rules
+         * (custom map first, then by widget type), which the engine executes.
+         * Returns null for unknown add-on widget types: those are passed through
+         * with only structural checks rather than guessed at.
+         *
+         * @return string[]|null
+         */
+        public static function resolveOperators(array $entry)
+        {
+        }
+        /**
+         * Agent-facing value kind. 'id' = a single numeric id (ajax selectors
+         * over campaigns/funnels/sequences); 'id_list' = arrays of ids where the
+         * engine compares relation object_ids.
+         */
+        private static function valueKind(array $def)
+        {
+        }
+        /**
+         * Resolve a property's closed option list server-side where the registry
+         * names one (the admin UI fetches these by option_key at runtime).
+         * Returns [] when the set is open/too large to inline (countries, tags,
+         * campaigns...) — valueHint() covers those.
+         *
+         * @return string[]
+         */
+        private static function optionValues(array $entry)
+        {
+        }
+        /** Format guidance for kinds whose values can't be enumerated inline. */
+        private static function valueHint(array $entry, $kind)
+        {
+        }
+        // ---------------------------------------------------------------------
+        // Errors
+        // ---------------------------------------------------------------------
+        private static function structureError()
+        {
+        }
+        private static function limitError()
+        {
+        }
+        private static function tooManyValuesError($property)
+        {
+        }
+        private static function valueError($property, $expected)
+        {
+        }
+    }
     /**
      * Shared utilities for FluentCRM MCP tools.
      *
@@ -6969,6 +7334,22 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
      */
     class MCPHelper
     {
+        /**
+         * Ceiling on the `emails` lookup array. Matches the 100-row per_page cap,
+         * so a single call can return every contact it asked for, and keeps the
+         * generated IN() list bounded.
+         */
+        const MAX_EMAIL_LOOKUP = 100;
+        /**
+         * Ceiling on a single tags[]/lists[] reference array, so the simple filter
+         * shape bounds the same work the advanced one already does via
+         * AdvancedFilters::MAX_VALUES_PER_CONDITION.
+         */
+        const MAX_SEGMENT_REFS = 100;
+        /**
+         * Per-request memo for resolveSegmentRefs() — see that method.
+         */
+        private static $segmentRefCache = [];
         // ---------------------------------------------------------------------
         // Identifier resolution
         // ---------------------------------------------------------------------
@@ -6982,13 +7363,77 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         {
         }
         /**
+         * Batch-resolve tag/list references (ids, titles, or slugs) to integer IDs
+         * in a bounded number of queries, reporting resolved ids, newly created
+         * rows, and references that matched nothing — all from a SINGLE pass.
+         *
+         * Replaces the per-item lookups this helper used to do twice over: the
+         * validation phase called unresolvedSegmentRefs() and then filter
+         * construction called resolveTagIds(), so every reference cost at least
+         * two queries and one 100-value advanced condition could fire 200+ before
+         * the paginated query even ran (review PR #2025). Callers should take ids
+         * and unknown refs from one call rather than re-resolving.
+         *
+         * Creation delegates to Helper::createNewTags()/createNewLists() — core's
+         * check-then-create helpers. They re-check by title and return the
+         * existing row rather than inserting a duplicate, which is what keeps
+         * tag/list identity single-valued without a DB unique index, and they
+         * generate a collision-free slug ("name-1", "name-2") that the inline
+         * Tag::create() here previously did not.
+         *
+         * @param mixed  $items      ids, titles, or slugs (mixed freely)
+         * @param string $kind       'tag' or 'list'
+         * @param bool   $autoCreate Create refs that match nothing. Caller MUST
+         *                           have re-checked `fcrm_manage_contact_cats`.
+         * @return array{ids: int[], created: array<int, array{id:int,title:string}>, unknown: array}
+         */
+        public static function resolveSegmentRefs($items, $kind = 'tag', $autoCreate = false)
+        {
+        }
+        /**
+         * Drop the resolveSegmentRefs() memo. Tools that create, rename, or delete
+         * tags/lists must call this so a later resolve in the same request does not
+         * answer from a stale snapshot.
+         */
+        public static function flushSegmentRefCache()
+        {
+        }
+        /**
+         * Normalize one tag/list reference into the key used by
+         * resolveSegmentRefs()'s `map`. Lowercased because the title and slug
+         * columns collate case-insensitively, so "VIP" and "vip" must land on the
+         * same entry. Callers doing a union resolve must normalize their per-row
+         * refs through this same function.
+         *
+         * @param mixed $ref
+         * @return string
+         */
+        public static function segmentRefKey($ref)
+        {
+        }
+        /**
+         * Refuse an oversized tags[]/lists[] array rather than silently truncating,
+         * so the caller cannot read a partial filter as a complete one.
+         *
+         * @param string $property 'tags' or 'lists'
+         * @param int    $received
+         * @return \WP_Error
+         */
+        private static function tooManySegmentRefsError($property, $received)
+        {
+        }
+        /**
          * Resolve an array of tag identifiers (ids or titles/slugs) to integer IDs.
          * Optionally creates missing tags when $autoCreate is true (caller MUST
          * have re-checked `fcrm_manage_contact_cats` before passing true).
          *
+         * Thin wrapper over resolveSegmentRefs(); prefer that directly when you
+         * also need the unresolved refs, so validation and resolution share one
+         * set of queries.
+         *
          * @param array $items
          * @param bool  $autoCreate
-         * @return array{ids: int[], created: array<int, array{id:int,title:string}>}
+         * @return array{ids: int[], created: array<int, array{id:int,title:string}>, unknown: array}
          */
         public static function resolveTagIds($items, $autoCreate = false)
         {
@@ -6998,9 +7443,38 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
          *
          * @param array $items
          * @param bool  $autoCreate
-         * @return array{ids: int[], created: array<int, array{id:int,title:string}>}
+         * @return array{ids: int[], created: array<int, array{id:int,title:string}>, unknown: array}
          */
         public static function resolveListIds($items, $autoCreate = false)
+        {
+        }
+        /**
+         * Return the subset of tag/list references that resolve to nothing —
+         * numeric ids with no row, and strings matching neither title nor slug.
+         * Used by validateUniversalFilter() to fail closed: resolveSegmentRefs()
+         * silently drops these, and an empty resolved set reads as "no filter"
+         * downstream.
+         *
+         * @param array  $items
+         * @param string $kind 'tag' or 'list'
+         * @return array Unresolved references, as passed by the caller.
+         */
+        public static function unresolvedSegmentRefs($items, $kind = 'tag')
+        {
+        }
+        /**
+         * Normalize an agent-supplied email list into deduped, lowercased
+         * addresses for a whereIn lookup.
+         *
+         * Lowercasing is deliberate: the email column's default collation is
+         * case-insensitive, so the SQL match works either way, but callers diff
+         * the request against returned addresses to report misses — comparing
+         * "A@X.com" to the stored "a@x.com" would invent a false miss.
+         *
+         * @param mixed $items
+         * @return string[]
+         */
+        public static function normalizeEmailList($items)
         {
         }
         // ---------------------------------------------------------------------
@@ -7013,7 +7487,7 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
          * @param array      $opts {
          *     @type array $include One or more of: notes, email_history, automations,
          *                          activity, purchase_history, support_tickets,
-         *                          ai_summary, info_widgets.
+         *                          info_widgets.
          * }
          * @return array
          */
@@ -7021,6 +7495,25 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         {
         }
         public static function formatContactSummary($subscriber)
+        {
+        }
+        /**
+         * Custom-field values for one contact, preferring the batch-loaded set.
+         *
+         * ContactsQuery::returnSubscribers() already resolves the custom fields for
+         * an ENTIRE page in one meta query and assigns them onto each row as a
+         * plain `custom_fields` attribute. Calling the custom_fields() *method*
+         * instead re-queries per row and throws that batching away — a full extra
+         * query per contact on every list page (100 of them at max per_page).
+         *
+         * Read the attribute bag directly rather than `$subscriber->custom_fields`:
+         * when the value was NOT preloaded, the ORM sees a `custom_fields()` method,
+         * treats the key as a relation, and throws because the method returns an
+         * array instead of a Relation.
+         *
+         * @return array
+         */
+        public static function customFieldsFor($subscriber)
         {
         }
         public static function formatContactList($paginated, $includeCustomFields = false)
@@ -7032,13 +7525,35 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         public static function formatListList($lists)
         {
         }
-        public static function formatNoteForMCP($note)
+        /**
+         * Shape a rich-text body for MCP output with bounded token cost.
+         *
+         * @param string $html     Raw stored HTML/rich text.
+         * @param string $format   'text' (default), 'html', or 'both'.
+         * @param int    $maxChars When > 0, clip each representation to this many
+         *                         characters and emit truncated + original_length
+         *                         so the agent knows content was cut and can ask
+         *                         for more via an explicit param (OPT-002).
+         * @return array Keyed fields ready to merge into the output object.
+         */
+        public static function bodyShapeFor($html, $format = 'text', $maxChars = 0)
         {
         }
         /**
-         * Return up to $limit recent notes for a subscriber.
+         * @param object $note
+         * @param array  $opts { @type string $body_format; @type int $note_body_max_chars }
          */
-        public static function formatNotesFor($subscriber, $limit = 50)
+        public static function formatNoteForMCP($note, $opts = [])
+        {
+        }
+        /**
+         * Return recent notes for a subscriber, bounded for token cost (OPT-002).
+         *
+         * @param object $subscriber
+         * @param array  $opts { @type int $notes_limit (default 10, max 50);
+         *                       @type string $body_format; @type int $note_body_max_chars }
+         */
+        public static function formatNotesFor($subscriber, $opts = [])
         {
         }
         /**
@@ -7049,10 +7564,38 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         public static function formatEmailHistoryFor($subscriber, $limit = 10)
         {
         }
-        public static function formatAutomationsFor($subscriber)
+        /**
+         * Recent automation enrollments for a subscriber, capped for token cost —
+         * the collection was previously unbounded (OPT-002).
+         *
+         * @param object $subscriber
+         * @param int    $limit default 25, max 100
+         */
+        public static function formatAutomationsFor($subscriber, $limit = 25)
         {
         }
         public static function formatCampaignSummary($campaign, $includeStats = true)
+        {
+        }
+        /**
+         * Redact a one-off campaign title for callers without contact-read.
+         *
+         * One-off titles embed the recipient address by design (see
+         * Helper::oneOffEmailTitle) — that is contact PII, but list-campaigns and
+         * get-campaign are gated on `fcrm_read_emails` alone. Without this, an
+         * email-only manager could enumerate contact addresses by listing one-offs,
+         * defeating the same capability separation render-email-preview enforces
+         * deliberately (AbilitiesRegistrar: it demands BOTH caps for exactly this
+         * reason). PR #2026 review finding 2.
+         *
+         * The whole title is replaced rather than pattern-stripping the address:
+         * send-email-to-contact accepts an arbitrary `title`, so an agent-supplied
+         * one can carry PII in any shape a regex would miss.
+         *
+         * @param string $title
+         * @return string
+         */
+        public static function oneOffTitleForOutput($title)
         {
         }
         /**
@@ -7082,6 +7625,35 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         {
         }
         /**
+         * Normalize an agent-supplied date boundary (created_after / created_before)
+         * into the naive site-local `Y-m-d H:i:s` string the fc_subscribers datetime
+         * columns actually hold. Returns the string, null when absent, or a WP_Error.
+         *
+         * Passing the raw value straight into the comparison was wrong three ways:
+         *
+         *   1. Unparseable input reached MySQL verbatim ("Incorrect TIMESTAMP
+         *      value: 'garbage'"), surfacing to the agent as an opaque tool failure
+         *      instead of a correctable invalid_param — and wpdb echoes an HTML
+         *      error block ahead of the JSON envelope on WP_DEBUG_DISPLAY sites.
+         *   2. Offset-carrying ISO-8601 — which is exactly what every tool RETURNS,
+         *      so it is the obvious round-trip for an agent that just read a
+         *      created_at — is only understood in datetime literals by MySQL
+         *      8.0.19+. Below that the comparison errors or silently misbehaves.
+         *   3. Even where MySQL does parse the offset, the value still has to be
+         *      converted to site time to line up with how the column was written.
+         *
+         * The advanced_filters path already validates dates this strictly
+         * (AdvancedFilters::normalizeValue); this brings the simple filters level.
+         *
+         * @return string|null|\WP_Error
+         */
+        public static function normalizeDateBoundary($value, $paramName)
+        {
+        }
+        private static function dateBoundaryError($paramName, $raw)
+        {
+        }
+        /**
          * Apply created_after / created_before to a query model directly. Avoids
          * the whereTimestamp phantom-method bug in
          * Subscriber::applyGeneralFilterQuery (round-4 review P1 #4) — using
@@ -7094,9 +7666,9 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         {
         }
         /**
-         * Build a paginated ContactsQuery directly from the universal filter shape.
-         * The MCP layer reads $_REQUEST['page'] and `per_page` to drive the
-         * underlying paginator (matches `$model->paginate()` behavior).
+         * Build a ContactsQuery directly from the universal filter shape.
+         * Callers that paginate must run paginationFromInput() first — it injects
+         * page/per_page where the framework paginator resolves them.
          */
         public static function buildContactsQuery($filter)
         {
@@ -7110,10 +7682,14 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
          *   1. `statuses[]` — must be in fluentcrm_subscriber_statuses().
          *   2. `sms_statuses[]` — must be in fluentcrm_subscriber_sms_statuses().
          *   3. `contact_type` — must be a key in fluentcrm_contact_types().
-         *   4. `advanced_filters` — items must carry source[provider, property] +
-         *      operator, and the (provider, property) pair must be registered in
-         *      Helper::getAdvancedFilterOptions(). Otherwise the matching engine
-         *      silently falls back to "match everyone".
+         *   4. `tags[]` / `lists[]` — every ref must resolve to an existing
+         *      tag/list; an unmatched ref would collapse to "no filter" and
+         *      return the entire contact base.
+         *   5. `advanced_filters` — fully validated per condition (property,
+         *      operator, value shape) by AdvancedFilters::normalize() against
+         *      the live filter catalog; see get-contact-filter-schema. Also
+         *      mutually exclusive with tags/lists/statuses/sms_statuses —
+         *      ContactsQuery applies one branch or the other, never both.
          *
          * Operator-test report 2026-05-07 #1 — invalid statuses were being
          * silently dropped by buildContactsQueryArgs(), which made the agent
@@ -7122,34 +7698,6 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
          * shape; round-4 review P0 #2 covered the (provider, property) pair.
          */
         public static function validateUniversalFilter($filter)
-        {
-        }
-        /**
-         * Drop malformed entries from a caller-provided advanced_filters payload
-         * so ContactsQuery::formatAdvancedFilters doesn't fatal on a count(null).
-         *
-         * Each item must be {source: [provider, property], operator, value[,
-         * extra_value]}. Items without a 2-tuple `source` and a non-empty
-         * `operator` are silently dropped. Empty groups are removed.
-         *
-         * @param mixed $groups
-         * @return array
-         */
-        public static function normalizeAdvancedFilters($groups)
-        {
-        }
-        /**
-         * Cached map of registered (provider => [property, ...]) pairs that
-         * FluentCRM actually understands. Used to validate caller-supplied
-         * advanced_filters before they hit ContactsQuery — without this gate,
-         * an unknown (provider, property) pair causes a silent fallback to
-         * "match everyone" because the action hook simply doesn't fire and
-         * the where-clause never narrows (round-4 review P0 #2).
-         *
-         * Source of truth: Helper::getAdvancedFilterOptions() — the same
-         * registry the admin UI uses.
-         */
-        public static function knownAdvancedFilterPairs()
         {
         }
         // ---------------------------------------------------------------------
@@ -7165,15 +7713,96 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         public static function detectContentType($body)
         {
         }
-        public static function dualBodyShape($html)
+        public static function dualBodyShape($html, $format = 'both')
+        {
+        }
+        // ---------------------------------------------------------------------
+        // TRC-006 — strict nested-input validation
+        // ---------------------------------------------------------------------
+        /**
+         * The UTM parameter keys the MCP write contract accepts. Shared by
+         * send-email-to-contact and upsert-campaign so their UTM handling can never
+         * drift. 'status' is the 0|1 on/off toggle; the rest map to utm_<key>.
+         *
+         * @return string[]
+         */
+        public static function utmAllowedKeys()
+        {
+        }
+        /**
+         * Full dotted paths of keys in $object not present in $allowed — names
+         * exactly which hallucinated nested keys were rejected.
+         *
+         * @return string[] e.g. ['address.zip', 'utm.foo']
+         */
+        public static function unknownKeys($object, array $allowed, $pathPrefix)
+        {
+        }
+        /**
+         * invalid_param error for unrecognized nested keys. The MCP adapter drops
+         * WP_Error data over tools/call, so the human-readable MESSAGE embeds both
+         * the unknown paths and the allowed keys; details.* still serves direct
+         * Ability/REST callers.
+         */
+        public static function unknownPropertiesError($unknownPaths, array $allowed, $shapeLabel)
+        {
+        }
+        /**
+         * Validate a closed-shape nested member of $params before any write: when
+         * present it must be an object/array with no keys outside $allowed. Returns
+         * a WP_Error (naming full paths in the message) or null when valid/absent.
+         * A present-but-non-object value hard-errors too, because a direct REST
+         * caller bypasses the adapter's schema type check (TRC-006).
+         *
+         * @return \WP_Error|null
+         */
+        public static function validateClosedShape($params, $key, array $allowed)
+        {
+        }
+        /**
+         * invalid_param error: a value has the wrong type. Names the full path.
+         */
+        public static function invalidTypeError($path, $expected)
+        {
+        }
+        /**
+         * invalid_param error: a value is outside its enum. Names the full path.
+         */
+        public static function enumError($path, array $allowed)
+        {
+        }
+        /**
+         * Validate a utm payload for a write tool. Beyond unknown keys, enforces
+         * value TYPES so a direct Ability/REST caller (which bypasses the adapter
+         * schema) cannot smuggle an array into a utm_* column: status is bool or
+         * 0|1, the rest are scalar strings. Returns WP_Error or null (TRC-006).
+         *
+         * @return \WP_Error|null
+         */
+        public static function validateUtm($params)
+        {
+        }
+        /**
+         * Validate AND sanitize the closed sub-objects of an email/campaign settings
+         * payload. Beyond unknown-key rejection, enforces inner types/enums for
+         * direct Ability/REST callers (the adapter schema only guards MCP calls) and
+         * returns the SANITIZED settings both write tools merge — never the raw
+         * params. mailer text fields are sanitize_text_field'd; emails validated via
+         * sanitize_email/is_email; is_custom + disable_footer are yes|no;
+         * template_config must be an object. Top-level settings + template_config
+         * keys stay extensible (TRC-006).
+         *
+         * @return array|\WP_Error sanitized settings (possibly empty) or error
+         */
+        public static function sanitizeSettingsShape($settings)
         {
         }
         // ---------------------------------------------------------------------
         // Pagination
         // ---------------------------------------------------------------------
         /**
-         * Normalize page/per_page from input. Mutates `$_REQUEST` so the framework
-         * paginator picks up the values — that is FluentCRM's existing pattern.
+         * Normalize page/per_page from input and inject them where the framework
+         * paginator actually looks for them.
          */
         public static function paginationFromInput($input, $defaultPerPage = 15, $maxPerPage = 100)
         {
@@ -7182,10 +7811,12 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         // Validation
         // ---------------------------------------------------------------------
         /**
-         * Return the registered custom-field slugs for contacts. Cached for
-         * the request lifetime — fluentcrm_get_custom_contact_fields() is
-         * already statically cached but we don't want to repeat the array
-         * walk for every bulk row.
+         * The registered custom-field slugs for contacts.
+         *
+         * Not memoized: fluentcrm_get_custom_contact_fields() already holds its own
+         * static, so this does no DB work, and the remaining slug walk measured
+         * 0.08ms across 500 calls — a cache here would only add a stale-value path
+         * for no gain.
          *
          * @return string[]
          */
@@ -7271,6 +7902,21 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
         // ---------------------------------------------------------------------
         // Misc
         // ---------------------------------------------------------------------
+        /**
+         * Format a stored datetime as ISO 8601 with a TRUTHFUL offset.
+         *
+         * FluentCRM stores naive `Y-m-d H:i:s` strings in SITE time (models use
+         * freshTimestamp() / current_time('mysql')), but WordPress forces PHP's
+         * default timezone to UTC. Parsing those strings without an explicit
+         * timezone therefore stamped every created_at / last_activity / sent_at /
+         * enrolled_at with `+00:00`, handing the agent a moment that is wrong by
+         * the site's UTC offset — and any "in the last 24 hours" reasoning with it.
+         * scheduled_at already dodged this via formatScheduledAtDual(); this closes
+         * the same gap everywhere else.
+         *
+         * Strings that carry their own offset (or "Z") are self-describing and are
+         * respected as written.
+         */
         public static function toIso8601($value)
         {
         }
@@ -7348,13 +7994,16 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         }
         /**
          * Render a one-off send (`type=custom_email_campaign`) for get-campaign.
-         * One-offs don't have a marketing lifecycle — the row's `status` column
-         * stays 'draft' even after delivery (the real status lives on the
-         * single fc_campaign_emails row). Surface a `one_off_status` field
-         * that reflects what actually happened, plus the recipient. Operator-
-         * test report 2026-05-07 #4.
+         * One-offs don't have a marketing lifecycle — the row's `status` column is
+         * written once at creation ('published') and never advances, so it says
+         * nothing about delivery. The real status lives on the single
+         * fc_campaign_emails row, so surface it as `one_off_status` along with the
+         * recipient. Operator-test report 2026-05-07 #4.
+         *
+         * Note: rows created before the status fix carry 'draft'. Nothing here
+         * reads $campaign->status, so those keep rendering correctly.
          */
-        private static function formatOneOffEmail($campaign)
+        private static function formatOneOffEmail($campaign, $bodyFormat = 'both')
         {
         }
         /**
@@ -7456,6 +8105,11 @@ namespace FluentCrm\App\Modules\MCP\Tools {
          * Round-4 review P0 #1 — single most damaging bug, 3.5x audience
          * inflation in one test.
          *
+         * `sending_filter` is NOT in the supported set either: filterToCampaignSegment()
+         * only reads tags + lists, so accepting it would have been the same silent
+         * drop this method exists to prevent. Campaign targeting through MCP is
+         * list/tag only by design.
+         *
          * @param array  $recipients
          * @param string $paramName Either 'recipients' or 'exclude_recipients'
          * @return true|\WP_Error
@@ -7522,10 +8176,37 @@ namespace FluentCrm\App\Modules\MCP\Tools {
      */
     class ContactTools
     {
+        /**
+         * Ceiling on one bulk row's tags[] / lists[]. A contact carrying more
+         * segments than this is a malformed row, not a real one.
+         */
+        const MAX_SEGMENT_REFS_PER_ROW = 100;
+        /**
+         * Ceiling on DISTINCT tag+list references across a whole bulk call. Bulk
+         * defaults auto_create to true, so without this a single request could
+         * mint a segment per distinct value of a mis-mapped column.
+         *
+         * Matches MCPHelper::MAX_SEGMENT_REFS. Deliberately well below the
+         * 500-contact cap: a real import draws its tags from a small controlled
+         * vocabulary, so needing more than this many DISTINCT segments in one
+         * batch is the signature of a mapping mistake rather than of intent.
+         */
+        const MAX_BULK_SEGMENT_REFS = 100;
         // -----------------------------------------------------------------
         // Read: list-contacts
         // -----------------------------------------------------------------
         public static function listContacts($params)
+        {
+        }
+        // -----------------------------------------------------------------
+        // Read: get-contact-filter-schema
+        // -----------------------------------------------------------------
+        /**
+         * Serve the advanced_filters reference on demand — progressive
+         * disclosure so the (large) filter catalog never bloats the input
+         * schema of every list tool. See AdvancedFilters::schema().
+         */
+        public static function getFilterSchema($params = [])
         {
         }
         // -----------------------------------------------------------------
@@ -7535,25 +8216,89 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         {
         }
         /**
-         * Activity timeline = tracked events. The fc_event_tracking table is
-         * created by the free plugin's migrations but may not exist on legacy
-         * installs that never ran the migration. Probe with SHOW TABLES so we
-         * never trigger wpdb's print_error (which leaks HTML into the response
-         * body before the JSON envelope, even when the exception is caught).
+         * Activity timeline = tracked events. Wrapped in an availability marker
+         * so an empty result is distinguishable from "the feature is off" —
+         * a silent [] reads as "this contact never did anything", which is
+         * misleading when event tracking simply isn't enabled (MCP feedback
+         * 2026-07, P1 #2 class of issue).
+         *
+         * The fc_event_tracking table is created by the free plugin's migrations
+         * but may not exist on legacy installs that never ran the migration.
+         * Probe with SHOW TABLES so we never trigger wpdb's print_error (which
+         * leaks HTML into the response body before the JSON envelope, even when
+         * the exception is caught).
          */
         private static function buildActivityTimeline($subscriber)
         {
         }
+        /**
+         * Orders across every purchase-history integration active on this
+         * install — the same provider registry + per-provider filter chain the
+         * contact-profile "Purchase History" tab uses (FluentCart, WooCommerce,
+         * EDD, Paymattic, PMPro, plus Pro's SureCart/Voxel). The previous
+         * implementation asked `fluentcrm_commerce_provider` (Pro Woo/EDD
+         * commerce sync only, summary rows not orders), so FluentCart installs
+         * always got a silent [] — MCP feedback 2026-07, P1 #2.
+         *
+         * When no provider plugin is active the response says so explicitly:
+         * an empty array here reads as "never bought anything", which is
+         * actively misleading when the store lives on another install.
+         */
         private static function buildPurchaseHistory($subscriber)
         {
         }
+        /**
+         * Tickets across every helpdesk integration, via the same provider
+         * registry the contact-profile "Support Tickets" tab uses. The previous
+         * implementation applied `fluentcrm_get_support_tickets`, a filter no
+         * plugin has ever hooked (Fluent Support hooks the per-provider
+         * `fluentcrm-get_support_tickets_{provider}`) — MCP feedback 2026-07,
+         * P1 #2.
+         */
         private static function buildSupportTickets($subscriber)
         {
         }
+        /**
+         * Sidebar widgets integrations push onto the contact profile (LMS
+         * enrollments, membership levels, form submissions, event tracking,
+         * FluentCart summary, etc.). Canonical filter is
+         * `fluent_crm/subscriber_info_widgets` — the previous implementation
+         * applied `fluent_crm/contact_info_widgets`, which nothing hooks.
+         *
+         * Widget content arrives as admin HTML; it is flattened to plain text
+         * for the agent. An empty list is ambiguous by design of the filter
+         * (no producers vs. no data for this contact), so the note says so.
+         */
         private static function buildInfoWidgets($subscriber)
         {
         }
-        private static function buildAiSummary($subscriber, $generate = false)
+        /**
+         * Flatten the admin-list HTML rows the integration filters return
+         * (badge <span>s, action-link <svg>s) into plain-text cells an agent
+         * can read. Pure-UI cells (action buttons) are dropped entirely.
+         */
+        private static function normalizeIntegrationRows($rows, $limit = 10)
+        {
+        }
+        /**
+         * Strip markup but keep adjacent values readable — a space is injected
+         * at tag boundaries first so "<span>#12</span><span>May 5</span>"
+         * becomes "#12 May 5" instead of "#12May 5".
+         */
+        private static function htmlToText($html)
+        {
+        }
+        /**
+         * The explicit top-level contact columns the MCP write contract accepts.
+         * Everything else in the Subscriber model's fillable list — user_id,
+         * company_id, ip, latitude/longitude, sms_status, whatsapp_status,
+         * life_time_value, total_points, created_at/updated_at — is NOT an MCP
+         * input and must be dropped, never overposted (SEC-001). Single and bulk
+         * upsert share this list so their write contract can never diverge.
+         *
+         * @return string[]
+         */
+        private static function contactWritePassthru()
         {
         }
         // -----------------------------------------------------------------
@@ -7574,6 +8319,16 @@ namespace FluentCrm\App\Modules\MCP\Tools {
          * round 3) and only flags string names that have no existing match.
          */
         private static function wouldCreateNames($items, $kind = 'tag')
+        {
+        }
+        /**
+         * The address keys the MCP contact-write contract accepts. Shared by the
+         * strict single-upsert validation and the bulk per-row warning so both
+         * paths agree on what "unknown" means (TRC-006).
+         *
+         * @return string[]
+         */
+        private static function addressAllowedKeys()
         {
         }
         /**
@@ -7613,6 +8368,19 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         public static function bulkUpsertContacts($params)
         {
         }
+        /**
+         * Translate one row's tag/list refs into ids using a map produced by
+         * MCPHelper::resolveSegmentRefs(). Refs absent from the map resolved to
+         * nothing (and were not auto-created), so they are dropped — matching the
+         * per-row resolver this replaced, which also skipped unmatched refs.
+         *
+         * @param mixed $refs
+         * @param array $map ref key => id
+         * @return int[]
+         */
+        private static function mapSegmentRefs($refs, $map)
+        {
+        }
         // -----------------------------------------------------------------
         // Write: delete-contact
         // -----------------------------------------------------------------
@@ -7633,26 +8401,97 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         }
     }
     /**
-     * `get-crm-context` — discovery surface (MCP_PLAN.md § 5.1).
+     * `get-crm-context` — compact, permission-scoped discovery surface.
      *
-     * The agent calls this once per session to learn:
-     *  - who they are (current WP user, FluentCRM permissions)
-     *  - what reference data is available (top tags, lists, custom fields)
-     *  - which enums are valid (statuses, contact types, design templates, etc.)
-     *  - the install's current sender configuration
-     *  - guidelines that nudge the agent toward correct usage
+     * Identity and site metadata are always returned. Reference-heavy sections are
+     * selected through `include`; omitting it returns only the small default set.
+     * Each domain section is built only when the current user holds its matching
+     * FluentCRM capability.
      *
-     * Cached for 60 seconds per WP user via transient. Invalidation hooks (set up
-     * in `MCPInit::init()` lifecycle) clear the cache when underlying reference
-     * data changes.
+     * Reads live — see getContext() for why there is no cache layer.
      */
     class ContextTools
     {
-        const CACHE_TTL = 60;
+        const DEFAULT_SECTIONS = ['overview', 'capabilities'];
+        const AVAILABLE_SECTIONS = ['overview', 'stats', 'segments', 'enums', 'sender', 'custom_fields', 'smart_codes', 'automation_catalog', 'safety', 'rate_hints', 'capabilities', 'guidelines'];
         public static function getContext($params = [])
         {
         }
-        private static function buildContext($userId)
+        /**
+         * Normalize explicit section selection before any queries run.
+         *
+         * Omitted include uses DEFAULT_SECTIONS, [] returns identity/site only, and
+         * `all` expands to every section. Unknown values fail for direct Abilities
+         * API callers even when MCP schema validation is not in front of us.
+         */
+        private static function normalizeSections($params)
+        {
+        }
+        private static function buildAccessMap()
+        {
+        }
+        private static function buildContext($userId, $permissions, $access, $sections, $params = [])
+        {
+        }
+        /**
+         * Resolve the displayed/cache-signature permissions through the same
+         * currentUserCan filters used by every ability permission callback.
+         */
+        private static function effectivePermissions($permissions)
+        {
+        }
+        /**
+         * Append one authorized section while preserving the existing top-level
+         * response keys used by agents (`tags`/`lists`, `default_sender`, etc.).
+         */
+        private static function appendSection(&$context, $section, $access, $params = [])
+        {
+        }
+        private static function canAccessSection($section, $access)
+        {
+        }
+        private static function unavailableSection($section)
+        {
+        }
+        /**
+         * Cheap default discovery: capability-sliced counts, essential enums, and
+         * feature availability. It deliberately excludes reference catalogs.
+         */
+        private static function buildOverview($access)
+        {
+        }
+        /**
+         * Marketing-campaign lifecycle statuses (type='campaign').
+         *
+         * Single source for both enum builders — they previously carried separate
+         * copies of this literal, which is how `published` came to be missing from
+         * the advertised contract after one-off writes were normalized to it
+         * (PR #2026 review finding 1).
+         *
+         * @return array<int, string>
+         */
+        public static function campaignStatuses()
+        {
+        }
+        /**
+         * Statuses carried by one-off sends (type='custom_email_campaign').
+         *
+         * Deliberately separate from campaignStatuses(): a one-off has no
+         * lifecycle. The row is written 'published' at creation and never advances,
+         * so the value says "this is a one-off", not "this was delivered" — the
+         * real delivery state is get-campaign's `one_off_status`. Folding this into
+         * campaign_statuses would tell agents a marketing campaign can be
+         * 'published', which it never is.
+         *
+         * These values only match rows when list-campaigns is called with
+         * include_one_offs=true.
+         *
+         * @return array<int, string>
+         */
+        public static function oneOffStatuses()
+        {
+        }
+        private static function buildEnums($access)
         {
         }
         /**
@@ -7695,10 +8534,23 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         private static function buildStats()
         {
         }
-        private static function topTagsForContext($limit = 50)
+        /**
+         * The tag registry an agent needs to resolve names to ids.
+         *
+         * subscribers_count is OPT-IN: withCount() runs a correlated subquery
+         * against fc_subscriber_pivot for every row, which is by far the most
+         * expensive thing get-crm-context can do — and the count is not what the
+         * registry is for. Agents use this to map "newsletter" to an id; when they
+         * actually want sizes they can ask, or get an exact one from list-contacts
+         * total. Without counts this is a single indexed SELECT over ~50 rows.
+         */
+        private static function tagsForContext($withCounts = false, $limit = 50)
         {
         }
-        private static function topListsForContext($limit = 50)
+        private static function listsForContext($withCounts = false, $limit = 50)
+        {
+        }
+        private static function segmentRegistry($query, $withCounts, $limit)
         {
         }
         private static function formatRefList($items, $keyField)
@@ -7728,17 +8580,7 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         private static function buildSmartCodes()
         {
         }
-        private static function detectAiProvider()
-        {
-        }
-        private static function buildGuidelines()
-        {
-        }
-        /**
-         * Invalidate cached context for every user. Hooked from MCPInit on the
-         * relevant FluentCRM events.
-         */
-        public static function invalidateCache()
+        private static function buildGuidelines($access)
         {
         }
     }
@@ -7766,6 +8608,19 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         {
         }
         /**
+         * Compose the campaign-style settings block (mailer overrides,
+         * transactional flag, footer, trackers, template config) from tool
+         * params. Shared by send-email-to-contact and send-test-email so a
+         * test/preview renders with exactly the settings the real send would
+         * use — a preview that silently falls back to the site default sender
+         * and footer misrepresents the live send (MCP feedback 2026-07, P1 #1).
+         *
+         * @return array{settings: array, applied: array}
+         */
+        private static function composeSettings(array $params, $designTemplate)
+        {
+        }
+        /**
          * Render an RFC-5322 "Display Name <addr>" string. Previous version
          * (`trim(... ' <>')`) ate the closing `>` from any "Name (with parens)"
          * — review #15.
@@ -7774,15 +8629,39 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         {
         }
         /**
-         * `send-test-email` — render and send a one-off test copy of either:
-         *   - a saved campaign (pass campaign_id), or
-         *   - a draft body/subject the agent supplies inline.
+         * Shared render pipeline for send-test-email and render-email-preview so
+         * their subject/body/footer/SmartCode output can never drift apart
+         * (TRC-004a). Sources content from a saved campaign (campaign_id) or an
+         * inline draft (subject + body), composes settings with full sender/footer
+         * parity to a live send (MCP feedback 2026-07, P1 #1), resolves the
+         * subscriber SmartCodes render against, and returns the finished pieces.
          *
-         * Differs from send-email-to-contact: NO campaign record is created,
-         * NO subscriber is enrolled, NO row is logged to fc_campaign_emails,
-         * and the recipient does NOT need to be subscribed. The subject is
-         * prefixed with "TEST:" to match what the contact-profile UI does.
-         * Mirrors CampaignController::sendTestEmail.
+         * This only renders: NO campaign record is created, NO subscriber is
+         * enrolled, and NO row is logged to fc_campaign_emails. $requireRecipient
+         * errors on a missing/invalid to_email — a real send needs a destination, a
+         * preview does not. Open/click tracking rewrites happen at real send time
+         * against a logged row, so they never apply here.
+         *
+         * @return array|\WP_Error
+         */
+        private static function buildRenderedEmail(array $params, $requireRecipient)
+        {
+        }
+        /**
+         * `render-email-preview` — resolve subject/body/SmartCodes for a saved
+         * campaign or an inline draft and return the final HTML. Sends nothing,
+         * creates no record, enrolls no one — safe to auto-approve. Shares the exact
+         * render pipeline as send-test-email so the preview matches the live send.
+         */
+        public static function renderEmailPreview($params)
+        {
+        }
+        /**
+         * `send-test-email` — deliver a real test copy (subject prefixed "TEST:")
+         * of a saved campaign or an inline draft. This ALWAYS sends an external
+         * email; it is not a preview — use render-email-preview for a no-send
+         * render. No campaign record is created, no subscriber is enrolled, and
+         * nothing is logged to fc_campaign_emails.
          */
         public static function sendTestEmail($params)
         {
@@ -7866,9 +8745,16 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         }
     }
     /**
-     * Tag/list management — round-3 review item #11.
+     * Tag/list read + management tools.
      *
-     * `manage-tag` and `manage-list` cover create, update, delete, and merge
+     * Read: `list-tags` and `list-lists` enumerate the registries with search,
+     * pagination, and opt-in size/recency metrics. Before these existed, tags and
+     * lists reached an agent only through `get-crm-context`'s `segments` section,
+     * which is hard-capped at 50 rows with no paging — so a site with more than 50
+     * tags could not be enumerated at all, and `manage-tag`'s merge (up to 100
+     * sources) had no matching read surface to plan against.
+     *
+     * Write: `manage-tag` and `manage-list` cover create, update, delete, and merge
      * operations. Splitting create/update/delete into separate tools would
      * triple the surface; the action enum keeps it compact while the
      * `destructive` annotation tells MCP clients to confirm delete + merge.
@@ -7877,9 +8763,107 @@ namespace FluentCrm\App\Modules\MCP\Tools {
      * onto the `to` target, then delete the `from` rows. Idempotent — running
      * the same merge twice no-ops on the second call (subscribers are already
      * pivoted, sources already deleted).
+     *
+     * Note the naming: these are deliberately NOT called "segments" on the agent
+     * surface. "Segments" is a distinct FluentCRM feature (Contacts > Segments,
+     * `sending_filter = 'dynamic_segment'`) supplied by FluentCampaign Pro, and
+     * reusing the word here would make an agent conflate the two.
      */
     class SegmentTools
     {
+        /**
+         * Bound the ref list `list-tags`/`list-lists` will resolve in one call.
+         * Matches the 100-ref ceiling used by list-contacts' `emails`.
+         */
+        const MAX_LOOKUP_REFS = 100;
+        /**
+         * Bound synchronous merge work by source pivot rows. A subscriber attached
+         * to two source segments accounts for two rows because both must be
+         * detached. Operators can deliberately raise this through the documented
+         * filter when their environment can sustain a larger synchronous job.
+         */
+        const DEFAULT_MERGE_MAX_PIVOT_ROWS = 5000;
+        /**
+         * Bound the SQL IN list even for direct Ability/REST callers that bypass
+         * the MCP adapter's input-schema validation.
+         */
+        const MAX_MERGE_SOURCE_IDS = 100;
+        /**
+         * Keep model hydration and native hook dispatch bounded per query.
+         */
+        const MERGE_BATCH_SIZE = 200;
+        /**
+         * How many follow-up passes actionMerge() makes to catch memberships
+         * created while it was running. Bounded so a site attaching to a source
+         * faster than the merge drains it cannot keep the request alive; anything
+         * still outstanding after the last pass is re-pointed by
+         * mergeRepointStragglers() instead of being lost.
+         */
+        const MERGE_MAX_SWEEPS = 3;
+        // -----------------------------------------------------------------
+        // Read: list-tags / list-lists
+        // -----------------------------------------------------------------
+        public static function listTags($params)
+        {
+        }
+        public static function listLists($params)
+        {
+        }
+        /**
+         * Paginated tag/list registry with optional size + recency metrics.
+         *
+         * Both metrics are opt-in because both cost a pass over fc_subscriber_pivot,
+         * which is the largest table on most installs:
+         *
+         *  - `include_counts` uses withCount() so the aggregate happens in SQL
+         *    before the LIMIT, which is what makes sort_by=subscribers_count
+         *    possible at all.
+         *  - `include_last_used` runs ONE grouped query over just the ids on the
+         *    current page (the same bounded pattern FunnelTools::listAutomations
+         *    uses for its subscriber counts) rather than a correlated subquery per
+         *    row. The pivot is indexed on object_id alone, not (object_id,
+         *    created_at), so MAX(created_at) still walks each tag's rows — keeping
+         *    it to one page's worth is the difference between bounded and brutal.
+         *
+         * The consequence of computing last_used_at after the LIMIT is that it
+         * cannot be a sort key; `sort_by` deliberately omits it. With per_page=100
+         * an agent sorts a page itself, and most installs hold well under a page
+         * of tags.
+         *
+         * @param array  $params Tool arguments.
+         * @param string $kind   'tag' or 'list'.
+         * @return array
+         */
+        private static function listSegments($params, $kind)
+        {
+        }
+        /**
+         * Resolve a mixed list of ids / slugs / titles to row ids, reporting the
+         * refs that matched nothing.
+         *
+         * @return array{ids: int[], not_found: string[]}
+         */
+        private static function resolveRefs($refs, $kind)
+        {
+        }
+        /**
+         * Last-application timestamp + attached row count for the given tag/list
+         * ids, in one grouped query.
+         *
+         * `last_used_at` reads the pivot's created_at, which attachTags()/
+         * attachLists() stamp at attach time. Because those use INSERT IGNORE
+         * against a unique key, re-attaching a tag a contact already has does NOT
+         * bump the timestamp — so this is "the most recent time this tag was newly
+         * applied to some contact", which is exactly the stale-tag signal, not
+         * "the last time it was touched".
+         *
+         * @param int[]  $ids  Ids on the current page.
+         * @param string $kind 'tag' or 'list'.
+         * @return array<int, array{last_used_at: ?string, pivot_rows: int}>
+         */
+        private static function lastUsedMap($ids, $kind)
+        {
+        }
         // -----------------------------------------------------------------
         // manage-tag
         // -----------------------------------------------------------------
@@ -7901,10 +8885,60 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         private static function actionUpdate($params, $kind)
         {
         }
+        /**
+         * Refuse a title or slug that already belongs to a DIFFERENT tag/list.
+         *
+         * Enforced in application code rather than with a unique index: the
+         * fc_tags / fc_lists schemas allow duplicates today and existing installs
+         * may already hold some, so adding the constraint would fail the upgrade
+         * on exactly the sites that need it most. Core's create paths take the
+         * same check-then-create approach (Helper::createNewTags()).
+         *
+         * @param object $row  Tag/Lists model carrying the PROPOSED title + slug
+         * @param string $kind 'tag' or 'list'
+         * @return true|\WP_Error
+         */
+        private static function identityConflict($row, $kind)
+        {
+        }
         private static function actionDelete($params, $kind)
         {
         }
         private static function actionMerge($params, $kind)
+        {
+        }
+        /**
+         * Re-pivot one work set onto the merge target.
+         *
+         * Uses the native attach/detach methods rather than bulk pivot SQL so the
+         * per-contact integration hooks (fluentcrm_contact_added_to_tags and
+         * friends) still fire — automations subscribe to those, and a bulk insert
+         * would silently stop them mid-merge.
+         *
+         * @param array  $work      subscriber_id => count of source pivot rows
+         * @param array  $sourceIds
+         * @param object $to        Merge target row
+         * @param string $kind      'tag' or 'list'
+         * @return array{repivoted:int, unique:int, batches:int}
+         */
+        private static function mergeRepivot($work, $sourceIds, $to, $kind)
+        {
+        }
+        /**
+         * Move any source pivot rows still present onto the merge target.
+         *
+         * These arrived after the last sweep read, so they never went through
+         * attachTags()/attachLists() and their integration hooks do not fire. That
+         * is the deliberate trade: the alternative is deleting the source rows and
+         * letting Cleanup::deleteTagAssets() take the membership with them, which
+         * drops the contact from both segments silently.
+         *
+         * @param array  $sourceIds
+         * @param int    $toId
+         * @param string $kind
+         * @return int Memberships that would otherwise have been lost.
+         */
+        private static function mergeRepointStragglers($sourceIds, $toId, $kind)
         {
         }
         // -----------------------------------------------------------------
@@ -7922,7 +8956,21 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         private static function attachedSubscriberCount($row, $kind)
         {
         }
-        private static function attachedSubscribers($row, $kind)
+        /**
+         * Return fixed-cost aggregate counts before a merge writes anything.
+         */
+        private static function mergePreflight($sourceIds, $kind, $maxPivotRows)
+        {
+        }
+        /**
+         * Map subscriber id to its number of source pivot rows. This preserves the
+         * legacy subscribers_repivoted/source-row count while hydrating every
+         * subscriber at most once.
+         */
+        private static function mergeSubscriberWork($sourceIds, $kind)
+        {
+        }
+        private static function segmentObjectType($kind)
         {
         }
         private static function createdHook($kind)
@@ -8301,6 +9349,12 @@ namespace FluentCrm\App\Services {
     {
         protected $campaignId = false;
         protected $initialStatus = 'scheduling';
+        /**
+         * Random per-acquire owner token stored inside the lock value so refresh
+         * and release only ever touch a lock this run still owns (a stalled run
+         * whose lock aged out must not stomp or delete its successor's claim).
+         */
+        private $lockToken = '';
         public function __construct($campaignId)
         {
         }
@@ -8311,6 +9365,40 @@ namespace FluentCrm\App\Services {
          * @return Campaign|false
          */
         public function processEmails($perChunk = 0, $runTime = 30)
+        {
+        }
+        /**
+         * The materialization work that runs while the processing lock is held:
+         * chunked row inserts, the guarded scheduling->scheduled flip, and the
+         * campaign finalize/sweep. Extracted so processEmails() owns the lock
+         * lifecycle via try/finally.
+         *
+         * @return Campaign|false
+         */
+        private function materializeUnderLock($campaign, $perChunk, $runTime, $startTime)
+        {
+        }
+        /**
+         * The campaign's recipient model could not be resolved — e.g. a dynamic segment
+         * whose provider is no longer registered (Pro deactivated, segment deleted).
+         * Leaving the campaign in `processing` would permanently occupy one of the two
+         * scheduler discovery slots and eventually halt ALL sending, and the UI refuses
+         * to unschedule past-due `processing` campaigns. Park it back in `draft` so the
+         * admin can see, fix, and reschedule it.
+         */
+        private function revertUnresolvableCampaign($campaign)
+        {
+        }
+        /**
+         * Delete this campaign's leftover 'scheduling' rows after a mid-run cancel
+         * or an unresolvable-recipients revert.
+         *
+         * 'scheduling' rows are invisible to the senders (they claim only
+         * 'pending'/'scheduled' rows), so this never races the send loop — it only
+         * removes residue that unSchedule()'s own deletes could not see because
+         * the rows were inserted after they ran.
+         */
+        private function sweepSchedulingRows()
         {
         }
         /**
@@ -8326,11 +9414,38 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
+         * Advance the shared `_last_recipient_id` cursor — monotonically.
+         *
+         * A worker that stalled past the lock TTL mid-chunk can wake after a
+         * successor has already materialized further; an unconditional write here
+         * would roll the cursor BACKWARDS and make the successor re-materialize
+         * everything after the rollback point. The conditional UPDATE only ever
+         * moves the cursor forward (numeric coercion via `+ 0` works on MySQL and
+         * the WP SQLite plugin alike). The finalize-time reset to 0 intentionally
+         * bypasses this via the plain meta helper.
+         */
+        private function advanceRecipientCursor($campaignId, $lastId)
+        {
+        }
+        /**
+         * Per-campaign materialization lock key in wp_options. In-family with the
+         * scheduler's `_fluentcrm_lock_campaign_chain_<id>` chain lock.
+         */
+        private function processingLockKey()
+        {
+        }
+        /**
          * Atomically acquire the processing lock for this campaign.
          *
-         * Uses fc_meta table with the '_processing_emails' key. The lock row
-         * is created on first acquire and reused. A single UPDATE with a WHERE
-         * clause prevents TOCTOU race conditions.
+         * Lives in wp_options (Helper::acquireDbLock), NOT fc_meta: wp_options has
+         * a UNIQUE key on option_name, so the INSERT IGNORE + conditional-UPDATE
+         * claim is race-free even when the row does not exist yet. fc_meta has no
+         * unique constraint on (object_type, object_id, key), so a first-acquire
+         * there needs a check-then-create step in which two concurrent workers can
+         * duplicate the row — or overwrite each other's fresh claim — and both
+         * start materializing the same campaign (duplicate fc_campaign_emails
+         * rows). Old `_processing_emails` fc_meta rows from earlier versions are
+         * inert and get removed with the rest of the campaign's meta on delete.
          *
          * @return bool True if lock acquired, false if another process holds it.
          */
@@ -8339,12 +9454,18 @@ namespace FluentCrm\App\Services {
         }
         /**
          * Refresh the lock timestamp to prevent stale-lock detection.
+         *
+         * @return bool False when this run no longer owns the lock — a successor
+         *              claimed it after we stalled past the TTL.
          */
         private function refreshProcessingLock()
         {
         }
         /**
-         * Release the processing lock.
+         * Release the processing lock. Deletes the row (rather than blanking it)
+         * so per-campaign keys never accumulate in wp_options; the next acquire
+         * re-creates it on demand. Token-guarded: deletes nothing if a successor
+         * owns the lock now.
          */
         private function releaseProcessingLock()
         {
@@ -9443,6 +10564,89 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart {
         {
         }
     }
+    /**
+     * Renders the FluentCRM contact widget on FluentCart's single customer and
+     * single order pages through FluentCart's dynamic widget system.
+     *
+     * FluentCart requests sidebar widgets via GET /fluent-cart/v2/widgets and
+     * fires a per-page filter: 'fluent_cart/widgets/customer' on the customer
+     * page (payload carries 'customer_id') and 'fluent_cart/widgets/single_order_page'
+     * on the order page (WidgetsController pre-loads the 'order' into the payload).
+     * Both resolve to a FluentCart customer, which we match to a CRM contact by
+     * email. We push a 'vue-template' widget: the raw ContactWidgets.vue source
+     * compiled at runtime by FluentCart's VueTemplateLoader. All data, URLs,
+     * permission flags and translated strings travel in the payload; tag/list
+     * changes are sent by the browser straight to FluentCRM's existing REST API.
+     */
+    class CustomerWidget
+    {
+        public function init()
+        {
+        }
+        /**
+         * Customer page: the contact is the customer being viewed.
+         *
+         * @param array $widgets Widgets registered so far.
+         * @param array $data    Request data from FluentCart's WidgetsController, contains 'customer_id'.
+         * @return array
+         */
+        public function pushCustomerWidget($widgets, $data)
+        {
+        }
+        /**
+         * Order page: the contact is the customer who placed the order. For the
+         * 'single_order_page' filter FluentCart's WidgetsController already loaded
+         * the order into $data['order']; we fall back to a lookup by id to stay
+         * robust if that ever changes.
+         *
+         * @param array $widgets Widgets registered so far.
+         * @param array $data    Request data, contains the pre-loaded 'order' and 'order_id'.
+         * @return array
+         */
+        public function pushOrderWidget($widgets, $data)
+        {
+        }
+        /**
+         * Shared render path: match the FluentCart customer to a CRM contact by
+         * email and, when found, push the vue-template widget.
+         *
+         * FluentCart's own endpoint permission only covers FluentCart data; CRM
+         * read access is already verified by the callers above before we reach here.
+         *
+         * @param array                                $widgets
+         * @param \FluentCart\App\Models\Customer|null  $customer
+         * @return array
+         */
+        private function pushWidgetForCustomer($widgets, $customer)
+        {
+        }
+        /**
+         * Raw SFC source for FluentCart's runtime template loader.
+         *
+         * @return string
+         */
+        private function getComponentSource()
+        {
+        }
+        /**
+         * Everything the Vue template needs: subscriber summary, applied and
+         * available segments, permission flags, URLs and translated labels.
+         *
+         * @param \FluentCrm\App\Models\Subscriber $subscriber
+         * @param \FluentCart\App\Models\Customer  $customer
+         * @return array
+         */
+        private function buildPayload($subscriber, $customer)
+        {
+        }
+        /**
+         * @param \FluentCrm\Framework\Database\Orm\Collection $segments Tag or Lists models.
+         * @return array [{id: int, title: string}, ...]
+         */
+        private function formatSegments($segments)
+        {
+        }
+    }
     class FluentCart
     {
         public function init()
@@ -10316,6 +11520,39 @@ namespace FluentCrm\App\Services\Funnel\Benchmarks {
 namespace FluentCrm\App\Services\Funnel {
     class FunnelHelper
     {
+        /**
+         * Meta key holding an automation's sticky note.
+         *
+         * Deliberately stored as its own meta row rather than inside `Funnel::settings`,
+         * because saveFunnelSequence() overwrites `settings` wholesale from the client's
+         * posted copy — a note saved after page load would be erased by the next step save.
+         */
+        const STICKY_NOTE_META_KEY = 'sticky_note';
+        /**
+         * Normalize a sticky note payload for storage.
+         *
+         * The note is plain text by design: it renders through v-text, so no markup is
+         * allowed in or out. Returns null when the note is effectively empty, which the
+         * caller should treat as "delete the note".
+         *
+         * @param mixed $content Raw note body from the request.
+         * @return array|null {content: string, updated_by: int, updated_at: string}
+         */
+        public static function sanitizeStickyNote($content)
+        {
+        }
+        /**
+         * Read a funnel's sticky note in the shape the editor expects.
+         *
+         * Tolerates the legacy/simple case of a bare string having been stored, and always
+         * returns a display-ready author name so the frontend needs no user lookup.
+         *
+         * @param Funnel $funnel
+         * @return array|null
+         */
+        public static function getStickyNote($funnel)
+        {
+        }
         public static function changeFunnelSubSequenceStatus($funnelSubId, $sequenceId, $status = 'complete')
         {
         }
@@ -10763,6 +12000,29 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
+         * Build a list item's inner HTML, re-inserting nested list blocks.
+         *
+         * The block parser strips nested core/list blocks out of a list item's
+         * innerHTML, leaving null placeholders in innerContent. Without this
+         * reconstruction, every nested list level is lost from the sent email.
+         *
+         * @param array $block Parsed core/list-item block.
+         * @return string
+         */
+        private function buildListItemContent($block)
+        {
+        }
+        /**
+         * Render a nested list as a bare <ul>/<ol>, without the table wrapper
+         * used for root-level lists (a table is not valid inside an <li>).
+         *
+         * @param array $listBlock Parsed core/list block nested inside a list item.
+         * @return string
+         */
+        private function renderNestedList($listBlock)
+        {
+        }
+        /**
          * Render the core RSS block with email-safe markup.
          *
          * @param array $attrs Block attributes.
@@ -11012,6 +12272,7 @@ namespace FluentCrm\App\Services {
     }
     class Helper
     {
+        const DEFAULT_CAMPAIGN_TEMPLATE_OPTION = 'default_campaign_template_id';
         /**
          * Determine if the active Easy Digital Downloads version is supported.
          *
@@ -11038,6 +12299,21 @@ namespace FluentCrm\App\Services {
         public static function parseArrayOrJson($value, $default = [])
         {
         }
+        /**
+         * Safely unserialize a value without ever instantiating objects.
+         *
+         * Behaves like WordPress core maybe_unserialize() for scalars and arrays, but passes
+         * allowed_classes => false so a serialized-object payload can never trigger PHP Object
+         * Injection (__wakeup / __destruct gadget chains). Use this instead of maybe_unserialize()
+         * for any value that originates from, or can be influenced by, user input (e.g. stored
+         * contact/company custom-field values).
+         *
+         * @param mixed $value The (possibly serialized) value read from storage.
+         * @return mixed Unserialized array/scalar; serialized objects become inert incomplete classes.
+         */
+        public static function safeUnserialize($value)
+        {
+        }
         public static function getLinksFromString($string)
         {
         }
@@ -11053,8 +12329,13 @@ namespace FluentCrm\App\Services {
         /**
          * Generate an HMAC signature for smart URL verification.
          *
-         * Uses a dedicated persistent key (not wp_salt) so that WordPress
-         * salt rotation does not invalidate previously sent email links.
+         * Deliberately signed with wp_salt('auth') rather than a plugin-owned key
+         * stored in the database: secrets in wp-config are harder to exfiltrate
+         * than wp_options rows, and rotating the salts (the standard
+         * post-compromise action) is SUPPOSED to revoke outstanding signed
+         * artifacts — smart links in already-sent emails included. A signature
+         * that fails after rotation only loses the verified-click flag; the
+         * redirect and click tracking still work.
          *
          * @param string $hash The email hash to sign.
          * @return string
@@ -11085,6 +12366,67 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function getDefaultEmailTemplate()
+        {
+        }
+        public static function getDefaultCampaignTemplateId()
+        {
+        }
+        public static function getDefaultCampaignTemplate()
+        {
+        }
+        public static function setDefaultCampaignTemplateId($templateId)
+        {
+        }
+        public static function clearDefaultCampaignTemplateId()
+        {
+        }
+        /**
+         * Copy an email template's content and design onto a campaign and persist it.
+         *
+         * Fills the campaign with the template's body, subject, pre-header and design
+         * template, then merges the template's config/footer settings over the
+         * campaign's existing settings. Falls back to the default email design template
+         * when the template has no `_design_template` meta. Saves the campaign and then
+         * syncs any visual builder design via `syncVisualBuilderDesign()`.
+         *
+         * @param Campaign $campaign The campaign to apply the template to (modified and saved).
+         * @param Template $template The source email template.
+         * @return Campaign The saved campaign.
+         */
+        public static function applyTemplateToCampaign(\FluentCrm\App\Models\Campaign $campaign, \FluentCrm\App\Models\Template $template)
+        {
+        }
+        /**
+         * Sync the visual builder design meta from a template onto a campaign.
+         *
+         * When the template's design template is `visual_builder`, copies its
+         * `_visual_builder_design` meta onto the campaign (only if a design exists).
+         * For any other design template, removes the campaign's stale
+         * `_visual_builder_design` meta so it does not leak from a previous template.
+         *
+         * @param Campaign $campaign The campaign whose visual builder meta is updated.
+         * @param Template $template The source email template.
+         * @return void
+         */
+        protected static function syncVisualBuilderDesign(\FluentCrm\App\Models\Campaign $campaign, \FluentCrm\App\Models\Template $template)
+        {
+        }
+        /**
+         * Merge a template's config and footer settings into a campaign's settings.
+         *
+         * Builds the resulting `template_config` by layering the template config over
+         * the campaign's existing config (or the design template defaults when absent),
+         * and normalizes `footer_settings` against a set of defaults. The `disable_footer`
+         * and `custom_footer` flags are coerced to strict `'yes'`/`'no'` values, the
+         * footer's `disable_footer` is mirrored into `template_config`, and the resolved
+         * `design_template` is stamped onto `template_config`.
+         *
+         * @param array|mixed $campaignSettings The campaign's current settings (non-arrays are treated as empty).
+         * @param array $templateSettings Template settings with `template_config` and `footer_settings` keys.
+         * @param string $designTemplate The resolved design template slug.
+         * @return array The merged settings array with `template_config` and `footer_settings`.
+         */
+        protected static function mergeTemplateSettings($campaignSettings, $templateSettings, $designTemplate)
         {
         }
         public static function getGlobalSmartCodes()
@@ -11171,6 +12513,21 @@ namespace FluentCrm\App\Services {
         public static function maybeDisableEmojiOnEmail()
         {
         }
+        /**
+         * Country code from Cloudflare's CF-IPCountry header, or '' when unavailable.
+         *
+         * The header is only meaningful when the request actually transited Cloudflare —
+         * a direct request can set it freely and pollute contact countries. By default we
+         * require the companion CF-Ray marker (set by Cloudflare on every proxied
+         * request); sites behind stricter or unusual proxies can override the decision
+         * via the fluent_crm/trust_cf_ipcountry filter. Note: CF-Ray is itself forgeable
+         * on direct-to-origin requests, so this is a best-effort heuristic, not proof of
+         * Cloudflare transit — real validation would check the connecting IP against
+         * Cloudflare's published ranges.
+         */
+        public static function getCfIpCountry()
+        {
+        }
         public static function getPublicLists()
         {
         }
@@ -11192,7 +12549,22 @@ namespace FluentCrm\App\Services {
         public static function willMultiThreadEmail($minPendingLimit = 300)
         {
         }
-        public static function getUpcomingEmailCount()
+        /**
+         * Count sendable (pending/scheduled, due) queue rows.
+         *
+         * Every internal caller compares the result against a small threshold, so
+         * they pass that threshold as $cap: the scan then stops after $cap index
+         * entries instead of walking the entire pending slice — on multi-million
+         * row queues the CLI sender used to pay a full index scan per batch just
+         * to learn "more than 400". A capped count is EXACT below the cap and
+         * saturates at the cap, which is precisely what threshold comparisons
+         * (and the CLI's "only N left" message) need. $cap = 0 keeps the exact
+         * full count for backward compatibility with external callers.
+         *
+         * @param int $cap Optional scan ceiling (0 = exact full count).
+         * @return int
+         */
+        public static function getUpcomingEmailCount($cap = 0)
         {
         }
         public static function sanitizeHtml($html)
@@ -11202,6 +12574,26 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function getEmailFooterContent($campaign = null)
+        {
+        }
+        /**
+         * Build the title for the `custom_email_campaign` row backing a one-off
+         * "send email to this contact".
+         *
+         * These rows are hidden from the campaign list by the Campaign model's
+         * type scope, so the title is only ever read in raw DB inspection, support
+         * debugging and the MCP `list-campaigns(include_one_offs=true)` view. A
+         * constant string there makes every send indistinguishable, so the
+         * recipient goes in the title.
+         *
+         * fc_campaigns.title is VARCHAR(192), so the recipient is truncated to fit
+         * rather than being silently cut off by MySQL.
+         *
+         * @param string $recipientEmail
+         * @param string $prefix Optional caller tag (e.g. 'MCP') for provenance.
+         * @return string
+         */
+        public static function oneOffEmailTitle($recipientEmail, $prefix = '')
         {
         }
         public static function getFooterConfig($campaign = null)
@@ -11238,6 +12630,18 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function latestListIdOfSubscriber($contactId)
+        {
+        }
+        /**
+         * Per-request memo for Tag/Lists lookups by title. Bulk CSV imports call
+         * the tag/list helpers once per row, so without this the same title is
+         * re-queried for every row of every chunk (rows × titles round-trips).
+         * Keyed on the raw title so matching stays identical to the DB collation
+         * semantics of where('title', ...); a differently-cased duplicate only
+         * costs one extra query.
+         */
+        private static $termTitleCache = [];
+        private static function findTermByTitleCached($title, $type)
         {
         }
         public static function createNewTags($tagsArray)
@@ -11305,11 +12709,19 @@ namespace FluentCrm\App\Services {
          * (stored timestamp older than $ttl), so a crashed holder self-recovers after
          * the TTL.
          *
-         * @param string $key wp_options option_name holding the lock timestamp.
-         * @param int    $ttl Seconds before a held lock is treated as abandoned.
+         * With a $token the stored value becomes "<timestamp>|<token>", which makes
+         * refreshDbLock()/deleteDbLock() ownership-guarded: a holder that stalls past
+         * the TTL and loses the lock to a successor can no longer stomp or delete the
+         * successor's claim. The staleness compare still works on the combined value:
+         * MySQL numerically coerces the leading digits, and SQLite's TEXT-affinity
+         * comparison is lexicographic over the equal-length timestamp prefix.
+         *
+         * @param string $key   wp_options option_name holding the lock timestamp.
+         * @param int    $ttl   Seconds before a held lock is treated as abandoned.
+         * @param string $token Optional per-acquire owner token (LIKE-safe chars).
          * @return bool True if this process acquired the lock.
          */
-        public static function acquireDbLock($key, $ttl)
+        public static function acquireDbLock($key, $ttl, $token = '')
         {
         }
         /**
@@ -11317,10 +12729,17 @@ namespace FluentCrm\App\Services {
          * detection in acquireDbLock() cannot steal it mid-run. Caller must already
          * hold the lock.
          *
-         * @param string $key wp_options option_name holding the lock timestamp.
-         * @return void
+         * With a $token the refresh is ownership-guarded — it only touches a value
+         * carrying this holder's token, and the return value reports whether the
+         * lock is still owned, so a stalled worker whose lock was stolen can stop
+         * working instead of stomping the successor's claim.
+         *
+         * @param string $key   wp_options option_name holding the lock timestamp.
+         * @param string $token Owner token passed to acquireDbLock(), if any.
+         * @return bool True while this holder still owns the lock (always true
+         *              for tokenless locks — the legacy unconditional refresh).
          */
-        public static function refreshDbLock($key)
+        public static function refreshDbLock($key, $token = '')
         {
         }
         /**
@@ -11332,6 +12751,26 @@ namespace FluentCrm\App\Services {
          * @return void
          */
         public static function releaseDbLock($key)
+        {
+        }
+        /**
+         * Release a lock by deleting its row. Prefer this over releaseDbLock()
+         * for per-object keys (one lock per campaign, funnel, etc.) so finished
+         * objects leave no dead wp_options rows behind; fixed keys that are
+         * reused forever should keep releaseDbLock() and avoid the
+         * delete/re-insert churn. Deleting is as safe as blanking: acquireDbLock()
+         * re-creates rows on demand via INSERT IGNORE, so a deleted row only
+         * costs the next acquire one insert.
+         *
+         * With a $token the delete is ownership-guarded: a worker that stalled
+         * past the TTL and lost the lock to a successor deletes nothing instead
+         * of destroying the successor's live claim.
+         *
+         * @param string $key   wp_options option_name holding the lock timestamp.
+         * @param string $token Owner token passed to acquireDbLock(), if any.
+         * @return void
+         */
+        public static function deleteDbLock($key, $token = '')
         {
         }
         /**
@@ -11584,6 +13023,15 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         protected $isMultiThread = false;
         protected $sendingChunkNumber = 0;
         protected $lastLockRefreshAt = 0;
+        /**
+         * The fc_campaign_emails id currently inside Mailer::send(). The send loop
+         * is strictly sequential, so when wp_mail_failed fires there is exactly one
+         * candidate row — this lets the failure hook update by primary key instead
+         * of guessing by email address. Null whenever no CRM send is in flight, so
+         * failures from OTHER plugins' emails in the same request are ignored.
+         */
+        protected $currentSendingEmailId = null;
+        protected $currentSendingEmailAddress = null;
         abstract protected function isTimeUp();
         protected function sendEmails($campaignEmails)
         {
@@ -11592,6 +13040,35 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         {
         }
         abstract protected function getNextBatchEmails();
+        /**
+         * Lock and return up to $limit due queue ids for ONE status value, in
+         * scheduled_at order, optionally restricted to a (id % modulo) partition.
+         *
+         * Single status on purpose: with `status IN ('pending','scheduled')` the
+         * (status, scheduled_at) index covers the WHERE but cannot deliver the
+         * ORDER BY across the two status ranges, so MySQL filesorts EVERY due row
+         * — and because the claim is a locking read, it locks the entire backlog
+         * on each claim, serializing all senders and defeating the id partitions.
+         * One status = one index range read in key order with early exit at
+         * LIMIT, so the locked set stays around modulo × limit index entries no
+         * matter how large the backlog is. Callers claim 'pending' first, then
+         * top up from 'scheduled' — the SAME order everywhere, so two claimers
+         * can never each hold one status range while waiting on the other.
+         *
+         * Must run inside the caller's open transaction, before the UPDATE that
+         * flips the claimed rows to 'processing'.
+         *
+         * @param string $status    Single queue status: 'pending' or 'scheduled'.
+         * @param string $until     Due cutoff (MySQL datetime, WP timezone).
+         * @param int    $limit     Maximum ids to lock.
+         * @param string $order     'ASC' (oldest first) or 'DESC' (newest first).
+         * @param int    $modulo    Id-partition size; 1 = no partition clause.
+         * @param int    $remainder Partition slot: rows where id % modulo = remainder.
+         * @return array Locked ids.
+         */
+        protected function lockClaimableIds($status, $until, $limit, $order = 'ASC', $modulo = 1, $remainder = 0)
+        {
+        }
         protected function logSentCount()
         {
         }
@@ -11605,6 +13082,22 @@ namespace FluentCrm\App\Services\Libs\Mailer {
          * @return bool
          */
         protected function memoryExceeded()
+        {
+        }
+        /**
+         * Hand claimed-but-unreached rows back to the queue on a time-up break.
+         *
+         * Only rows the time budget cut off are reset — rows the loop reached and
+         * deliberately skipped (cancelled contact, duplicate guard, lost claim)
+         * keep their state. The UPDATE reuses the mark-sent claim-token guard
+         * (status='processing' AND updated_at = <claim time>) so a row another
+         * sender re-claimed in the meantime is never touched. Rows claimed in one
+         * batch share a single claim timestamp, so this is one UPDATE in practice.
+         *
+         * @param \FluentCrm\Framework\Support\Collection|array $campaignEmails The full claimed batch.
+         * @param int $reachedCount How many rows the send loop actually entered.
+         */
+        protected function releaseUnreachedClaims($campaignEmails, $reachedCount)
         {
         }
         protected function updateEmailsStatus($ids, $status)
@@ -11652,6 +13145,12 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         {
         }
     }
+    /**
+     * @deprecated This iterator has no in-tree callers and predates the transactional
+     * claim pipeline in Handler/BaseHandler (atomic claims with claim tokens). Do not
+     * build on it — use the Handler pipeline instead. Kept only for back-compat with
+     * unknown external callers; scheduled for removal.
+     */
     class CampaignEmailIterator implements \Iterator
     {
         protected $key = 0;
@@ -11685,16 +13184,49 @@ namespace FluentCrm\App\Services\Libs\Mailer {
     }
     class CliSendingHandler extends \FluentCrm\App\Services\Libs\Mailer\BaseHandler
     {
+        /**
+         * Largest accepted --modulo. The partition predicate is a residual filter,
+         * so each claim examines ~modulo × chunk index entries under FOR UPDATE —
+         * an absurd modulo (e.g. a mistyped 100000) would turn every 30-row claim
+         * into a multi-million-entry locking scan. 100 allows up to 50 CLI workers
+         * in the even id space, far beyond any supported deployment.
+         */
+        const MAX_MODULO = 100;
         protected $runnerTitle = 'CliSendingHandler::handle';
         protected $sendingPerChunk = 30;
         protected $maximumProcessingTime = 50;
-        public $offset = 350;
-        public $minPendingRequired = 400;
+        /**
+         * @deprecated Unused since modulo partitioning replaced offset claims.
+         *             Kept only so old positional constructor calls don't break.
+         */
+        public $offset = 0;
+        public $minPendingRequired = 300;
+        /**
+         * Queue partition this worker claims: rows where (id % modulo) = remainder.
+         * Default 2/0 = even ids (the multi-thread web worker takes odd ids, the
+         * primary Handler claims everything). Multiple CLI workers should each get
+         * a distinct --modulo/--remainder pair instead of the old --offset spacing.
+         */
+        protected $modulo = 2;
+        protected $remainder = 0;
         protected $optionKey = 'fluentcrm_is_sending_cli_emails';
-        public function __construct($optionName = 'fluentcrm_is_sending_cli_emails', $runTime = 50, $offset = 350, $minPendingRequired = 400)
+        public function __construct($optionName = 'fluentcrm_is_sending_cli_emails', $runTime = 50, $offset = 0, $minPendingRequired = 300, $modulo = 2, $remainder = 0)
         {
         }
         public function handle()
+        {
+        }
+        /**
+         * Housekeeping for custom --option_key lock rows.
+         *
+         * The fixed sender locks reuse one wp_options row forever, but a script
+         * that generates a fresh --option_key per run leaves a dead row behind
+         * each time. Sweep released ('') or day-old custom lock rows on every CLI
+         * run. Safe because acquireDbLock() re-creates rows on demand (INSERT
+         * IGNORE): deleting an idle sibling's row costs it one re-insert on its
+         * next acquire; rows with a fresh timestamp (a live worker) are kept.
+         */
+        private function cleanupStaleCliLockRows()
         {
         }
         private function isSystemOk()
