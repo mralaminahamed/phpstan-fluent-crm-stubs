@@ -33,8 +33,8 @@ composer require --dev mralaminahamed/fluent-crm-stubs
 ```neon
 parameters:
     scanFiles:
-        - vendor/mralaminahamed/fluent-crm-stubs/fluent-crm-stubs.php
-        - vendor/mralaminahamed/fluent-crm-stubs/fluent-crm-constants-stubs.php
+        - vendor/mralaminahamed/fluent-crm-stubs/fluent-crm-stubs.stub
+        - vendor/mralaminahamed/fluent-crm-stubs/fluent-crm-constants-stubs.stub
 ```
 
 Or use the bundled extension:

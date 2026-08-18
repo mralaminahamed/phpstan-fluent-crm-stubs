@@ -1,8 +1,8 @@
 parameters:
     paths:
-        - fluent-crm-stubs.php
+        - fluent-crm-stubs.stub
     scanFiles:
-        - fluent-crm-constants-stubs.php
+        - fluent-crm-constants-stubs.stub
     bootstrapFiles:
         - configs/bootstrap.php
     level: 5
