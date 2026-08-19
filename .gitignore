@@ -2,3 +2,7 @@
 /composer.lock
 /report.txt
 /coverage/
+
+# PHPUnit
+.phpunit.result.cache
+coverage/
