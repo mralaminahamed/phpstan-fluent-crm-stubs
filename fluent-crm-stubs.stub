@@ -616,6 +616,12 @@ namespace FluentCrm\App\Hooks\Handlers {
         public function changeFooter()
         {
         }
+        /**
+         * Build capability-filtered FluentCRM navigation for the current user.
+         *
+         * @param string|null $urlBase
+         * @return array
+         */
         public function getMenuItems($urlBase = null)
         {
         }
@@ -1224,7 +1230,7 @@ namespace FluentCrm\App\Hooks\Handlers {
         {
         }
         /**
-         * Get editor feature flags based on content type.
+         * Get editor feature flags based on content type and current-user permissions.
          * This is the single source of truth for which UI elements show per context.
          *
          * @param string $context  block_type: campaign, template, email_pattern, recurring_campaign, sequence_mail, email_body_in_funnel
@@ -2511,14 +2517,10 @@ namespace FluentCrm\App\Http\Controllers {
         private function makeHttpUrl($url)
         {
         }
-        /**
-         * Returns true only if the URL resolves to a public, routable IP address.
-         * Blocks private/reserved ranges to prevent SSRF attacks.
-         */
-        private function isSSRFSafeUrl($url)
+        private function getLogoWebsiteUrl($url)
         {
         }
-        private function getLogoWebsiteUrl($url)
+        private function isSuccessfulRemoteResponse(array $response)
         {
         }
         public function getNotes()
@@ -4058,6 +4060,12 @@ namespace FluentCrm\App\Http\Controllers {
      */
     class TemplateController extends \FluentCrm\App\Http\Controllers\Controller
     {
+        /**
+         * List templates while limiting email readers to metadata used by the table.
+         *
+         * @param Request $request
+         * @return mixed
+         */
         public function templates(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4079,6 +4087,12 @@ namespace FluentCrm\App\Http\Controllers {
         public function update(\FluentCrm\Framework\Http\Request\Request $request, $id)
         {
         }
+        /**
+         * Apply a bulk action only to email-template posts matched by the request.
+         *
+         * @param Request $request
+         * @return array|\FluentCrm\Framework\Http\Response\Response
+         */
         public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4125,15 +4139,6 @@ namespace FluentCrm\App\Http\Controllers {
          * @return \FluentCrm\Framework\Http\Response\Response
          */
         public function getBuiltInTemplate(\FluentCrm\Framework\Http\Request\Request $request)
-        {
-        }
-        /**
-         * Restricts direct template downloads to trusted FluentCRM template hosts.
-         *
-         * @param string $url
-         * @return bool
-         */
-        protected function isAllowedRemoteTemplateUrl($url)
         {
         }
         /**
@@ -4205,7 +4210,7 @@ namespace FluentCrm\App\Http\Controllers {
         public function index(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
-        public function import(\FluentCrm\Framework\Http\Request\Request $request)
+        public function importUsers(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
         private function processUsers($users, $inputs)
@@ -4283,6 +4288,15 @@ namespace FluentCrm\App\Http\Policies {
         public function currentUserCan($permission)
         {
         }
+        /**
+         * Get the routed REST method when WordPress has applied method override.
+         *
+         * @param Request $request
+         * @return string
+         */
+        protected function requestMethod(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
     }
     class AiPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
     {
@@ -4328,6 +4342,12 @@ namespace FluentCrm\App\Http\Policies {
         public function deleteCampaignEmails(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Authorize campaign bulk actions against their independent capabilities.
+         *
+         * @param Request $request
+         * @return bool
+         */
         public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4413,6 +4433,33 @@ namespace FluentCrm\App\Http\Policies {
          * @return Boolean
          */
         public function getLabels(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Authorize global label creation for settings or email managers.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function create(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Authorize global label updates for settings or email managers.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function update(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Authorize global label deletion for settings or email delete managers.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function delete(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
     }
@@ -4502,6 +4549,30 @@ namespace FluentCrm\App\Http\Policies {
          * @return Boolean
          */
         public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * WordPress-user imports expose user records, so they require both CRM
+         * contact management and WordPress user-list access.
+         */
+        public function importUsers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Apply the WordPress-user boundary only to the built-in users driver.
+         *
+         * `driver` is a URL path segment, not a query/body field, so it never
+         * reaches the Request object. The router substitutes route parameters by
+         * name into the policy call the same way it does for the controller
+         * action, so it must be declared in the signature to be seen at all.
+         */
+        public function getDriver(\FluentCrm\Framework\Http\Request\Request $request, $driver = null)
+        {
+        }
+        /**
+         * Use the same driver-specific permission for import execution.
+         */
+        public function importData(\FluentCrm\Framework\Http\Request\Request $request, $driver = null)
         {
         }
     }
@@ -4677,6 +4748,24 @@ namespace FluentCrm\App\Http\Policies {
          * @return Boolean
          */
         public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Allow email readers to browse template metadata without granting CRUD access.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function templates(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Allow full detail reads only when editing or rendering an authorized preview.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function template(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
         public function getBuiltInTemplate(\FluentCrm\Framework\Http\Request\Request $request)
@@ -15138,6 +15227,49 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function currentUserCan($permission)
+        {
+        }
+    }
+    class RemoteTemplateFetcher
+    {
+        const MAX_TEMPLATE_SIZE = 1048576;
+        /**
+         * Download and parse a trusted FluentCRM template JSON file.
+         *
+         * @param string $fileUrl
+         * @return array|\WP_Error
+         */
+        public static function fetch($fileUrl)
+        {
+        }
+        /**
+         * Parse and validate raw FluentCRM template JSON.
+         *
+         * @param string $content
+         * @return array|\WP_Error
+         */
+        public static function parseJson($content)
+        {
+        }
+        /**
+         * Restrict direct template downloads to trusted FluentCRM template hosts.
+         *
+         * @param string $url
+         * @return bool
+         */
+        public static function isAllowedUrl($url)
+        {
+        }
+        /**
+         * @return array
+         */
+        public static function getAllowedHosts()
+        {
+        }
+        /**
+         * @return \WP_Error
+         */
+        protected static function invalidTemplateJson()
         {
         }
     }
