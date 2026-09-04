@@ -634,6 +634,64 @@ namespace FluentCrm\App\Hooks\Handlers {
         public function loadCssJs()
         {
         }
+        /**
+         * Print the import map that lets addon plugins share core's Vue,
+         * Element Plus and UI-kit instances.
+         *
+         * Addons build their bundles with `vue` / `element-plus` marked external
+         * and rewritten to these bare specifiers, so nothing site-specific is
+         * baked into an addon's JS — the plugin folder name, the site URL and the
+         * cache-busting version all stay here, in PHP, where they are known.
+         *
+         * Sharing the instance is not an optimisation: Element Plus installs onto
+         * core's app instance and communicates through provide/inject, so a
+         * second Vue copy inside an addon bundle renders broken components.
+         *
+         * @return void
+         */
+        public function printModuleImportMap()
+        {
+        }
+        /**
+         * Cache-busted URL for one of the addon-facing shared entries.
+         *
+         * A shared entry and the chunks it imports must be served as ONE cache
+         * generation. Their internal imports are stamped with ?ver=PLUGIN_VERSION
+         * at build time by chunkCacheBustPlugin (vite.config.mjs); the import map
+         * URL is the only edge in that graph PHP emits, so without the same stamp
+         * it is the one unversioned edge. A browser could then pair a fresh
+         * admin/shared/element-plus.js with a cached vendor-element-plus.js — or
+         * the reverse, since vendor-element-plus.js is overwritten in place on
+         * every release, so a stale ?ver= request is answered with the new body.
+         * Either pairing crosses builds, and the mangled cross-chunk symbol names
+         * do not survive that:
+         *
+         *     SyntaxError: The requested module '../../vendor-element-plus.js?ver=X'
+         *     does not provide an export named 'eD'
+         *
+         * Stamped unconditionally, not just in production: `env => dev` with no
+         * Vite server running still resolves through the manifest to built assets,
+         * which is exactly when the stamp matters. Harmless when the dev server IS
+         * running — verified against Vite 5.4: the query reaches the module id (it
+         * shows up in the sourcemap `sources`) but not resolution, so both the bare
+         * and the stamped URL re-export from the same optimised dep
+         * (/node_modules/.vite/deps/element-plus.js?v=…) and there is still exactly
+         * one Element Plus instance.
+         *
+         * Safe against the 3.0.5 double-instance rule because nothing inside core
+         * imports these entries, making the import map their only URL —
+         * dev/audit-entry-exports.js pins maxStaticImporters and
+         * maxDynamicImporters to 0 on all four to keep that true.
+         *
+         * Applied before the `fluent_crm/module_import_map` filter, so a third
+         * party adding its own specifier owns its own cache-busting.
+         *
+         * @param string $asset Asset path relative to the build output root.
+         * @return string
+         */
+        private function sharedModuleUrl($asset)
+        {
+        }
         public function getAdminVars()
         {
         }
@@ -1045,6 +1103,34 @@ namespace FluentCrm\App\Hooks\Handlers {
         {
         }
         public function handleManageSubRequestAjax()
+        {
+        }
+        /**
+         * Keep public link-request responses indistinguishable and rate-limit mail
+         * per contact, so an attacker cannot enumerate contacts or flood an inbox.
+         *
+         * @param Subscriber $subscriber Contact whose request is being considered.
+         * @return bool
+         */
+        private function isPublicSubscriptionRequestCoolingDown($subscriber)
+        {
+        }
+        /**
+         * Record only requests that produced mail, leaving a failed delivery free
+         * to retry after its underlying configuration is corrected.
+         *
+         * @param Subscriber $subscriber Contact that received a request email.
+         * @return void
+         */
+        private function markPublicSubscriptionRequestSent($subscriber)
+        {
+        }
+        /**
+         * Reply identically for every public email state to avoid an email oracle.
+         *
+         * @return void
+         */
+        private function sendPublicSubscriptionRequestResponse()
         {
         }
         public function unsubscribeReasons()
@@ -1577,9 +1663,6 @@ namespace FluentCrm\App\Hooks\Handlers {
         public function saveSequences()
         {
         }
-        public function exportFunnel()
-        {
-        }
         public function saveEmailAction()
         {
         }
@@ -2024,8 +2107,8 @@ namespace FluentCrm\App\Http\Controllers {
     {
         private $credentialsOptionKey = '_fluent_ai_creds';
         private $writingSettingsOptionKey = '_ai_writing_settings';
-        private $providerModels = ['wordpress' => ['wordpress'], 'open_ai' => ['auto', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-4.1', 'gpt-4o', 'gpt-4o-mini'], 'claude' => ['auto', 'claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-opus-4-6'], 'gemini' => ['auto', 'gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3-flash-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite']];
-        private $autoProviderModels = ['open_ai' => 'gpt-5.4', 'claude' => 'claude-sonnet-4-6', 'gemini' => 'gemini-3.5-flash', 'wordpress' => 'wordpress'];
+        private $providerModels = ['wordpress' => ['wordpress'], 'open_ai' => ['auto', 'gpt-5.6-terra', 'gpt-5.6-sol', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-4.1', 'gpt-4o', 'gpt-4o-mini'], 'claude' => ['auto', 'claude-sonnet-5', 'claude-opus-5', 'claude-haiku-4-5-20251001', 'claude-opus-4-8', 'claude-opus-4-7', 'claude-sonnet-4-6', 'claude-opus-4-6'], 'gemini' => ['auto', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-3.1-pro-preview', 'gemini-3-flash-preview', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite'], 'openrouter' => []];
+        private $autoProviderModels = ['open_ai' => 'gpt-5.6-terra', 'claude' => 'claude-sonnet-5', 'gemini' => 'gemini-3.6-flash', 'wordpress' => 'wordpress'];
         public function getSettings(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -2160,6 +2243,9 @@ namespace FluentCrm\App\Http\Controllers {
         private function callGemini($model, $apiKey, $userPrompt, $systemPrompt, $timeout)
         {
         }
+        private function callOpenRouter($model, $apiKey, $userPrompt, $systemPrompt, $timeout)
+        {
+        }
         private function getSavedSettings()
         {
         }
@@ -2176,6 +2262,9 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         private function formatModelOptions($provider)
+        {
+        }
+        private function getOpenRouterModels($apiKey)
         {
         }
     }
@@ -2582,7 +2671,50 @@ namespace FluentCrm\App\Http\Controllers {
         protected function customFieldKeys()
         {
         }
+        /**
+         * Build a CSV reader over raw file contents.
+         *
+         * The single point every import path obtains a reader from — header
+         * detection for the column-mapping screen and both chunked import loops —
+         * so byte-level normalization belongs here rather than at the call sites.
+         *
+         * @param string $file Raw file contents, not a path.
+         * @return \League\Csv\Reader
+         */
         private function getCsvReader($file)
+        {
+        }
+        /**
+         * Convert legacy single-byte CSV content to UTF-8.
+         *
+         * Contact lists exported from older systems are commonly Windows-1252 or
+         * ISO-8859-1, so "José" arrives as the single byte 0xE9 where UTF-8 expects
+         * two. Those bytes reach the import records unchanged, wp_json_encode()
+         * rejects the row, and the contact is stored corrupted.
+         *
+         * The rule is deliberately narrow: **content that is already valid UTF-8 is
+         * never touched.** That is decidable rather than guessed, and it matters —
+         * running the conversion unconditionally double-encodes good data, turning
+         * "José 😀 東" into "JosÃ© ðŸ˜€ æ±". Every legitimate UTF-8 document,
+         * including emoji and CJK, passes the validity check, so the conversion only
+         * ever sees bytes that could not have been UTF-8 in the first place.
+         *
+         * Content that fails the check is decoded as Windows-1252. That is the one
+         * assumption here, and it is the pragmatic choice: it is what Excel and
+         * legacy European systems emit, it is a superset of ISO-8859-1 across the
+         * printable range (so it also recovers Excel's smart quotes at 0x92), and it
+         * has no failing byte sequences. Genuinely different encodings — Shift-JIS,
+         * KOI8-R, UTF-16 — are decoded to the wrong characters rather than left as
+         * raw bytes; both outcomes are broken, and neither is a regression, but it
+         * is a known limit rather than an oversight.
+         *
+         * mbstring is not guaranteed on every host, so iconv is used as a fallback
+         * and untouched content is returned when neither is available.
+         *
+         * @param string $file Raw file contents, BOM already removed.
+         * @return string UTF-8 content, or the input unchanged when it cannot be converted.
+         */
+        private function normalizeCsvEncoding($file)
         {
         }
         /**
@@ -2806,6 +2938,18 @@ namespace FluentCrm\App\Http\Controllers {
      */
     class FunnelController extends \FluentCrm\App\Http\Controllers\Controller
     {
+        /**
+         * Stream one automation export after the REST nonce and route policy have
+         * authenticated the POST request. The attachment structure intentionally
+         * matches the retired AJAX exporter so imports remain compatible.
+         *
+         * @param Request $request
+         * @param int $id
+         * @return mixed
+         */
+        public function exportFunnel(\FluentCrm\Framework\Http\Request\Request $request, $id)
+        {
+        }
         public function funnels(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -3086,7 +3230,7 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         /**
-         * Store a list.
+         * Store a list after validating its database-bound title and slug.
          *
          * @param \FluentCrm\Framework\Http\Request\Request $request
          * @return \WP_REST_Response
@@ -3095,7 +3239,7 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         /**
-         * Store a list.
+         * Update a list after validating its database-bound title and slug.
          *
          * @param \FluentCrm\Framework\Http\Request\Request $request
          * @param $id int
@@ -3349,14 +3493,6 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         /**
-         * Include subscribers' sms statuses.
-         *
-         * @return array
-         */
-        public function sms_statuses()
-        {
-        }
-        /**
          * Include subscriber editable statuses.
          *
          * @return array
@@ -3538,6 +3674,12 @@ namespace FluentCrm\App\Http\Controllers {
      */
     class SettingsController extends \FluentCrm\App\Http\Controllers\Controller
     {
+        /**
+         * Number of campaigns returned to the Campaign Archive selector in one response,
+         * matching the archive's own 200-campaign ceiling. A caller may request fewer with
+         * an explicit limit, never more. Past this the selector relies on its search box.
+         */
+        const MAX_SELECTOR_CAMPAIGNS = 200;
         public function get(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -3630,6 +3772,23 @@ namespace FluentCrm\App\Http\Controllers {
         public function updateExperimentalSettings(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Campaign list for the Campaign Archive selector.
+         *
+         * Only the columns the selector renders are selected: whole campaign rows carry
+         * email_body (LONGTEXT), which made the payload ~33x larger than it needs to be.
+         *
+         * The list is bounded newest-first rather than returned whole, because the
+         * selector renders one DOM node per option — an unbounded list would degrade on a
+         * site with a long sending history. MAX_SELECTOR_CAMPAIGNS is both the default and
+         * the ceiling: an explicit $limit can only ask for fewer. Anything past that bound
+         * stays reachable through $searchBy, which the selector sends as the admin types.
+         *
+         * $includeIds are appended even when they fall outside the bound or the search, so
+         * campaigns already saved in the setting always resolve to a title instead of
+         * rendering as a bare numeric id. They are capped the same way, so they cannot be
+         * used to sidestep the bound.
+         */
         public function getCampaigns(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4013,7 +4172,7 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         /**
-         * Store a tag.
+         * Store a tag after validating its database-bound title and slug.
          * @param \FluentCrm\Framework\Http\Request\Request $request
          * @return \WP_REST_Response
          */
@@ -4021,7 +4180,7 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         /**
-         * Store a tag.
+         * Update a tag after validating its database-bound title and slug.
          * @param \FluentCrm\Framework\Http\Request\Request $request
          * @param $id int Tag ID
          * @return \WP_REST_Response
@@ -4524,6 +4683,15 @@ namespace FluentCrm\App\Http\Policies {
         public function delete(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Exporting a funnel retains the historical administrator-only boundary.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function exportFunnel(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
         public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4647,9 +4815,96 @@ namespace FluentCrm\App\Http\Policies {
         {
         }
     }
+    /**
+     * SettingsPolicy - REST API Permission Policy
+     *
+     * Settings routes are gated on `fcrm_manage_settings`, the highest FluentCRM
+     * permission level, which is sufficient for the module on its own.
+     *
+     * A handful of routes reach beyond FluentCRM — installing a plugin, resetting the
+     * database, minting REST credentials — and are additionally gated on a core
+     * WordPress capability. Those checks already exist inside the controllers (for
+     * the setup wizard, at the installer choke point `backgroundInstaller()` rather
+     * than in the handler); the methods below declare the same requirement at the
+     * policy layer so the gate is visible to `tests/lint/policy-coverage.php` and is
+     * enforced before the request reaches the controller. The in-handler checks are
+     * deliberately left in place: they still guard any non-REST caller, so this is
+     * defence in depth rather than a relocation. Nobody who can call these routes
+     * today loses access.
+     */
     class SettingsPolicy extends \FluentCrm\App\Http\Policies\BasePolicy
     {
         public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Installing a companion plugin needs the WordPress capability for it, not just
+         * CRM settings access. Mirrors SetupController's own `install_plugins` guard.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        protected function canInstallPlugins(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Routes that reset or destroy plugin data, or mint REST credentials, stay
+         * administrator-only. Mirrors SettingsController's own `manage_options` guard.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        protected function isAdministrator(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentFormInstall(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentSmtpInstall(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentSupportInstall(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentBoardsInstall(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentCommunityInstall(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentCartInstall(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function handleFluentBookingInstall(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Finishing onboarding is a settings action, but installing companion plugins
+         * from the same request also needs WordPress's plugin-install capability.
+         *
+         * The flags are read through the same Helper the controller uses. Reading them
+         * any other way here would let the two disagree, and a payload the controller
+         * honours but this gate does not is a straight bypass of `install_plugins`.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function CompleteWizard(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * MCP adapter installation is a plugin install like the ones above.
+         */
+        public function installAdapter(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function resetDB(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function createRestKey(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function deleteRestKey(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
     }
@@ -5819,6 +6074,15 @@ namespace FluentCrm\App\Models {
      */
     class Subscriber extends \FluentCrm\App\Models\Model
     {
+        /**
+         * Mirrors the DEFAULT on the fc_subscribers.status column.
+         *
+         * A row inserted without an explicit status persists as 'subscribed' while the
+         * in-memory model created by self::create() has no status attribute at all. Any
+         * code that decides something from a freshly created contact's status must
+         * resolve through this constant rather than reading the model or defaulting to ''.
+         */
+        const DEFAULT_STATUS = 'subscribed';
         protected $table = 'fc_subscribers';
         protected $guarded = ['id'];
         protected $appends = ['full_name', 'photo'];
@@ -5839,9 +6103,6 @@ namespace FluentCrm\App\Models {
             // pending / subscribed / bounced / unsubscribed; Default: subscriber
             'contact_type',
             // lead / customer
-            'sms_status',
-            // sms_pending / sms_subscribed / sms_unsubscribed / sms_bounced; Default: sms_subscribed
-            // 'whatsapp_status', // whatsapp_subscribed / whatsapp_unsubscribed; Default: whatsapp_unsubscribed
             'address_line_1',
             'address_line_2',
             'postal_code',
@@ -6079,9 +6340,10 @@ namespace FluentCrm\App\Models {
          * Update Custom Field Values
          * @param $values array of custom values
          * @param bool $deleteOtherValues
+         * @param array $customFields optional pre-loaded field definitions keyed by slug
          * @return array of updated values
          */
-        public function syncCustomFieldValues($values, $deleteOtherValues = true)
+        public function syncCustomFieldValues($values, $deleteOtherValues = true, $customFields = [])
         {
         }
         public function stats()
@@ -6189,6 +6451,20 @@ namespace FluentCrm\App\Models {
         {
         }
         /**
+         * Build the inclusive end-of-day bound for "last activity" date filters.
+         *
+         * Activity filters first normalize before/date_equal/days_before into a date
+         * comparison, then add a second "no newer activity exists" condition. Always
+         * derive that second bound from the normalized date so relative-day values
+         * like "30" cannot leak into TIMESTAMP comparisons.
+         *
+         * @param array $filter
+         * @return string|false
+         */
+        protected static function getActivityLatestDateUpperBound($filter)
+        {
+        }
+        /**
          * Dynamically build relation filter query for the Subscriber
          * model. It handles purchase, lists, tags relations.
          *
@@ -6264,6 +6540,17 @@ namespace FluentCrm\App\Models {
          * @return \FluentCrm\Framework\Database\Query\Builder
          */
         public function buildCustomFieldsFilterQuery($query, $filters)
+        {
+        }
+        /**
+         * Apply a bound numeric comparison to a LONGTEXT custom-field value.
+         *
+         * @param \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder $query
+         * @param string $operator
+         * @param mixed $value
+         * @return \FluentCrm\Framework\Database\Orm\Builder|\FluentCrm\Framework\Database\Query\Builder
+         */
+        protected static function applyNumericCustomFieldFilterQuery($query, $operator, $value)
         {
         }
         public static function parseCustomFieldsFilterOperator($filter)
@@ -7797,7 +8084,6 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
          * Checks enforced (all fail-closed — a bad value never silently widens
          * the result set):
          *   1. `statuses[]` — must be in fluentcrm_subscriber_statuses().
-         *   2. `sms_statuses[]` — must be in fluentcrm_subscriber_sms_statuses().
          *   3. `contact_type` — must be a key in fluentcrm_contact_types().
          *   4. `tags[]` / `lists[]` — every ref must resolve to an existing
          *      tag/list; an unmatched ref would collapse to "no filter" and
@@ -7805,7 +8091,7 @@ namespace FluentCrm\App\Modules\MCP\Helpers {
          *   5. `advanced_filters` — fully validated per condition (property,
          *      operator, value shape) by AdvancedFilters::normalize() against
          *      the live filter catalog; see get-contact-filter-schema. Also
-         *      mutually exclusive with tags/lists/statuses/sms_statuses —
+         *      mutually exclusive with tags/lists/statuses —
          *      ContactsQuery applies one branch or the other, never both.
          *
          * Operator-test report 2026-05-07 #1 — invalid statuses were being
@@ -8408,7 +8694,7 @@ namespace FluentCrm\App\Modules\MCP\Tools {
         /**
          * The explicit top-level contact columns the MCP write contract accepts.
          * Everything else in the Subscriber model's fillable list — user_id,
-         * company_id, ip, latitude/longitude, sms_status, whatsapp_status,
+         * company_id, ip, latitude/longitude,
          * life_time_value, total_points, created_at/updated_at — is NOT an MCP
          * input and must be dropped, never overposted (SEC-001). Single and bulk
          * upsert share this list so their write contract can never diverge.
@@ -10508,6 +10794,173 @@ namespace FluentCrm\App\Services\ExternalIntegrations {
     }
 }
 namespace FluentCrm\App\Services\Funnel {
+    abstract class BaseAction
+    {
+        protected $actionName;
+        protected $funnel;
+        protected $priority = 10;
+        public function __construct()
+        {
+        }
+        public function register()
+        {
+        }
+        public function pushBlock($blocks, $funnel)
+        {
+        }
+        public function pushBlockFields($fields, $funnel)
+        {
+        }
+        abstract public function getBlock();
+        abstract public function getBlockFields();
+        abstract public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric);
+    }
+}
+namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\Actions {
+    /**
+     * Free FluentCart automation action: generate a unique per-contact coupon code.
+     *
+     * Mirrors the WooCommerce Pro "Create Coupon" action. On execution it does NOT create a
+     * FluentCart coupon record; it only generates a unique code and stores it on the funnel
+     * metric. The real coupon is created lazily by DynamicCouponService when the dynamic
+     * {{cart_coupon.*}} smartcode is parsed (FluentCart exposes no checkout-time coupon
+     * resolution hook, so parse-time creation is the pragmatic equivalent).
+     */
+    class CreateCouponAction extends \FluentCrm\App\Services\Funnel\BaseAction
+    {
+        public function __construct()
+        {
+        }
+        public function getBlock()
+        {
+        }
+        public function getBlockFields()
+        {
+        }
+        /**
+         * Generate the unique per-contact code and persist it on the funnel metric.
+         *
+         * @param \FluentCrm\App\Models\Subscriber   $subscriber
+         * @param \FluentCrm\App\Models\FunnelSequence $sequence
+         * @param int                                $funnelSubscriberId
+         * @param \FluentCrm\App\Models\FunnelMetric $funnelMetric
+         * @return bool
+         */
+        public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)
+        {
+        }
+        /**
+         * Reject templated coupon settings before they are persisted without a base coupon.
+         */
+        public function validateSequenceSettings($sequence)
+        {
+        }
+        /**
+         * Build a collision-free coupon code, optionally personalising the prefix with smartcodes.
+         *
+         * The subscriber is only passed on the first attempt so the smartcode-parsed prefix is not
+         * re-parsed on retry; retries just regenerate the random suffix.
+         */
+        private function getFreshCoupon($codePrefix, $subscriber = null)
+        {
+        }
+        /**
+         * Return a cryptographically secure random string of $length characters from the alphanumeric alphabet.
+         */
+        private function randomString($length)
+        {
+        }
+        /**
+         * Resolve FluentCart's configured store currency symbol for the coupon amount inputs.
+         *
+         * Guarded so a missing/partial FluentCart config never breaks the funnel block fields request.
+         */
+        private function getCurrencySign()
+        {
+        }
+    }
+    /**
+     * Lazily materialises the real FluentCart coupon for a generated dynamic code.
+     *
+     * The CreateCouponAction only stores a unique code on the funnel metric. This service turns
+     * that code into an actual fct_coupons row the first time the {{cart_coupon.*}} smartcode is
+     * parsed, reading the originating sequence's settings (or a base coupon when in template mode)
+     * and translating FluentCRM's Woo-style UI settings into FluentCart's coupon shape.
+     */
+    class DynamicCouponService
+    {
+        /**
+         * Create the FluentCart coupon for $code if it does not already exist (idempotent).
+         *
+         * Returns false whenever $code is NOT backed by a real fct_coupons row, so the caller can
+         * avoid shipping a code FluentCart would reject at checkout. Because creation happens at
+         * email-parse time rather than at checkout, a silent failure here would otherwise put a dead
+         * coupon straight into the customer's inbox.
+         *
+         * @return bool True when a coupon row for $code exists after this call.
+         */
+        public function ensureCouponExists($code, \FluentCrm\App\Models\FunnelMetric $funnelMetric, \FluentCrm\App\Models\Subscriber $subscriber)
+        {
+        }
+        /**
+         * Translate stored action settings into a CouponResource::create() payload.
+         *
+         * Amount/condition units: CouponResource::formatAmount() cent-converts `amount`
+         * (non-percentage), `conditions.min_purchase_amount` and `conditions.max_discount_amount`,
+         * but NOT `conditions.max_purchase_amount` — FluentCart stores that bound in major units,
+         * so it is passed through as a plain decimal.
+         *
+         * @return array|false
+         */
+        public function getFormattedCouponData($data, \FluentCrm\App\Models\Subscriber $subscriber)
+        {
+        }
+        /**
+         * Hydrate the settings array from an existing FluentCart coupon used as a template.
+         *
+         * FluentCart stores fixed amounts and min_purchase_amount in cents, so those are converted
+         * back to plain decimals (via toDecimalWithoutComma, NOT toDecimal which returns a currency
+         * formatted string) before they re-enter the normal cents conversion in getFormattedCouponData.
+         * max_purchase_amount is the exception: it is stored in major units and copied verbatim.
+         *
+         * @return array|false
+         */
+        private function mergeBaseCouponData($data)
+        {
+        }
+        /**
+         * Map the Woo-style UI discount value to FluentCart's coupon type.
+         */
+        private function mapDiscountType($discountType)
+        {
+        }
+        /**
+         * Resolve the coupon end date from the never|fixed|relative_days expiry settings.
+         */
+        private function getExpiryDate($data)
+        {
+        }
+        /**
+         * Keep generated coupon codes inside FluentCart's validation contract.
+         */
+        private function sanitizeCouponCode($code)
+        {
+        }
+        private function sanitizeAmount($amount)
+        {
+        }
+        private function sanitizeInt($value)
+        {
+        }
+        private function sanitizeIds($ids)
+        {
+        }
+        private function sanitizeDate($date)
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services\Funnel {
     abstract class BaseBenchMark
     {
         protected $triggerName;
@@ -10574,9 +11027,58 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart {
         public static function getFluentCartProducts($items, $search, $ids = [])
         {
         }
+        /**
+         * Build the coupon option list for the funnel "Create Coupon" template selector.
+         *
+         * Supports a free-text search (matched against title and code) and guarantees that any
+         * already-selected coupon IDs are present in the returned options, even when they fall
+         * outside the search window. Mirrors the search/selected-ID contract used by the product
+         * and category selectors above so the shared ajax-selector behaves consistently.
+         *
+         * @param array  $items  Unused; kept for the fluentcrm_ajax_options_* filter signature.
+         * @param string $search Free-text search term.
+         * @param array  $ids    Currently selected coupon IDs to keep pinned in the result.
+         * @return array List of ['id' => int, 'title' => string] option rows.
+         */
         public static function getFluentCartCoupons($items, $search, $ids)
         {
         }
+        /**
+         * Build a flat product-variation option list for coupon product restrictions.
+         *
+         * FluentCart coupon conditions (included_products / excluded_products) are matched against the
+         * cart item's object_id, which is the product VARIATION id (OrderItem::object_id ->
+         * ProductVariation.id), not the product post id. So the coupon action's Products / Exclude
+         * Products selectors must store variation ids — this provider returns them, labelled by product
+         * and variation title. Selected ids are always included so saved values rehydrate on edit.
+         *
+         * @param array  $items  Unused; kept for the fluentcrm_ajax_options_* filter signature.
+         * @param string $search Free-text search (matched against variation title and product title).
+         * @param array  $ids    Currently selected variation ids to keep pinned in the result.
+         * @return array List of ['id' => int variationId, 'title' => string] option rows.
+         */
+        public static function getFluentCartProductVariations($items, $search, $ids)
+        {
+        }
+        /**
+         * Human-readable label for a variation option: "Product Title - Variation Title".
+         * Falls back to whichever title is available and avoids duplicating identical titles.
+         */
+        private static function formatVariationLabel($variation)
+        {
+        }
+        /**
+         * Build the product-category option list for coupon category restriction selectors.
+         *
+         * Mirrors the search/selected-ID contract used by coupons and product-variation selectors:
+         * filters by search when provided, caps at 50 results, and appends any selected IDs that
+         * fall outside the window so saved values always rehydrate on edit.
+         *
+         * @param array  $items  Unused; kept for the fluentcrm_ajax_options_* filter signature.
+         * @param string $search Free-text search term matched against term name.
+         * @param array  $ids    Currently selected term IDs to keep pinned in the result.
+         * @return array List of ['id' => int, 'title' => string] option rows.
+         */
         public static function getFluentCartProductCategories($items, $search, $ids)
         {
         }
@@ -10784,6 +11286,12 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart {
         public function getSubscriptionProducts($items, $search, $ids)
         {
         }
+        public function getCoupons($items, $search, $ids)
+        {
+        }
+        public function getProductVariations($items, $search, $ids)
+        {
+        }
         public function addCartIcon($icons)
         {
         }
@@ -10844,6 +11352,18 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\SmartCode {
         {
         }
         public static function parseCartCustomer($code, $valueKey, $defaultValue, $subscriber)
+        {
+        }
+        /**
+         * Resolve the dynamic coupon smartcode {{cart_coupon.{funnel_id}_{sequence_id}}}.
+         *
+         * Returns the generated code stored on the contact's matching funnel metric, but only once the
+         * real FluentCart coupon exists (created on first parse, since FluentCart has no checkout-time
+         * coupon resolution hook). Creation is idempotent via DynamicCouponService::ensureCouponExists();
+         * if it cannot be materialised the smartcode falls back to $defaultValue rather than emitting a
+         * code that would fail at checkout.
+         */
+        public static function parseCartCoupon($code, $valueKey, $defaultValue, $subscriber)
         {
         }
         public static function parseCartTransaction($code, $valueKey, $defaultValue, $subscriber)
@@ -11379,29 +11899,6 @@ namespace FluentCrm\App\Services\ExternalIntegrations\Oxygen {
         }
     }
 }
-namespace FluentCrm\App\Services\Funnel {
-    abstract class BaseAction
-    {
-        protected $actionName;
-        protected $funnel;
-        protected $priority = 10;
-        public function __construct()
-        {
-        }
-        public function register()
-        {
-        }
-        public function pushBlock($blocks, $funnel)
-        {
-        }
-        public function pushBlockFields($fields, $funnel)
-        {
-        }
-        abstract public function getBlock();
-        abstract public function getBlockFields();
-        abstract public function handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric);
-    }
-}
 namespace FluentCrm\App\Services\Funnel\Actions {
     class ApplyCompanyAction extends \FluentCrm\App\Services\Funnel\BaseAction
     {
@@ -11810,6 +12307,9 @@ namespace FluentCrm\App\Services\Funnel {
         public function recordFunnelMetric($subscriber, $sequence, $metricArgs = [])
         {
         }
+        /**
+         * Execute the matched conditional branch and resume the parent-level sequence flow.
+         */
         public function initChildSequences($parent, $isMatched, $subscriber, $funnelSubscriberId, $funnelMetric)
         {
         }
@@ -11838,14 +12338,25 @@ namespace FluentCrm\App\Services\Funnel {
         private $funnel;
         private $hasNext = null;
         private $funnelSubscriber;
+        private $sequenceCursorId = null;
         private $nextSequenceExecutionTime = false;
         public $hasEndSequence = false;
-        public function __construct($funnel, $funnelSubscriber = false)
+        /**
+         * Resolve executable sequences from persisted subscriber state or a temporary traversal cursor.
+         *
+         * @param \FluentCrm\App\Models\Funnel $funnel
+         * @param \FluentCrm\App\Models\FunnelSubscriber|false $funnelSubscriber
+         * @param int|null $sequenceCursorId Non-persistent sequence used only to resolve the next step.
+         */
+        public function __construct($funnel, $funnelSubscriber = false, $sequenceCursorId = null)
         {
         }
         private function setupData()
         {
         }
+        /**
+         * Resolve the sequence used for traversal without changing persisted reporting state.
+         */
         private function resolveLastSequence()
         {
         }
@@ -11889,6 +12400,9 @@ namespace FluentCrm\App\Services\Funnel {
         public function getRequiredBenchmark()
         {
         }
+        /**
+         * Determine whether the resolver found immediate, required, or scheduled work.
+         */
         public function hasSequences()
         {
         }
@@ -12257,6 +12771,22 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
+         * WordPress block visibility uses false for full omission and a viewport
+         * object for responsive hiding. Only the false scalar removes email markup.
+         */
+        private function shouldOmitBlockFromEmail($attrs)
+        {
+        }
+        /**
+         * Convert WordPress viewport visibility metadata to FluentCRM email classes.
+         *
+         * @param array $attrs Parsed Gutenberg block attributes.
+         * @return string[]
+         */
+        private function getBlockViewportVisibilityClasses($attrs)
+        {
+        }
+        /**
          * Keep backward compatibility with legacy conditional values.
          */
         private function normalizeConditionalCheckType($checkType)
@@ -12272,6 +12802,39 @@ namespace FluentCrm\App\Services {
          * Render column block
          */
         private function renderColumn($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Render core/media-text as an email-safe two-column table.
+         *
+         * Image only: video media yields no media cell. The media and text sit in
+         * real side-by-side table cells so vertical-align centers the shorter column
+         * against the taller one (matching the editor). Reuses the .fc_media_* /
+         * .has_bg_image CSS in block-styles.php / common-style.php, and stacks on
+         * mobile via the .fce_stacked rules there when isStackedOnMobile is on.
+         *
+         * @param array  $innerBlocks Text-side child blocks.
+         * @param array  $attrs       Block attributes (mediaWidth, mediaPosition,
+         *                            verticalAlignment, isStackedOnMobile, imageFill,
+         *                            mediaLink, plus background/spacing collected on elem_id).
+         * @param string $innerHTML   Saved block markup containing the media <figure>.
+         * @return string
+         */
+        private function renderMediaText($innerBlocks, $attrs, $innerHTML)
+        {
+        }
+        /**
+         * Inject a background-image on the media-text figure for "Crop image to fill".
+         *
+         * The .has_bg_image CSS hides the <img> (opacity:0) and shows the figure's
+         * background instead. We source the background from the <img> src and use the
+         * block focal point for background-position, merging into any existing style.
+         *
+         * @param string $figure Media <figure> markup containing an <img>.
+         * @param array  $attrs  Block attributes (focalPoint).
+         * @return string
+         */
+        private function applyMediaTextImageFill($figure, $attrs)
         {
         }
         /**
@@ -12377,6 +12940,13 @@ namespace FluentCrm\App\Services {
         private function wrapInTable($content, $atts = [])
         {
         }
+        /**
+         * Hide desktop-only blocks from Outlook/MSO, which does not reliably honor
+         * responsive media queries in email markup.
+         */
+        private function wrapDesktopHiddenForMso($html, $visibilityClasses)
+        {
+        }
         private function resolveFontSizeValue($slugOrSize)
         {
         }
@@ -12414,6 +12984,41 @@ namespace FluentCrm\App\Services {
          * @return array
          */
         public static function parseArrayOrJson($value, $default = [])
+        {
+        }
+        /**
+         * Normalize a request-supplied sort column or direction into a single
+         * identifier the query builder will accept, falling back to a
+         * caller-chosen default.
+         *
+         * Every consumer of this value is orderBy($column, $direction), which
+         * rejects anything outside /^[a-zA-Z0-9_\.]+$/ with a LogicException. Three
+         * separate shapes of request input used to reach it and produce an HTTP 500
+         * instead of the intended default sort:
+         *
+         *   - junk        sanitize_sql_orderby() returns `false` (not '', not the
+         *                 input), and `false` was passed straight through
+         *   - an array    sort_by[]=a&sort_by[]=b reached preg_match() inside
+         *                 sanitize_sql_orderby() and raised a TypeError
+         *   - a clause    sanitize_sql_orderby() *accepts* 'id DESC',
+         *                 'first_name ASC, id DESC' and 'RAND()' and returns them
+         *                 verbatim — all three the builder then rejects
+         *
+         * The last one is why sanitize_sql_orderby() alone is not enough here: it
+         * validates a whole ORDER BY clause, while the builder wants one column.
+         * Anything carrying a space, comma or parenthesis therefore falls back to
+         * the default rather than reaching orderBy(). Nothing can depend on the old
+         * behaviour, because every such value raised a 500.
+         *
+         * This is a robustness guard, not a security boundary. The builder's own
+         * identifier check is what keeps hostile input out of SQL — it never
+         * reached MySQL before this change either — and it remains in place.
+         *
+         * @param mixed $value Raw request value; arrays, objects and null are rejected.
+         * @param string $default Column or direction to use when $value is unusable.
+         * @return string
+         */
+        public static function sanitizeOrderBy($value, $default = 'id')
         {
         }
         /**
@@ -12474,6 +13079,87 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function generateEmailHash($insertId = null)
+        {
+        }
+        /**
+         * Resolved managed hashes for this process, keyed by contact id.
+         *
+         * The managed hash is stable for the life of the contact (rotated only by
+         * Cleanup::handleUserPasswordChanged), so caching it per process is safe.
+         */
+        private static $managedHashes = [];
+        /**
+         * Contact ids announced by primeManagedHashes() but not resolved yet.
+         *
+         * Holding ids here rather than reading them immediately keeps priming free:
+         * a batch that never asks for a hash (a transactional campaign, or a site
+         * that filters the List-Unsubscribe header off) issues no query and creates
+         * no rows.
+         */
+        private static $pendingManagedHashes = [];
+        /**
+         * Announce the contact ids a batch is about to render emails for, so their
+         * managed hashes can be resolved in one round trip instead of one per email.
+         *
+         * Runs NO query itself. The first getManagedHash() call for any announced id
+         * resolves the whole announced set together — one SELECT, plus one bulk
+         * INSERT for whichever contacts still need a hash.
+         *
+         * REPLACES the announced set rather than adding to it, and callers must
+         * clear it when their batch ends (clearPendingManagedHashes). Announced ids
+         * are only ever a hint about what is about to be asked for, so they must not
+         * outlive the batch that announced them: a batch that asks for no hash at
+         * all — a transactional campaign, or a site filtering the List-Unsubscribe
+         * header off — would otherwise leave its ids queued for whatever asks next,
+         * and a single later lookup would create rows for every contact those
+         * batches deliberately skipped.
+         *
+         * @param array|\FluentCrm\Framework\Support\Collection $contactIds
+         * @return void
+         */
+        public static function primeManagedHashes($contactIds)
+        {
+        }
+        /**
+         * Discard any announced-but-unresolved ids.
+         *
+         * Called when a batch ends, so nothing it announced can be resolved — and
+         * created — on behalf of an unrelated later lookup in the same process.
+         * Already-resolved hashes stay cached; only the pending hint is dropped.
+         *
+         * @return void
+         */
+        public static function clearPendingManagedHashes()
+        {
+        }
+        /**
+         * The contact's managed hash, creating one if it does not exist yet.
+         *
+         * Backs fluentCrmGetContactManagedHash(). The hash authenticates
+         * List-Unsubscribe and manage-subscription links, so it must stay stable
+         * however long an email sits in an inbox — it is rotated only on an explicit
+         * security event (a WordPress password change).
+         *
+         * @param int $contactId
+         * @return string
+         */
+        public static function getManagedHash($contactId)
+        {
+        }
+        /**
+         * Read the stored hashes for $contactIds and create the missing ones.
+         *
+         * The SELECT sits immediately before the INSERT, exactly as the
+         * single-contact path always has, so batching does not widen the window in
+         * which two processes can both decide a contact needs a new hash. A
+         * duplicate row is not a broken link either way — hashes are validated by
+         * value lookup (Contacts::getContactByManagedSecureHash), so both resolve to
+         * the same contact.
+         *
+         * @param array $contactIds
+         * @return void
+         */
+        private static function resolveManagedHashes($contactIds)
         {
         }
         public static function injectTrackerPixel($emailBody, $hash, $emailId = null)
@@ -12585,6 +13271,19 @@ namespace FluentCrm\App\Services {
         public static function getColorBySlug($color_palette, $slug)
         {
         }
+        /**
+         * Resolve the active theme's editor color palette for both classic and block themes.
+         *
+         * Block themes expose their palette through WordPress' merged global settings
+         * (`wp_get_global_settings()`), which correctly accounts for parent/child theme.json
+         * overrides and Full Site Editor user customizations. Classic themes register their
+         * palette via `add_theme_support('editor-color-palette')`. Reading theme.json directly
+         * with file_get_contents() (the previous approach) bypassed this merge and missed
+         * child-theme and FSE colors, so it is no longer used.
+         *
+         * @return array List of palette items, each shaped as ['name','slug','color'].
+         *               Empty array when the theme provides no palette.
+         */
         public static function getThemeColorPalette()
         {
         }
@@ -12594,7 +13293,7 @@ namespace FluentCrm\App\Services {
         public static function generateThemePrefCss()
         {
         }
-        private static function normalizeColorSlug($slug)
+        public static function normalizeColorSlug($slug)
         {
         }
         public static function kebabCase($string)
@@ -12655,6 +13354,15 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function getSiteUrl($path = '', $scheme = null)
+        {
+        }
+        /**
+         * Format a datetime using FluentCRM's global date/time display preference.
+         *
+         * @param string $dateTime Site-local MySQL datetime.
+         * @return string
+         */
+        public static function formatDateTime($dateTime)
         {
         }
         public static function isExperimentalEnabled($module)
@@ -12906,6 +13614,26 @@ namespace FluentCrm\App\Services {
         public static function getDbLockTimestamp($key)
         {
         }
+        /**
+         * Which companion plugins a setup-wizard request is asking to install.
+         *
+         * SetupController::CompleteWizard() and SettingsPolicy::CompleteWizard() must
+         * read these flags identically. When the policy's idea of "this request
+         * installs a plugin" is narrower than the controller's, a settings-only
+         * manager slips past the `install_plugins` gate: a boolean `true` satisfied
+         * the controller's loose `==` comparison while failing the policy's strict
+         * `===` one. A single reader is what keeps the two sides from drifting apart.
+         *
+         * The wizard posts the literal strings `yes` and `no` (the el-checkbox
+         * true-value/false-value pair in Setup.vue), so the match is strict — any
+         * other value means "do not install".
+         *
+         * @param Request $request
+         * @return array<string,bool> Keyed by plugin: `fluentform`, `fluentcart`.
+         */
+        public static function getWizardPluginInstallFlags(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
     }
 }
 namespace FluentCrm\App\Services\Html {
@@ -13096,6 +13824,21 @@ namespace FluentCrm\App\Services\Libs {
          * @return void
          */
         public function _delete($files)
+        {
+        }
+        /**
+         * Resolve only the opaque filenames created by this class' upload flow.
+         *
+         * CSV import requests arrive after upload and therefore contain a client
+         * supplied value. Requiring the generated prefix, a plain filename, and a
+         * real path inside the dedicated directory prevents a later request from
+         * turning that value into an arbitrary read or delete path.
+         *
+         * @param mixed $file Upload filename returned by _put().
+         * @return string Absolute path to a regular file in the FluentCRM upload directory.
+         * @throws \InvalidArgumentException When the filename is not a valid uploaded CSV token.
+         */
+        private function getSafeUploadFilePath($file)
         {
         }
         /**
@@ -14987,7 +15730,7 @@ namespace League\Csv {
          *
          * @return Iterator
          */
-        public function query(callable $callable = null)
+        public function query(?callable $callable = null)
         {
         }
         /**
@@ -14997,7 +15740,7 @@ namespace League\Csv {
          *
          * @return Iterator
          */
-        public function fetch(callable $callable = null)
+        public function fetch(?callable $callable = null)
         {
         }
         /**
@@ -15034,7 +15777,7 @@ namespace League\Csv {
          *
          * @return array
          */
-        public function fetchAll(callable $callable = null)
+        public function fetchAll(?callable $callable = null)
         {
         }
         /**
@@ -15049,7 +15792,7 @@ namespace League\Csv {
          *
          * @return array
          */
-        public function fetchColumn($column_index = 0, callable $callable = null)
+        public function fetchColumn($column_index = 0, ?callable $callable = null)
         {
         }
         /**
@@ -15067,7 +15810,7 @@ namespace League\Csv {
          *
          * @return Iterator
          */
-        public function fetchAssoc($offset_or_keys = 0, callable $callable = null)
+        public function fetchAssoc($offset_or_keys = 0, ?callable $callable = null)
         {
         }
         /**
@@ -15360,7 +16103,85 @@ namespace FluentCrm\App\Services {
         public static function sanitizeFooterHtml($footerHtml)
         {
         }
+        /**
+         * Remove control characters that WordPress's sanitizers let through.
+         *
+         * sanitize_text_field() folds tab, newline and carriage return into spaces
+         * but leaves the remaining C0 controls — including NUL — untouched, so a
+         * value like "before\0after" round-trips through the API intact. A NUL byte
+         * truncates C-string comparisons, corrupts CSV and JSON exports, and can
+         * split a value differently in PHP than in MySQL.
+         *
+         * Tab, newline and carriage return are deliberately preserved: they are
+         * legitimate inside the multi-line fields that route through wp_kses_post
+         * rather than sanitize_text_field, and stripping them there would damage
+         * real content.
+         *
+         * The pattern is intentionally **not** /u. These are all single-byte ASCII
+         * controls, a bytewise replace cannot corrupt a multi-byte sequence (UTF-8
+         * continuation bytes are all >= 0x80), and the /u modifier would make
+         * preg_replace() return null for input that is not already valid UTF-8.
+         *
+         * @param mixed $value Scalar or nested array; anything else is returned as-is.
+         * @return mixed
+         */
+        private static function stripControlCharacters($value)
+        {
+        }
         public static function contact($data)
+        {
+        }
+        /**
+         * Sanitize custom contact field values before they are persisted.
+         *
+         * Custom fields are stored as free-form meta rows rather than mapped columns,
+         * so self::contact() cannot cover them from a static field map — the set of
+         * keys is defined by the site owner at runtime. The field's own configured
+         * type decides the rule instead:
+         *
+         *   - textarea            wp_kses_post, matching contactNote()'s description,
+         *                         so multi-line fields keep safe formatting HTML
+         *   - number              numeric cast, preserving int vs float
+         *   - checkbox / *-select array of sanitize_text_field
+         *   - everything else     sanitize_text_field
+         *
+         * A key with no matching field definition is treated as text. Unregistered
+         * keys are still written (integrations rely on ad-hoc keys), but an unknown
+         * key is never a reason to trust the value.
+         *
+         * @param array $values slug => value, as submitted
+         * @param array $fields optional pre-loaded field definitions keyed by slug,
+         *                      to avoid re-reading the option in a loop
+         * @return array sanitized values, keys preserved
+         */
+        public static function contactCustomValues($values, $fields = [])
+        {
+        }
+        /**
+         * Sanitize custom company field values before they are persisted.
+         *
+         * Same rules and the same reasoning as self::contactCustomValues() — only the
+         * option holding the field definitions differs. Company custom values live in
+         * the serialized `meta` column instead of their own rows, and every write path
+         * (REST create/update, CSV import, the public Companies API) reaches them
+         * through Api\Classes\Companies::createOrUpdate(), which is where this runs.
+         *
+         * @param array $values slug => value, as submitted
+         * @param array $fields optional pre-loaded field definitions keyed by slug
+         * @return array sanitized values, keys preserved
+         */
+        public static function companyCustomValues($values, $fields = [])
+        {
+        }
+        /**
+         * Shared implementation behind the contact and company custom-value sanitizers.
+         *
+         * @param array  $values     slug => value, as submitted
+         * @param string $optionName fluentcrm option holding the field definitions
+         * @param array  $fields     optional pre-loaded definitions keyed by slug
+         * @return array
+         */
+        protected static function customFieldValues($values, $optionName, $fields = [])
         {
         }
         public static function contactNote($data)
@@ -16185,6 +17006,18 @@ namespace {
     function fluentcrm_delete_sms_campaign_meta($campaignId, $key = '')
     {
     }
+    /*
+     * WhatsApp Campaign Meta Functions
+     */
+    function fluentcrm_get_wa_campaign_meta($campaignId, $key, $returnValue = \false)
+    {
+    }
+    function fluentcrm_update_wa_campaign_meta($campaignId, $key, $value)
+    {
+    }
+    function fluentcrm_delete_wa_campaign_meta($campaignId, $key = '')
+    {
+    }
     /**
      * Get Email Campaign meta value
      * @param int $templateId ID of the template
@@ -16276,9 +17109,6 @@ namespace {
      * @return array
      */
     function fluentcrm_subscriber_statuses($isOptions = \false)
-    {
-    }
-    function fluentcrm_subscriber_sms_statuses($isOptions = \false)
     {
     }
     /**
@@ -16529,6 +17359,21 @@ namespace {
     function fluentCrmGetContactSecureHash($contactId)
     {
     }
+    /**
+     * The contact's managed hash, creating one if it does not exist yet.
+     *
+     * The hash is stable for the life of the contact so that List-Unsubscribe and
+     * manage-subscription links keep resolving however long an email lingers in an
+     * inbox. It is rotated only on an explicit security event — a WordPress
+     * password change (see Cleanup::handleUserPasswordChanged()).
+     *
+     * The lookup, per-process cache and batch priming live on Helper so the bulk
+     * send loop can resolve a whole claimed batch in one round trip
+     * (Helper::primeManagedHashes). Behaviour here is unchanged.
+     *
+     * @param int $contactId
+     * @return string
+     */
     function fluentCrmGetContactManagedHash($contactId)
     {
     }
