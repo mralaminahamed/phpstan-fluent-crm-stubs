@@ -1336,6 +1336,25 @@ namespace FluentCrm\App\Hooks\Handlers {
         private function setupEditorHooks($post)
         {
         }
+        /**
+         * Preload the standard REST data fetched during block-editor startup.
+         *
+         * The dummy post itself is preloaded separately because its response shape
+         * is tailored for the email editor.
+         *
+         * @param \WP_Post $post
+         */
+        private function preloadEditorRestData($post)
+        {
+        }
+        /**
+         * Return REST paths used by WordPress core to bootstrap the block editor.
+         *
+         * @return array
+         */
+        private function getEditorRestPreloadPaths()
+        {
+        }
         /*
         |--------------------------------------------------------------------------
         | Assets: enqueueEditorAssets(), enqueueEditorScripts(),
@@ -1573,6 +1592,22 @@ namespace FluentCrm\App\Hooks\Handlers {
         {
         }
         public function parseEditorCodes($code, $form, $keys)
+        {
+        }
+        /**
+         * Make a contact value safe to insert into finished Fluent Forms HTML.
+         *
+         * Fluent Forms pastes this value into the rendered form with a plain str_replace, so it may land
+         * in a double-quoted attribute, a text node or a Custom HTML link. Contact data is attacker
+         * controlled (any public form can set it), so escape what can break out of those contexts.
+         * ' and & are deliberately left alone: Fluent Forms always double-quotes attributes (and kses
+         * normalises Custom HTML to double quotes), and escaping them would stop select/checkbox
+         * defaults such as O'Connor or R&D from matching their options.
+         */
+        private function escapeForFormHtml($value)
+        {
+        }
+        private function resolveContactValue($providedKey)
         {
         }
     }
@@ -2292,6 +2327,17 @@ namespace FluentCrm\App\Http\Controllers {
          * Active commerce sources that participate in campaign revenue attribution.
          * Order matters: it determines display precedence within the merged report.
          */
+        /**
+         * Whether every order ID in the stored revenue record is still attributed to
+         * this campaign in one of the active sources. Fully refunded or cancelled
+         * orders keep their `_fc_cid` meta, so they count as visible and a rebuild
+         * still lowers the total for them; orders from a deactivated plugin (or
+         * permanently deleted ones) do not. A legacy record without order IDs has
+         * nothing to check.
+         */
+        protected function storedRevenueOrdersAreVisible($campaignId, $sources)
+        {
+        }
         protected function getActiveRevenueSources()
         {
         }
@@ -2359,7 +2405,7 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         /**
-         * Return a unique title for default "Untitled" (e.g. Untitled, Untitled 2, ...).
+         * Make an automatically generated campaign title unique within campaign rows.
          */
         protected function ensureUniqueDefaultTitle($baseTitle)
         {
@@ -2559,6 +2605,12 @@ namespace FluentCrm\App\Http\Controllers {
     }
     class CompanyController extends \FluentCrm\App\Http\Controllers\Controller
     {
+        /**
+         * Return paginated companies with contact counts batched for the current page.
+         *
+         * @param Request $request
+         * @return array
+         */
         public function index(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -2663,6 +2715,29 @@ namespace FluentCrm\App\Http\Controllers {
         {
         }
         public function import()
+        {
+        }
+        /**
+         * Apply the CSV importer's per-contact rules for rows whose email is already in the CRM.
+         *
+         * - $existingOnly: rows for emails not in the CRM are dropped (and returned so the
+         *   UI can list them), so the import can tag/update known contacts without adding
+         *   anyone new — e.g. marking another product's customers to exclude from a campaign.
+         * - $keepExistingData: for known contacts, a mapped field is only written when the
+         *   contact's current value is empty, so an untrusted file cannot overwrite better
+         *   data already in the CRM. Covers contact columns, a mapped full_name (which
+         *   Subscriber::import() would split into first/last name) and custom fields.
+         *   Status is deliberately left to the new_status / force_update_status rules.
+         *
+         * One query loads the chunk's existing contacts and one loads their custom values.
+         *
+         * @param array $subscribers sanitized rows, each with an 'email'
+         * @param bool $existingOnly
+         * @param bool $keepExistingData
+         * @param array $customFieldKeys custom field slugs
+         * @return array [rows to import, emails skipped because they are not in the CRM]
+         */
+        private function applyExistingContactRules($subscribers, $existingOnly, $keepExistingData, $customFieldKeys)
         {
         }
         public function importCompanies()
@@ -3644,6 +3719,15 @@ namespace FluentCrm\App\Http\Controllers {
         public function getCampaignsList(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Attach report stats to one campaign page using fixed-count aggregate queries.
+         *
+         * @param \FluentCrm\Framework\Pagination\LengthAwarePaginator $campaigns
+         * @return void
+         */
+        private function hydrateCampaignStats($campaigns)
+        {
+        }
         public function getAutomationReports(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4336,17 +4420,6 @@ namespace FluentCrm\App\Http\Controllers {
          * @access public
          */
         public function loadRemoteTemplates()
-        {
-        }
-        /**
-         * Retrieves the full source URL of a media item.
-         *
-         * @param int    $mediaID Media item ID.
-         * @param string $restAPI The base URL of the REST API.
-         *
-         * @return string Full source URL of the media item.
-         */
-        public function getMediaURL($mediaID, $restAPI)
         {
         }
     }
@@ -10561,9 +10634,27 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
+         * Turn a failed index ALTER into a message an admin can act on.
+         *
+         * The MySQL error tells us the real cause, and it is rarely privileges: the
+         * common case in the field is a MyISAM table, whose 1000-byte key limit a
+         * utf8mb4 index can exceed. Pointing those users at their privileges sent
+         * them the wrong way, so we name the cause whenever the error reveals it.
+         *
+         * @param string $table   Fully-prefixed table name.
+         * @param string $dbError The MySQL error captured from the ALTER, or ''.
+         * @return string Translated message.
+         */
+        private static function describeRepairFailure($table, $dbError)
+        {
+        }
+        /**
          * Repair every missing critical index in one pass.
          *
-         * @return array{repaired: string[], failed: string[], health: array}
+         * 'errors' maps each failed index name to the actionable message from
+         * describeRepairFailure(), so the caller can say why rather than guess.
+         *
+         * @return array{repaired: string[], failed: string[], errors: array<string, string>, health: array}
          */
         public static function repairBrokenIndexes()
         {
@@ -10729,13 +10820,21 @@ namespace FluentCrm\App\Services {
          * length — which is exactly what object_type(50) becomes on the current
          * VARCHAR(50) schema, and a full column is never weaker than the prefix.
          * A prefix where a full column is expected, or a different prefix length,
-         * is a mismatch.
+         * is a mismatch — unless $allowLongerPrefix is set.
          *
-         * @param array $actualColumns   Ordered [['name'=>, 'sub_part'=>], ...].
-         * @param array $expectedColumns Ordered [['name'=>, 'sub_part'=>?], ...].
+         * $allowLongerPrefix is for plain (non-unique) indexes only: there a longer
+         * prefix serves every lookup the expected one does, and it is what a site
+         * built under an older, wider spec holds (subscriber_meta_key_value_idx was
+         * key(191) before it was narrowed to fit MyISAM). It must stay off for
+         * UNIQUE keys, where a longer prefix is a weaker constraint: values sharing
+         * the expected prefix but differing after it would be allowed to coexist.
+         *
+         * @param array $actualColumns     Ordered [['name'=>, 'sub_part'=>], ...].
+         * @param array $expectedColumns   Ordered [['name'=>, 'sub_part'=>?], ...].
+         * @param bool  $allowLongerPrefix Accept a prefix longer than expected.
          * @return bool
          */
-        private static function indexColumnsMatch($actualColumns, array $expectedColumns)
+        private static function indexColumnsMatch($actualColumns, array $expectedColumns, $allowLongerPrefix = false)
         {
         }
         /**
@@ -11750,13 +11849,61 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentForm {
         protected function getTags()
         {
         }
+        /**
+         * Get standard and custom company fields available to the feed mapper.
+         *
+         * @return array
+         */
+        private function getCompanyFieldOptions()
+        {
+        }
         /*
          * Form Submission Hooks Here
          */
         public function notify($feed, $formData, $entry, $form)
         {
         }
+        /**
+         * Process a contact feed and report configured company sync failures to direct callers.
+         *
+         * @param array  $feed
+         * @param array  $formData
+         * @param object $entry
+         * @param object $form
+         * @return false|null
+         */
         private function runFeed($feed, $formData, $entry, $form)
+        {
+        }
+        /**
+         * Build a sanitized company payload from processed Fluent Forms mappings.
+         *
+         * @param array $data
+         * @return array
+         */
+        private function prepareCompanyData($data)
+        {
+        }
+        /**
+         * Resolve an exact-name company without updating it, or create a new company.
+         *
+         * @param array $companyData
+         * @return Company
+         */
+        private function resolveOrCreateCompany($companyData)
+        {
+        }
+        /**
+         * Resolve or create a mapped company and associate it with the contact.
+         *
+         * @param Subscriber $subscriber
+         * @param array      $companyData
+         * @param array      $feed
+         * @param object     $entry
+         * @param object     $form
+         * @return Company|false|null
+         */
+        private function syncCompany($subscriber, $companyData, $feed, $entry, $form)
         {
         }
         public function isConfigured()
@@ -12366,6 +12513,12 @@ namespace FluentCrm\App\Services\Funnel {
         private function queryFromLastSequence(&$isInChild)
         {
         }
+        /**
+         * Resolve top-level sequences after an exhausted conditional child branch.
+         *
+         * Re-Apply clears the next-sequence ID but may retain a stale numeric cursor.
+         * Resume after the completed child for missing or stale cursors; preserve forward cursors.
+         */
         private function queryParentEscapeSequences()
         {
         }
@@ -12960,6 +13113,13 @@ namespace FluentCrm\App\Services {
     class Helper
     {
         const DEFAULT_CAMPAIGN_TEMPLATE_OPTION = 'default_campaign_template_id';
+        const MIGRATION_FLAGS_OPTION = '_fc_migration_flags';
+        public static function getMigrationFlag($flag, $default = '')
+        {
+        }
+        public static function setMigrationFlag($flag, $value)
+        {
+        }
         /**
          * Determine if the active Easy Digital Downloads version is supported.
          *
@@ -13303,6 +13463,15 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function getMailHeader($existingHeader = [])
+        {
+        }
+        /**
+         * Build an RFC 5322 mailbox header from a display name and email address.
+         *
+         * Display names with RFC specials, such as commas, must be quoted so
+         * providers do not interpret them as a list of mailboxes.
+         */
+        public static function formatMailbox($name, $email)
         {
         }
         public static function recordCampaignRevenue($campaignId, $amount, $orderId, $currency = 'USD', $isRefunded = false)
