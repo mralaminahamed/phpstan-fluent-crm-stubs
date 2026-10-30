@@ -842,6 +842,38 @@ namespace FluentCrm\App\Hooks\Handlers {
         public function handleCompanyDelete($id)
         {
         }
+        /**
+         * Flag an email that a user gave themselves without WordPress confirming it.
+         *
+         * While flagged, the address does not match the user to a contact (Helper::isUserEmailVerified()).
+         * A trusted change clears the flag. Runs after AutoSubscribeHandler::syncUserUpdate(), which reads
+         * the flag of the old email.
+         *
+         * @param int $userId
+         * @param \WP_User $oldData
+         */
+        public function flagUnverifiedEmailChange($userId, $oldData)
+        {
+        }
+        /**
+         * A password reset link reached the user's address, which proves they own it.
+         *
+         * @param \WP_User $user
+         */
+        public function clearUnverifiedEmail($user)
+        {
+        }
+        /**
+         * A logged-in user who clicks a tracked link from an email sent to their flagged address owns that inbox.
+         *
+         * Called by RedirectionHandler::trackUrlClick() only after the per-email token is verified. Clears the flag and
+         * links the clicked contact, unless it belongs to another user or this user already has a contact.
+         *
+         * @param \FluentCrm\App\Models\CampaignEmail $campaignEmail
+         */
+        public function clearUnverifiedEmailOnClick($campaignEmail)
+        {
+        }
         public function handleUserPasswordChanged($user)
         {
         }
@@ -1081,6 +1113,19 @@ namespace FluentCrm\App\Hooks\Handlers {
         public function bounceHandler()
         {
         }
+        /**
+         * Confirm an Amazon SNS topic subscription by fetching its SubscribeURL.
+         *
+         * Only an https URL on an SNS host is fetched, through the safe HTTP API and without
+         * redirects: a forged SubscribeURL on another amazonaws.com host (an S3 website, an EC2
+         * instance) could otherwise redirect the server to internal addresses (SSRF).
+         *
+         * @param string $subscribeUrl SubscribeURL from the SNS SubscriptionConfirmation message.
+         * @return bool Whether the URL was fetched.
+         */
+        public function confirmSesSubscription($subscribeUrl)
+        {
+        }
         public function bounceHandlerSES()
         {
         }
@@ -1106,21 +1151,29 @@ namespace FluentCrm\App\Hooks\Handlers {
         {
         }
         /**
-         * Whether a public link request for this contact is inside its 5-minute cooldown.
+         * Claim this contact's public link-request slot, which then cools down for 5 minutes.
+         *
+         * The contact's oldest cooldown meta row is the one canonical row. It is claimed with a
+         * compare-and-set UPDATE on its id and the value read here, so of several parallel requests
+         * only one sends the email. Parallel first requests may each insert a row; every request
+         * re-reads the oldest row after inserting, so they all compete for the same row.
          *
          * @param Subscriber $subscriber
-         * @return bool
+         * @return array|false ['id' => row id, 'value' => claimed timestamp, 'previous' => value before the claim],
+         *                     or false while the contact is cooling down or another request won.
          */
-        private function isPublicSubscriptionRequestCoolingDown($subscriber)
+        private function claimPublicSubscriptionRequestSlot($subscriber)
         {
         }
         /**
-         * Start the cooldown. Call only after the request email was sent.
+         * Give back a claimed slot after the email failed to send, so the contact can retry.
          *
-         * @param Subscriber $subscriber
+         * Restores the earlier value only while the row still holds this request's claim.
+         *
+         * @param array $claim Return value of claimPublicSubscriptionRequestSlot().
          * @return void
          */
-        private function markPublicSubscriptionRequestSent($subscriber)
+        private function releasePublicSubscriptionRequestSlot($claim)
         {
         }
         /**
@@ -1942,6 +1995,27 @@ namespace FluentCrm\App\Hooks\Handlers {
         private static function fireCampaignProcessingChain($campaignId)
         {
         }
+        /**
+         * Follow up a funnel processor run with the requests its result calls for.
+         *
+         * Chains the next run when due jobs are left, so a large queue drains without waiting for
+         * the five-minute tick, and starts a sending cycle only when the run queued emails. An idle
+         * mailer runs the processor again, so a send-now from a run that queued nothing only starts
+         * another processor run, and the two would keep calling each other while rows stay due.
+         *
+         * @param array|null $result followUpSequenceActions() result: has_more, queued.
+         */
+        public static function continueAutomationProcessing($result)
+        {
+        }
+        /**
+         * Fire a non-blocking request that runs the funnel processor again now.
+         * The funnel processor lock keeps runs from overlapping; the five-minute tick picks up
+         * the queue if the request is lost.
+         */
+        public static function fireAutomationProcessingChain()
+        {
+        }
         public static function maybeCleanupCsvFiles()
         {
         }
@@ -2355,6 +2429,7 @@ namespace FluentCrm\App\Http\Controllers {
         public function campaign(\FluentCrm\Framework\Http\Request\Request $request, $id)
         {
         }
+        /** List campaign recipients using the same filters as selected campaign actions. */
         public function campaignEmails(\FluentCrm\Framework\Http\Request\Request $request, $campaignId)
         {
         }
@@ -2539,12 +2614,16 @@ namespace FluentCrm\App\Http\Controllers {
     class CompanyController extends \FluentCrm\App\Http\Controllers\Controller
     {
         /**
-         * Return paginated companies with contact counts batched for the current page.
+         * Return primary/custom-filtered companies with contact counts batched for the current page.
          *
          * @param Request $request
          * @return array
          */
         public function index(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /** Build the listing query with search, Industry and Company Type constraints. */
+        private function companyQuery($search, $inlineFilters)
         {
         }
         public function searchCompanies(\FluentCrm\Framework\Http\Request\Request $request)
@@ -2582,6 +2661,7 @@ namespace FluentCrm\App\Http\Controllers {
         public function delete(\FluentCrm\Framework\Http\Request\Request $request, $id)
         {
         }
+        /** Execute bulk actions only for explicitly selected company IDs. */
         public function handleBulkActions(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -2771,10 +2851,22 @@ namespace FluentCrm\App\Http\Controllers {
      */
     class DocsController extends \FluentCrm\App\Http\Controllers\Controller
     {
-        private $restApi = 'https://fluentcrm.com/wp-json/wp/v2/';
+        /**
+         * The docs site is a static VitePress build: sitemap.xml lists every page and
+         * "<slug>.json" returns that page as {slug, title, category, url, html, ...}.
+         */
+        private $docsHost = 'https://docs.fluentcrm.com/';
+        private $indexCacheKey = 'fluentcrm_all_docs_v2';
+        /**
+         * Pages left out of the in-app library (the changelog alone is >200KB).
+         */
+        private $excludedSlugs = ['change-log'];
         public function index()
         {
         }
+        /**
+         * @param string $docId doc slug, e.g. "setting-up-campaign"
+         */
         public function getDoc($docId)
         {
         }
@@ -2784,7 +2876,24 @@ namespace FluentCrm\App\Http\Controllers {
         private function isPluginInstalled($plugin)
         {
         }
-        private function getDocsPerChunk($url, $chunkKey)
+        /**
+         * Fetch every page listed in the docs sitemap, in parallel.
+         *
+         * @return array formatted docs, empty if the sitemap is unreachable
+         */
+        private function fetchAllDocs()
+        {
+        }
+        /**
+         * Normalize one docs-site page into the shape the admin UI reads.
+         *
+         * @param mixed $raw decoded "<slug>.json" payload
+         * @return array|null null when the payload is not a doc
+         */
+        private function formatDoc($raw)
+        {
+        }
+        private function categoryLabel($category)
         {
         }
     }
@@ -4442,6 +4551,14 @@ namespace FluentCrm\App\Http\Policies {
         public function generateEmailBody(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Readers may view a summary and create the first one (it is cached on the contact).
+         * Regenerate skips the cache and calls the paid AI provider every time, so it needs
+         * write access to contacts.
+         *
+         * @param Request $request
+         * @return bool
+         */
         public function contactSummary(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4463,6 +4580,12 @@ namespace FluentCrm\App\Http\Policies {
         public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * "Delete emails" has no permission dependencies, so manage access is re-asserted.
+         *
+         * @param Request $request
+         * @return bool
+         */
         public function delete(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4503,6 +4626,19 @@ namespace FluentCrm\App\Http\Policies {
          * @return Boolean
          */
         public function handleBulkActions(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Company field schema is site configuration, gated like the contact custom-field routes
+         * (CustomFieldsPolicy) rather than by the tag/list manager capability.
+         *
+         * @param  \FluentCrm\Framework\Http\Request\Request $request
+         * @return Boolean
+         */
+        public function saveCustomGlobalFields(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        public function updateCustomFieldGroupName(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
         public function detachSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
@@ -4584,6 +4720,12 @@ namespace FluentCrm\App\Http\Policies {
         public function verifyRequest(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * "Delete emails" has no permission dependencies, so manage access is re-asserted.
+         *
+         * @param Request $request
+         * @return bool
+         */
         public function delete(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -4654,6 +4796,16 @@ namespace FluentCrm\App\Http\Policies {
         {
         }
         public function deleteSubscribers(\FluentCrm\Framework\Http\Request\Request $request)
+        {
+        }
+        /**
+         * Deleting abandoned carts also removes their contacts' automation progress and
+         * metrics, so it needs the same capability as removing contacts from an automation.
+         *
+         * @param Request $request
+         * @return bool
+         */
+        public function handleBulkDeleteCart(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
     }
@@ -4966,9 +5118,22 @@ namespace FluentCrm\App\Http\Policies {
         public function getBuiltInTemplate(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * "Delete emails" has no permission dependencies, so the template manage capability is
+         * re-asserted; read access alone must not be enough to delete a template.
+         *
+         * @param Request $request
+         * @return bool
+         */
         public function delete(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
+        /**
+         * Bulk delete needs the delete permission; bulk status change is an ordinary edit.
+         *
+         * @param Request $request
+         * @return bool
+         */
         public function handleBulkAction(\FluentCrm\Framework\Http\Request\Request $request)
         {
         }
@@ -5022,6 +5187,14 @@ namespace FluentCrm\App\Models {
         public function scopeNewest($query, $field = 'created_at')
         {
         }
+        /**
+         * Page size for paginate(), read from the request.
+         *
+         * Clamped to 1-1000: a negative value made limit() a no-op (every row loaded)
+         * and 0 divided by zero in the paginator. 1000 is above every UI page size.
+         *
+         * @return int
+         */
         public function getPerPage()
         {
         }
@@ -5083,6 +5256,19 @@ namespace FluentCrm\App\Models {
         protected $table = 'fc_campaigns';
         protected $guarded = ['id'];
         protected static $type = 'campaign';
+        /**
+         * Atomically move a campaign from pending-scheduled to processing.
+         *
+         * A read-then-save() could overwrite an unschedule that landed in between and send a
+         * campaign the user had just cancelled; the status condition in the UPDATE prevents that.
+         *
+         * @param int $campaignId
+         * @param array $extra Extra columns to set in the same update.
+         * @return bool True only for the caller that made the transition.
+         */
+        public static function claimForProcessing($campaignId, $extra = [])
+        {
+        }
         public static function boot()
         {
         }
@@ -5327,6 +5513,35 @@ namespace FluentCrm\App\Models {
         {
         }
         /**
+         * Apply the per-campaign tracking choice to the tracker values a campaign sends with.
+         *
+         * `open_tracking` and `click_tracking` hold the choice made on the review step: 'anonymous'
+         * or 'no'. Anything else means "follow the site". A choice only makes tracking stricter
+         * (tracked > anonymous > off) than the value already in `open_tracker` / `click_tracker`,
+         * so the site's compliance settings always win. With no choice, the settings come back unchanged.
+         *
+         * @param array $settings Campaign settings with open_tracker / click_tracker already set.
+         * @return array
+         */
+        public static function applyTrackingChoice($settings)
+        {
+        }
+        /**
+         * Sanitize a per-campaign tracking choice: 'anonymous', 'no', or '' to follow the site.
+         *
+         * @param mixed $choice
+         * @return string
+         */
+        public static function sanitizeTrackingChoice($choice)
+        {
+        }
+        /**
+         * Rank a tracker value: 2 tracked, 1 anonymous, 0 off. Accepts the legacy yes/no strings.
+         */
+        private static function trackingRank($status)
+        {
+        }
+        /**
          * Normalize legacy/MCP yes-no settings while preserving anonymous and boolean values.
          */
         private function normalizeTrackingStatus($status)
@@ -5429,6 +5644,21 @@ namespace FluentCrm\App\Models {
         public function subject()
         {
         }
+        /** Validate campaign click links and constrain recipients without duplicating email rows. */
+        public function scopeForCampaignRecipientLinks($query, $campaignId, $values, $filterType)
+        {
+        }
+        /** Recipient filters of the campaign emails list; a selected Pro action uses the same set. */
+        const RECIPIENT_FILTER_TYPES = ['all', 'click', 'view', 'unopened', 'failed'];
+        /**
+         * Apply the recipient filters shared by campaign lists and selected Pro actions.
+         *
+         * An unknown filter type is rejected rather than read as "all", so a malformed action
+         * request can never widen to every recipient of the campaign.
+         */
+        public function scopeForCampaignRecipients($query, $campaignId, array $filters = [])
+        {
+        }
         public function markAs($status)
         {
         }
@@ -5497,7 +5727,15 @@ namespace FluentCrm\App\Models {
         public function getSubjectCount($campaignId)
         {
         }
-        public function getOpenCount($subjectId)
+        /**
+         * Opens for one A/B subject. email_subject_id has no index, so pass the campaign id
+         * to let the (campaign_id, status) index narrow the scan.
+         *
+         * @param int $subjectId
+         * @param int|null $campaignId
+         * @return int
+         */
+        public function getOpenCount($subjectId, $campaignId = null)
         {
         }
         public function setEmailHeadersAttribute($headers)
@@ -5909,6 +6147,19 @@ namespace FluentCrm\App\Models {
         {
         }
         public function getConditionsAttribute($conditions)
+        {
+        }
+        /**
+         * Serialize step settings or conditions, always as an array.
+         *
+         * New steps reach this setter with request data, so a string is decoded without
+         * building objects instead of being stored as is (PHP Object Injection).
+         * A pre-serialized array string keeps working; any other value is stored as [].
+         *
+         * @param mixed $value Array, serialized string, or anything else from the caller.
+         * @return string Serialized array.
+         */
+        private static function serializeArrayValue($value)
         {
         }
     }
@@ -9572,6 +9823,31 @@ namespace FluentCrm\App\Services {
         {
         }
     }
+    /** Match serialized company custom values without loading all candidate models. */
+    class CompanyCustomFilter
+    {
+        private $conditions = [];
+        /** Validate the JSON/array contract against the current field registry once per request. */
+        public function __construct($filters)
+        {
+        }
+        /** Preserve SQL pagination without custom conditions; otherwise retain only the requested page IDs. */
+        public function paginate($query, $perPage, $page)
+        {
+        }
+        /** Match AND across fields and OR across selection options, rejecting malformed stored values. */
+        private function matches($meta)
+        {
+        }
+        /** Normalize typed scalars without coercing missing values to zero or shifting local dates to UTC. */
+        private function normalize($type, $value)
+        {
+        }
+        /** Fail closed so malformed filters can never expand a listing. */
+        private function invalid()
+        {
+        }
+    }
     /**
      * A user's pinned list and tag quick filters on the contacts list.
      * Stored as a site-scoped user option.
@@ -11066,6 +11342,32 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart {
         private function formatOrders($orders)
         {
         }
+        /**
+         * Build the read-only contact-profile drawer for one FluentCart order.
+         *
+         * The order ID comes from the browser, so both FluentCart permission and
+         * ownership by the current CRM contact are re-asserted before rendering.
+         *
+         * @param array      $dataView  Default dynamic-view response.
+         * @param array      $params    Drawer parameters containing __id.
+         * @param Subscriber $subscriber Current contact.
+         * @return array
+         */
+        public function getFluentCartOrderDetails($dataView, $params, $subscriber)
+        {
+        }
+        /**
+         * Return the common safe response for unavailable or non-owned orders.
+         */
+        private function getMissingOrderView($dataView)
+        {
+        }
+        /**
+         * Render one escaped label/value row for the drawer summary.
+         */
+        private function getOrderDetailRow($label, $value, $escapeValue = true, $className = '')
+        {
+        }
         private function getSidebarHtml($subscriber = null)
         {
         }
@@ -11120,7 +11422,33 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\SmartCode {
         public static function parseCartOrder($code, $valueKey, $defaultValue, $subscriber)
         {
         }
+        /**
+         * Last resolved customer payload: ['subscriber' => object, 'email' => string, 'funnel_sub' => mixed,
+         * 'customer' => array|null]. One entry only, so it cannot grow across a long-running campaign worker.
+         */
+        private static $customerCache = null;
+        /**
+         * Resolve {{cart_customer.*}}. ShortcodeParser calls this once per token, so the customer payload
+         * (including a miss) is resolved once per subscriber and reused for the rest of that subscriber's tokens.
+         */
         public static function parseCartCustomer($code, $valueKey, $defaultValue, $subscriber)
+        {
+        }
+        /**
+         * Load the FluentCart customer for a subscriber as an array, or null when none can be found.
+         * Cached for the most recent subscriber object (same object, email and funnel record), so a new
+         * recipient always triggers a fresh lookup.
+         */
+        private static function getCartCustomer($subscriber)
+        {
+        }
+        /**
+         * Uncached customer lookup: the Customer model by email first, then the customer on the
+         * automation's order payload.
+         *
+         * @return array|null
+         */
+        private static function loadCartCustomer($subscriber)
         {
         }
         /**
@@ -11142,6 +11470,24 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\SmartCode {
         public static function parseTransactionProps($transaction, $valueKey, $defaultValue)
         {
         }
+        /**
+         * A FluentCart GMT date as an absolute date in the site's timezone and date format.
+         *
+         * Email bodies are parsed when the email is queued, so relative text ("3 years ago") would be
+         * frozen into the email. wp_date() shows the real UTC timestamp as the site's day, as Pro's
+         * WooCommerce smartcodes do.
+         *
+         * OrderResource serializes the order's created_at as ISO 8601 with an offset, while other
+         * columns stay a GMT `Y-m-d H:i:s`. The appended ' UTC' applies only to a value without an offset.
+         *
+         * @param string $gmtDate      GMT `Y-m-d H:i:s`, or ISO 8601 with an offset
+         * @param string $defaultValue smartcode fallback for an empty, zero or unreadable date
+         * @param bool   $withTime     also print the site's time format, for order timestamps
+         * @return string
+         */
+        private static function formatSiteDate($gmtDate, $defaultValue, $withTime = false)
+        {
+        }
         public static function parseCustomerProps($customer, $valueKey, $defaultValue)
         {
         }
@@ -11154,7 +11500,18 @@ namespace FluentCrm\App\Services\ExternalIntegrations\FluentCart\SmartCode {
     }
     class SmartCodeRegister
     {
+        public static function register()
+        {
+        }
         public static function push()
+        {
+        }
+        /**
+         * Global picker group (like Pro's "Woo Customer"): usable in automations, campaigns, templates
+         * and contact emails. Resolver is hooked in FluentCart::addHooks() and looks the customer up by
+         * the contact's email, so no funnel context is needed.
+         */
+        public static function pushCustomerCodes($codes)
         {
         }
     }
@@ -12182,6 +12539,21 @@ namespace FluentCrm\App\Services\Funnel {
     }
     class FunnelProcessor
     {
+        /**
+         * True while followUpSequenceActions() works through its batch. Email actions then only
+         * queue their rows; the every-minute mailer sends them, so automation processing and
+         * sending stay two independent jobs.
+         *
+         * @var bool
+         */
+        public static $isBatchRun = false;
+        /**
+         * Email sends a batch run deferred to the mailer (one per contact job). The run reports it
+         * as `queued`, so the caller starts a sending cycle only when there is something to send.
+         *
+         * @var int
+         */
+        public static $queuedEmailJobs = 0;
         private $subscribersCache = [];
         private $sequenceFunnelCache = [];
         private $funnelCache = [];
@@ -12257,6 +12629,18 @@ namespace FluentCrm\App\Services\Funnel {
         {
         }
         public function followUpSequenceActions()
+        {
+        }
+        /**
+         * Whether processing changed the first job of the batch.
+         *
+         * A due row that processing leaves untouched would be picked up first again, so chaining
+         * another run straight away would spin on it. Such a row waits for the next scheduled tick.
+         *
+         * @param FunnelSubscriber|null $job The job as it was read before processing.
+         * @return bool
+         */
+        private function didAdvance($job)
         {
         }
         public function processFunnelAction($funnelSubscriber)
@@ -12481,6 +12865,20 @@ namespace FluentCrm\App\Services\Funnel\Triggers {
         protected function getForms($funnel)
         {
         }
+        /**
+         * The automation's selected form id, or 0 when none is set or the stored value is not a whole
+         * positive number.
+         *
+         * form_id is stored as given, including from an imported automation file. A malformed value such
+         * as "7bad" must mean "no form" everywhere: cast to int it would show form 7 in the editor (and
+         * MySQL would match it to form 7), while submissions from form 7 would never start it.
+         *
+         * @param object $funnel
+         * @return int
+         */
+        protected function getSelectedFormId($funnel)
+        {
+        }
         protected function getValueOptions($funnel)
         {
         }
@@ -12617,6 +13015,35 @@ namespace FluentCrm\App\Services {
         private $childCss = '';
         private static $rssRenderCache = [];
         private $autoPaddedElements = ['core/heading', 'core/paragraph', 'core/list'];
+        /**
+         * Synced pattern refs currently being rendered; stops a pattern that embeds itself
+         * (directly or through another pattern) from recursing forever.
+         */
+        private static $renderingPatternRefs = [];
+        /**
+         * Make a block-attribute value safe to place in a CSS declaration.
+         *
+         * Block attributes are user-controlled, and the result lands inside a <style> element or a
+         * style="" attribute. Characters that could end the declaration, the rule, the element or the
+         * attribute are never legitimate in a CSS value here, so a value containing one is dropped.
+         *
+         * @param mixed $value
+         * @param bool  $forAttribute Also reject quotes, for values placed inside a style="" attribute.
+         * @return string The trimmed value, or '' when it is unsafe.
+         */
+        private function sanitizeCssValue($value, $forAttribute = false)
+        {
+        }
+        /**
+         * Whitelist a vertical-align attribute value.
+         *
+         * @param mixed  $value
+         * @param string $default
+         * @return string
+         */
+        private function normalizeVerticalAlign($value, $default = 'top')
+        {
+        }
         /**
          * Parse Gutenberg blocks and convert to email HTML
          *
@@ -13063,10 +13490,23 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
+         * The contact that test emails, previews and test webhooks render for when none is chosen.
+         *
+         * Prefer the current user's linked contact, then an email match allowed by the verification policy.
+         * Otherwise always use the same fallback: the oldest contact.
+         * Shared by REST and MCP so both pick the same contact.
+         *
+         * @return Subscriber|null
+         */
+        public static function getSampleContact()
+        {
+        }
+        /**
          * maybe_unserialize() without object instantiation; use for user-influenced values.
          *
          * @param mixed $value The (possibly serialized) value read from storage.
-         * @return mixed Serialized objects become inert incomplete classes.
+         * @return mixed stdClass is kept (it has no magic methods, and settings store it for empty
+         *               JSON objects); any other class becomes an inert incomplete class.
          */
         public static function safeUnserialize($value)
         {
@@ -13321,6 +13761,58 @@ namespace FluentCrm\App\Services {
         public static function getWPMapUserInfo($user)
         {
         }
+        /**
+         * Whether the user's current email may identify their contact.
+         *
+         * WordPress lets a user change their own email through the REST API with no confirmation,
+         * so that address proves nothing until a password reset reaches it.
+         * See Cleanup::flagUnverifiedEmailChange(). The `verified_email_match` compliance setting turns this off.
+         *
+         * @param \WP_User|false|null $user
+         * @return bool
+         */
+        public static function isUserEmailVerified($user)
+        {
+        }
+        /**
+         * The logged-in user's own contact, or null. Never the fc_hash_secure email-click cookie contact.
+         *
+         * Use this, not getCurrentContact(true, true), for anything that personalizes server-rendered
+         * page HTML (form prefill, page-builder conditions). A full-page cache can store that HTML and
+         * serve it to every visitor, and logged-in requests are the one case page caches keep private.
+         * getCurrentContact()'s request cache is skipped on purpose: earlier cookie-aware code on the
+         * page may already have put the cookie contact there. One lookup per user per request.
+         *
+         * @return \FluentCrm\App\Models\Subscriber|null
+         */
+        public static function getLoggedInContact()
+        {
+        }
+        /**
+         * Whether linking this user to the contact with this email would rest only on an unverified email.
+         *
+         * A user_id whose account email differs from the contact's is not an email match, so it is allowed.
+         *
+         * @param int $userId
+         * @param string $email The contact's email.
+         * @return bool
+         */
+        public static function isUnverifiedEmailLink($userId, $email)
+        {
+        }
+        /**
+         * Whether the email change being saved now is one the user made to their own account, unconfirmed.
+         *
+         * Only profile.php sends a confirmation email; the REST API and front-end profile forms apply
+         * the change at once. A user manager's change, or one made by code with no logged-in user, is trusted.
+         *
+         * @param int $userId
+         * @param string $newEmail
+         * @return bool
+         */
+        public static function isUnconfirmedSelfEmailChange($userId, $newEmail)
+        {
+        }
         public static function isUserSyncEnabled()
         {
         }
@@ -13378,6 +13870,15 @@ namespace FluentCrm\App\Services {
         {
         }
         public static function getAdvancedFilterOptions()
+        {
+        }
+        /**
+         * Convert a tracker value (true, false, 'anonymous', or legacy 'yes'/'no') to 'yes', 'anonymous' or 'no'.
+         *
+         * @param mixed $status
+         * @return string
+         */
+        public static function trackingLevel($status)
         {
         }
         public static function getComplianceSettings()
@@ -13537,6 +14038,20 @@ namespace FluentCrm\App\Services {
         {
         }
         /**
+         * Raise PHP's time limit to at least $seconds; never lower it.
+         *
+         * set_time_limit() lowers as readily as it raises, and the value outlives our code: under
+         * WP-CLI (unlimited) or on a host allowing more than $seconds, every later job in the same
+         * process (other plugins' Action Scheduler actions included) would inherit the lower limit.
+         * Mirrors ActionScheduler_Compatibility::raise_time_limit().
+         *
+         * @param int $seconds Minimum limit the caller needs, in seconds.
+         * @return void
+         */
+        public static function raiseTimeLimit($seconds)
+        {
+        }
+        /**
          * Acquire a cross-process mutex with one atomic conditional UPDATE on wp_options.
          * Claims the lock when free or older than $ttl. wp_cache_add() is not atomic on
          * every object-cache drop-in (LiteSpeed), so the lock lives in the DB.
@@ -13689,6 +14204,86 @@ namespace FluentCrm\App\Services\Html {
         {
         }
         public function reset()
+        {
+        }
+    }
+}
+namespace FluentCrm\App\Services {
+    /**
+     * The full list of third-party integrations shown on Settings → Integrations.
+     *
+     * The list lives in core so it renders whether or not FluentCampaign Pro is
+     * active. Pro (and any addon) still contributes the configurable part through
+     * `fluentcrm_deep_integration_providers`; those entries are merged on top of
+     * the catalog by key, so catalog keys must match the provider keys
+     * (`woo`, `edd`, `learndash`, ...).
+     */
+    class IntegrationCatalog
+    {
+        /**
+         * Categories the integrations screen filters by. Anything else a
+         * provider sends is filed under `others`.
+         */
+        const CATEGORIES = ['commerce', 'lms', 'membership', 'page_builder', 'fluent', 'others'];
+        /**
+         * Build the integrations list for the settings screen.
+         *
+         * @param bool $withFields Passed through to the deep integration providers filter.
+         * @return array Keyed by integration slug.
+         */
+        public static function getIntegrations($withFields = false)
+        {
+        }
+        /**
+         * Add the status flags the UI renders from.
+         *
+         * pro_locked:      Pro-tier integration while Pro is not active; listed but not actionable.
+         * is_configurable: has a settings screen (provider supplied `settings`) and the plugin is active.
+         */
+        private static function withStatus($item, $isProActive)
+        {
+        }
+        /**
+         * `logo` accepts an image URL or inline SVG markup.
+         *
+         * Inline SVG is turned into a base64 data URI (same approach as the admin
+         * menu icon in AdminMenu) so the UI keeps rendering it through <img src>,
+         * never v-html: an SVG loaded as an image cannot run scripts or fetch
+         * external resources, so markup from third-party providers stays inert.
+         */
+        private static function normalizeLogo($logo)
+        {
+        }
+        /**
+         * Reduce any provider `type` (string or array) to the known tab categories.
+         */
+        private static function normalizeTypes($types)
+        {
+        }
+        /**
+         * Logo URL for a file in resources/images (copied to assets/images on build).
+         *
+         * Returns an empty string when the file does not ship yet, so the UI falls
+         * back to the first letter of the title instead of a broken image.
+         */
+        private static function logo($file)
+        {
+        }
+        /**
+         * Check whether an Easy Digital Downloads version can load the Pro integration.
+         *
+         * @param string $version Easy Digital Downloads version number.
+         * @return bool
+         */
+        private static function supportsEddVersion($version)
+        {
+        }
+        /**
+         * The integrations implemented in FluentCRM (free), FluentCampaign Pro, and
+         * the Fluent plugins that ship their FluentCRM integration themselves
+         * (FluentBooking, Fluent Support, ...).
+         */
+        private static function getCatalog()
         {
         }
     }
@@ -14163,6 +14758,20 @@ namespace FluentCrm\App\Services\Libs\Mailer {
         protected static function buildHeaders($data, $subscriber = null, $emailModel = null)
         {
         }
+        /**
+         * Make a contact name safe to use as the display name in a "Name <email>" To value.
+         *
+         * wp_mail() and most SMTP plugins split a string To value on every comma and ignore
+         * quotes, so a name such as "x,someone@example.com,y" would add a recipient. Contacts
+         * can set their own name through public forms, so the address separators and quoting
+         * characters are replaced with spaces instead of being quoted.
+         *
+         * @param mixed $name
+         * @return string Empty when nothing printable is left.
+         */
+        protected static function cleanDisplayName($name)
+        {
+        }
         private static function willIncludeName()
         {
         }
@@ -14330,6 +14939,20 @@ namespace FluentCrm\App\Services\Libs\Parser {
         {
         }
         public function parseShortcode($string, $data)
+        {
+        }
+        /**
+         * Resolve smartcodes inside URL-bearing HTML attributes before the general text pass.
+         *
+         * A resolved contact value is not safe merely because the original template smartcode was
+         * escaped. Validate the complete personalized URL and escape it for its quoted attribute.
+         * Smartcodes intentionally deferred to a later parser pass remain intact until that pass.
+         *
+         * @param string   $html
+         * @param callable $resolver Smartcode callback used by the current parser pass.
+         * @return string
+         */
+        private function parseUrlAttributeSmartCodes($html, callable $resolver)
         {
         }
         /**
@@ -15965,6 +16588,18 @@ namespace FluentCrm\App\Services {
         protected function makeToDate($to)
         {
         }
+        /**
+         * Parse a request-supplied date in the site timezone, falling back to a default.
+         * The value comes straight from the date_range query arg; an unparsable string
+         * made \DateTime throw and the report answer 500.
+         *
+         * @param string $value
+         * @param string $fallback
+         * @return \DateTime
+         */
+        private function makeDateOr($value, $fallback)
+        {
+        }
         protected function makeDatePeriod($from, $to, $interval = null)
         {
         }
@@ -17384,6 +18019,11 @@ namespace {
     function fluentCrmEmailSendableStatuses()
     {
     }
+    /*
+     * The conditions below decide which elements end up in the page HTML, and a full-page cache can
+     * serve that HTML to every visitor. So they match only the logged-in user's contact, never one
+     * identified by the email-click cookie (see Helper::getLoggedInContact()).
+     */
     function fcrmOxyCheckTagCondition($value, $operator)
     {
     }
